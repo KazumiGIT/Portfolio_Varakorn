@@ -4,7 +4,7 @@ import { Overlay } from './components/Overlay';
 import { CustomCursor } from './components/CustomCursor';
 import { LoadingScreen } from './components/LoadingScreen';
 import { SpaceBackground } from './components/SpaceBackground';
-import { ThemeToggle } from './components/ThemeToggle';
+import { MusicToggle } from './components/MusicToggle';
 import { ThemeProvider } from './context/ThemeContext';
 import { SEO } from './components/SEO';
 import { SectionSelector } from './components/SectionSelector';
@@ -28,7 +28,7 @@ function AppContent() {
       <SectionSelector />
       <SpaceBackground />
       <CustomCursor />
-      <ThemeToggle />
+      <MusicToggle />
 
       <div
         data-scroll-container

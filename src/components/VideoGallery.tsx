@@ -152,7 +152,7 @@ export const VideoGallery = () => {
 
             <div className="text-center mt-6">
                 <a
-                    href="https://vt.tiktok.com/ZSf278Hax/"
+                    href="https://www.tiktok.com/@kazumi_v?_r=1&_t=ZS-91TQqdQR3jj"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-pink-600 to-purple-600 rounded-full text-white font-semibold hover:scale-105 transition-transform shadow-lg hover:shadow-pink-500/25"

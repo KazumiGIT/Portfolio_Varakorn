@@ -20,6 +20,14 @@ export const SectionSelector: React.FC = () => {
         { id: 'testimonials', name: 'Contact', icon: '📧' }
     ];
 
+    const handleSectionClick = (sectionId: string) => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            setIsOpen(false);
+        }
+    };
+
     useEffect(() => {
         const scrollContainer = document.querySelector('[data-scroll-container]');
         if (!scrollContainer) return;
@@ -43,19 +51,50 @@ export const SectionSelector: React.FC = () => {
             }
         };
 
+        // Swipe gesture support
+        let touchStartY = 0;
+        let touchEndY = 0;
+
+        const handleTouchStart = (e: Event) => {
+            const touchEvent = e as unknown as TouchEvent;
+            touchStartY = touchEvent.changedTouches[0].screenY;
+        };
+
+        const handleTouchEnd = (e: Event) => {
+            const touchEvent = e as unknown as TouchEvent;
+            touchEndY = touchEvent.changedTouches[0].screenY;
+            handleSwipe();
+        };
+
+        const handleSwipe = () => {
+            const swipeThreshold = 50;
+            const diff = touchStartY - touchEndY;
+
+            if (Math.abs(diff) > swipeThreshold) {
+                const currentIndex = sections.findIndex(s => s.name === currentSection);
+
+                if (diff > 0 && currentIndex < sections.length - 1) {
+                    // Swipe Up (Next Section)
+                    handleSectionClick(sections[currentIndex + 1].id);
+                } else if (diff < 0 && currentIndex > 0) {
+                    // Swipe Down (Previous Section)
+                    handleSectionClick(sections[currentIndex - 1].id);
+                }
+            }
+        };
+
         scrollContainer.addEventListener('scroll', handleScroll);
+        scrollContainer.addEventListener('touchstart', handleTouchStart);
+        scrollContainer.addEventListener('touchend', handleTouchEnd);
+
         handleScroll(); // Initial check
 
-        return () => scrollContainer.removeEventListener('scroll', handleScroll);
-    }, []);
-
-    const handleSectionClick = (sectionId: string) => {
-        const element = document.getElementById(sectionId);
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            setIsOpen(false);
-        }
-    };
+        return () => {
+            scrollContainer.removeEventListener('scroll', handleScroll);
+            scrollContainer.removeEventListener('touchstart', handleTouchStart);
+            scrollContainer.removeEventListener('touchend', handleTouchEnd);
+        };
+    }, [currentSection]);
 
     const getSectionIcon = (sectionName: string) => {
         const section = sections.find(s => s.name === sectionName);
@@ -100,8 +139,8 @@ export const SectionSelector: React.FC = () => {
                                     key={section.id}
                                     onClick={() => handleSectionClick(section.id)}
                                     className={`w-full flex items-center gap-3 px-6 py-3 text-left transition-all duration-200 ${currentSection === section.name
-                                            ? 'bg-white/20 text-white'
-                                            : 'text-gray-300 hover:bg-white/10 hover:text-white'
+                                        ? 'bg-white/20 text-white'
+                                        : 'text-gray-300 hover:bg-white/10 hover:text-white'
                                         }`}
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
