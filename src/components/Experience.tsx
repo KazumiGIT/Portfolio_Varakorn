@@ -8,7 +8,10 @@ import { lerp } from "../utils/scrollAnimations";
 export const Experience = () => {
     const scrollProgress = useScrollProgress();
     const groupRef = useRef<THREE.Group>(null);
-    const { camera } = useThree();
+    const { camera, viewport } = useThree();
+
+    const isMobile = viewport.width < 7;
+    const mobileScale = isMobile ? 0.6 : 1;
 
     useFrame(() => {
         const { progress, section, sectionProgress } = scrollProgress;
@@ -66,7 +69,7 @@ export const Experience = () => {
                 {/* Section 0: Hero - Large Central Torus Knot */}
                 {section === 0 && (
                     <Float speed={2} rotationIntensity={1} floatIntensity={2}>
-                        <mesh position={[0, 0, 0]} scale={1.2}>
+                        <mesh position={[0, isMobile ? 1 : 0, 0]} scale={1.2 * mobileScale}>
                             <torusKnotGeometry args={[1.5, 0.4, 128, 16]} />
                             <MeshDistortMaterial
                                 color="#8b5cf6"
@@ -83,13 +86,13 @@ export const Experience = () => {
                 {section === 0 && (
                     <>
                         <Float speed={1.5} rotationIntensity={2} floatIntensity={1}>
-                            <mesh position={[-3, 1, -2]} scale={0.4}>
+                            <mesh position={[-3, 1, -2]} scale={0.4 * mobileScale}>
                                 <icosahedronGeometry args={[1, 0]} />
                                 <meshStandardMaterial color="#ec4899" roughness={0.2} metalness={0.8} />
                             </mesh>
                         </Float>
                         <Float speed={1.8} rotationIntensity={1.5} floatIntensity={1.5}>
-                            <mesh position={[3, -1, -1]} scale={0.3}>
+                            <mesh position={[3, -1, -1]} scale={0.3 * mobileScale}>
                                 <octahedronGeometry args={[1, 0]} />
                                 <meshStandardMaterial color="#14b8a6" roughness={0.2} metalness={0.8} />
                             </mesh>
@@ -101,7 +104,7 @@ export const Experience = () => {
                 {section === 1 && (
                     <>
                         <Float speed={2.5} rotationIntensity={1.5} floatIntensity={2}>
-                            <mesh position={[0, 0, 0]} scale={1}>
+                            <mesh position={[0, 0, 0]} scale={1 * mobileScale}>
                                 <Sphere args={[1.5, 64, 64]}>
                                     <MeshDistortMaterial
                                         color="#6366f1"
@@ -114,7 +117,7 @@ export const Experience = () => {
                             </mesh>
                         </Float>
                         <Float speed={1.5} rotationIntensity={2} floatIntensity={1}>
-                            <mesh position={[-2, 1, 1]} scale={0.5}>
+                            <mesh position={[-2, 1, 1]} scale={0.5 * mobileScale}>
                                 <dodecahedronGeometry args={[1, 0]} />
                                 <meshStandardMaterial color="#ec4899" roughness={0.2} metalness={0.8} wireframe />
                             </mesh>
@@ -125,15 +128,15 @@ export const Experience = () => {
                 {/* Section 2: Experience - 3D Bar Chart Style */}
                 {section === 2 && (
                     <>
-                        <mesh position={[-2, -5, 0]} scale={[0.5, 2, 0.5]}>
+                        <mesh position={[-2 * mobileScale, -5, 0]} scale={[0.5 * mobileScale, 2 * mobileScale, 0.5 * mobileScale]}>
                             <boxGeometry />
                             <meshStandardMaterial color="#8b5cf6" roughness={0.2} metalness={0.8} />
                         </mesh>
-                        <mesh position={[0, -5, 0]} scale={[0.5, 3.5, 0.5]}>
+                        <mesh position={[0, -5, 0]} scale={[0.5 * mobileScale, 3.5 * mobileScale, 0.5 * mobileScale]}>
                             <boxGeometry />
                             <meshStandardMaterial color="#ec4899" roughness={0.2} metalness={0.8} />
                         </mesh>
-                        <mesh position={[2, -5, 0]} scale={[0.5, 5, 0.5]}>
+                        <mesh position={[2 * mobileScale, -5, 0]} scale={[0.5 * mobileScale, 5 * mobileScale, 0.5 * mobileScale]}>
                             <boxGeometry />
                             <meshStandardMaterial color="#14b8a6" roughness={0.2} metalness={0.8} />
                         </mesh>
@@ -144,19 +147,19 @@ export const Experience = () => {
                 {section === 3 && (
                     <>
                         <Float speed={1} rotationIntensity={0.5} floatIntensity={1}>
-                            <mesh position={[-2, -10, 2]} rotation={[0, Math.PI / 4, 0]}>
+                            <mesh position={[-2 * mobileScale, -10, 2]} rotation={[0, Math.PI / 4, 0]} scale={mobileScale}>
                                 <boxGeometry args={[2, 1.5, 0.1]} />
                                 <meshStandardMaterial color="#3b82f6" roughness={0.2} metalness={0.8} />
                             </mesh>
                         </Float>
                         <Float speed={1.2} rotationIntensity={0.5} floatIntensity={1}>
-                            <mesh position={[0, -10, 0]} rotation={[0, 0, 0]}>
+                            <mesh position={[0, -10, 0]} rotation={[0, 0, 0]} scale={mobileScale}>
                                 <boxGeometry args={[2, 1.5, 0.1]} />
                                 <meshStandardMaterial color="#8b5cf6" roughness={0.2} metalness={0.8} />
                             </mesh>
                         </Float>
                         <Float speed={0.8} rotationIntensity={0.5} floatIntensity={1}>
-                            <mesh position={[2, -10, -2]} rotation={[0, -Math.PI / 4, 0]}>
+                            <mesh position={[2 * mobileScale, -10, -2]} rotation={[0, -Math.PI / 4, 0]} scale={mobileScale}>
                                 <boxGeometry args={[2, 1.5, 0.1]} />
                                 <meshStandardMaterial color="#ec4899" roughness={0.2} metalness={0.8} />
                             </mesh>
@@ -167,7 +170,7 @@ export const Experience = () => {
                 {/* Section 4: Contact - Final Sphere */}
                 {section === 4 && (
                     <Float speed={1} rotationIntensity={0.5} floatIntensity={1}>
-                        <mesh position={[0, -15, 0]} scale={1.5}>
+                        <mesh position={[0, -15, 0]} scale={1.5 * mobileScale}>
                             <Sphere args={[1, 64, 64]}>
                                 <MeshDistortMaterial
                                     color="#8b5cf6"
