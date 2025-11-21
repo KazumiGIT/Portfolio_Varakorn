@@ -12,9 +12,10 @@ export const Overlay = () => {
 
     return (
         <div
-            className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none"
+            className="absolute top-0 left-0 w-full pointer-events-none"
             style={{
-                zIndex: 10
+                zIndex: 10,
+                minHeight: '100vh'
             }}
         >
             {/* Section 0: Hero */}
