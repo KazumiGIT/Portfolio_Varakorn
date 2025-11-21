@@ -8,7 +8,7 @@ import { SpaceBackground } from './components/SpaceBackground';
 import { ThemeToggle } from './components/ThemeToggle';
 import { ThemeProvider } from './context/ThemeContext';
 import { SEO } from './components/SEO';
-import { ScrollProgress } from './components/ScrollProgress';
+import { SectionSelector } from './components/SectionSelector';
 import { useState } from 'react';
 
 function AppContent() {
@@ -33,7 +33,7 @@ function AppContent() {
   return (
     <>
       <SEO />
-      <ScrollProgress />
+      <SectionSelector />
       <SpaceBackground />
       <CustomCursor />
       <Navigation onNavigate={handleNavigate} />
