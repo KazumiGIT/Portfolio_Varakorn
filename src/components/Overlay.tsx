@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { VideoGallery } from "./VideoGallery";
 import { AnimatedCounter } from "./AnimatedCounter";
 import { CaseStudyCard } from "./CaseStudyCard";
