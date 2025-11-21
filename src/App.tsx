@@ -30,20 +30,10 @@ function AppContent() {
       <CustomCursor />
       <MusicToggle />
 
-      <div
-        data-scroll-container
-        style={{
-          position: 'relative',
-          width: '100vw',
-          minHeight: '100vh',
-          overflowY: 'auto',
-          overflowX: 'hidden',
-          WebkitOverflowScrolling: 'touch'
-        } as React.CSSProperties}
-      >
+      <div className="relative w-full min-h-screen">
         <Canvas
           camera={{ position: [0, 0, 5], fov: 75 }}
-          style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}
+          style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100vh', pointerEvents: 'none', zIndex: 0 }}
         >
           <Experience />
         </Canvas>
