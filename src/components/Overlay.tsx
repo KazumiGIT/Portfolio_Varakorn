@@ -83,38 +83,41 @@ export const Overlay = () => {
                         {/* 2022-2023: Education */}
                         <div
                             ref={educationRef}
-                            className="relative flex flex-col md:flex-row items-start md:items-center gap-8 transition-all duration-500"
+                            className="relative flex flex-row items-center gap-4 md:gap-8 transition-all duration-500"
                             style={{
                                 transform: `scale(${getZoomScale(education.scrollProgress)})`,
                                 opacity: 0.5 + (education.scrollProgress * 0.5)
                             }}
                         >
-                            <div className="md:w-1/2 md:text-right md:pr-12">
-                                <div className="inline-block px-4 py-1 bg-purple-500/20 rounded-full border border-purple-500/30 mb-3">
-                                    <span className="text-purple-300 text-sm font-semibold">2022 - 2023</span>
+                            <div className="w-1/2 text-right pr-6 md:pr-12">
+                                <div className="inline-block px-2 py-0.5 md:px-4 md:py-1 bg-purple-500/20 rounded-full border border-purple-500/30 mb-2 md:mb-3">
+                                    <span className="text-purple-300 text-xs md:text-sm font-semibold">2022 - 2023</span>
                                 </div>
-                                <h3 className="text-3xl font-bold text-white mb-3">IT Software Developer</h3>
-                                <p className="text-gray-400 leading-relaxed mb-3">
+                                <h3 className="text-lg md:text-3xl font-bold text-white mb-2 md:mb-3">IT Software Developer</h3>
+                                <p className="text-xs md:text-base text-gray-400 leading-relaxed mb-2 md:mb-3 hidden md:block">
                                     Studied at <a href="https://share.google/Ecl0J9vhT9lf6HSXR" target="_blank" rel="noopener noreferrer" className="text-purple-400 hover:text-purple-300 underline">Kolej Komuniti Pasir Salak</a>,
                                     mastering programming fundamentals and modern development practices.
                                 </p>
+                                <p className="text-xs text-gray-400 leading-relaxed mb-2 md:hidden">
+                                    Studied at Kolej Komuniti Pasir Salak.
+                                </p>
 
                                 {/* College Photos */}
-                                <div className="grid grid-cols-2 gap-3 mt-4">
+                                <div className="grid grid-cols-2 gap-2 md:gap-3 mt-2 md:mt-4">
                                     <img
                                         src="/college-coding.jpg"
                                         alt="Coding at college"
-                                        className="rounded-lg border border-purple-500/20 hover:border-purple-400/40 transition-all hover:scale-105 w-full h-32 object-cover"
+                                        className="rounded-lg border border-purple-500/20 hover:border-purple-400/40 transition-all hover:scale-105 w-full h-16 md:h-32 object-cover"
                                     />
                                     <img
                                         src="/college-flag.jpg"
                                         alt="College campus"
-                                        className="rounded-lg border border-purple-500/20 hover:border-purple-400/40 transition-all hover:scale-105 w-full h-32 object-cover"
+                                        className="rounded-lg border border-purple-500/20 hover:border-purple-400/40 transition-all hover:scale-105 w-full h-16 md:h-32 object-cover"
                                     />
                                 </div>
                             </div>
-                            <div className="absolute left-8 md:left-1/2 w-4 h-4 bg-purple-500 rounded-full border-4 border-black transform md:-translate-x-1/2"></div>
-                            <div className="md:w-1/2 md:pl-12 ml-16 md:ml-0">
+                            <div className="absolute left-1/2 w-3 h-3 md:w-4 md:h-4 bg-purple-500 rounded-full border-2 md:border-4 border-black transform -translate-x-1/2"></div>
+                            <div className="w-1/2 pl-6 md:pl-12">
                                 <div className="bg-gradient-to-br from-purple-500/10 to-purple-600/5 backdrop-blur-sm p-6 rounded-2xl border border-purple-500/20">
                                     <h4 className="text-white font-semibold mb-3">What I Learned:</h4>
                                     <ul className="space-y-2 text-sm">
@@ -152,24 +155,24 @@ export const Overlay = () => {
                         {/* 2023-2025: HYGR */}
                         <div
                             ref={hygrRef}
-                            className="relative flex flex-col md:flex-row-reverse items-start md:items-center gap-8 transition-all duration-500"
+                            className="relative flex flex-row-reverse items-center gap-4 md:gap-8 transition-all duration-500"
                             style={{
                                 transform: `scale(${getZoomScale(hygr.scrollProgress)})`,
                                 opacity: 0.5 + (hygr.scrollProgress * 0.5)
                             }}
                         >
-                            <div className="md:w-1/2 md:text-left md:pl-12">
-                                <div className="inline-block px-4 py-1 bg-pink-500/20 rounded-full border border-pink-500/30 mb-3">
-                                    <span className="text-pink-300 text-sm font-semibold">2023 - 2025</span>
+                            <div className="w-1/2 text-left pl-6 md:pl-12">
+                                <div className="inline-block px-2 py-0.5 md:px-4 md:py-1 bg-pink-500/20 rounded-full border border-pink-500/30 mb-2 md:mb-3">
+                                    <span className="text-pink-300 text-xs md:text-sm font-semibold">2023 - 2025</span>
                                 </div>
-                                <h3 className="text-3xl font-bold text-white mb-3">Content Creator at HYGR</h3>
-                                <p className="text-gray-400 leading-relaxed">
+                                <h3 className="text-lg md:text-3xl font-bold text-white mb-2 md:mb-3">Content Creator at HYGR</h3>
+                                <p className="text-xs md:text-base text-gray-400 leading-relaxed">
                                     Created viral video content for HYGR's Natural Deodorant & Tinted Lip Balm products.
                                     Achieved 38M+ views across 261+ videos.
                                 </p>
                             </div>
-                            <div className="absolute left-8 md:left-1/2 w-4 h-4 bg-pink-500 rounded-full border-4 border-black transform md:-translate-x-1/2"></div>
-                            <div className="md:w-1/2 md:pr-12 ml-16 md:ml-0">
+                            <div className="absolute left-1/2 w-3 h-3 md:w-4 md:h-4 bg-pink-500 rounded-full border-2 md:border-4 border-black transform -translate-x-1/2"></div>
+                            <div className="w-1/2 pr-6 md:pr-12">
                                 <div className="bg-gradient-to-br from-pink-500/10 to-pink-600/5 backdrop-blur-sm p-6 rounded-2xl border border-pink-500/20">
                                     <div className="grid grid-cols-3 gap-4 text-center">
                                         <div>
@@ -192,26 +195,26 @@ export const Overlay = () => {
                         {/* 2025: Current - AI Agency */}
                         <div
                             ref={aiAgencyRef}
-                            className="relative flex flex-col md:flex-row items-start md:items-center gap-8 transition-all duration-500"
+                            className="relative flex flex-row items-center gap-4 md:gap-8 transition-all duration-500"
                             style={{
                                 transform: `scale(${getZoomScale(aiAgency.scrollProgress)})`,
                                 opacity: 0.5 + (aiAgency.scrollProgress * 0.5)
                             }}
                         >
-                            <div className="md:w-1/2 md:text-right md:pr-12">
-                                <div className="inline-block px-4 py-1 bg-gradient-to-r from-blue-500/20 to-teal-500/20 rounded-full border border-blue-500/30 mb-3 animate-pulse">
-                                    <span className="text-blue-300 text-sm font-semibold">2025 - Present</span>
+                            <div className="w-1/2 text-right pr-6 md:pr-12">
+                                <div className="inline-block px-2 py-0.5 md:px-4 md:py-1 bg-gradient-to-r from-blue-500/20 to-teal-500/20 rounded-full border border-blue-500/30 mb-2 md:mb-3 animate-pulse">
+                                    <span className="text-blue-300 text-xs md:text-sm font-semibold">2025 - Present</span>
                                 </div>
-                                <h3 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-teal-400 bg-clip-text text-transparent mb-3">
+                                <h3 className="text-lg md:text-3xl font-bold bg-gradient-to-r from-blue-400 to-teal-400 bg-clip-text text-transparent mb-2 md:mb-3">
                                     AI Digital Marketing Agency
                                 </h3>
-                                <p className="text-gray-400 leading-relaxed">
+                                <p className="text-xs md:text-base text-gray-400 leading-relaxed">
                                     Building an innovative AI-powered digital marketing agency combining
                                     cutting-edge AI with creative storytelling.
                                 </p>
                             </div>
-                            <div className="absolute left-8 md:left-1/2 w-4 h-4 bg-gradient-to-r from-blue-500 to-teal-500 rounded-full border-4 border-black transform md:-translate-x-1/2 animate-pulse"></div>
-                            <div className="md:w-1/2 md:pl-12 ml-16 md:ml-0">
+                            <div className="absolute left-1/2 w-3 h-3 md:w-4 md:h-4 bg-gradient-to-r from-blue-500 to-teal-500 rounded-full border-2 md:border-4 border-black transform -translate-x-1/2 animate-pulse"></div>
+                            <div className="w-1/2 pl-6 md:pl-12">
                                 <div className="bg-gradient-to-br from-blue-500/10 via-teal-500/10 to-blue-600/5 backdrop-blur-sm p-6 rounded-2xl border border-blue-500/20 relative overflow-hidden">
                                     <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-500/20 to-transparent rounded-full blur-2xl"></div>
                                     <div className="relative space-y-3">
