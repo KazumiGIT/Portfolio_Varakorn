@@ -22,7 +22,7 @@ export const Overlay = () => {
             <section id="hero" className="h-screen w-screen flex flex-col justify-center items-start p-6 md:p-24 max-w-4xl pointer-events-auto">
                 <div className="space-y-6 animate-fade-in">
                     <div className="inline-block px-4 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full border border-purple-500/30 mb-4">
-                        <span className="text-purple-300 text-sm font-medium">✨ AI Digital Marketing Specialist</span>
+                        <span className="text-purple-300 text-sm font-medium">🇨🇳 🇹🇭 🇲🇾 🇬🇧 Mix Chinese + Thai (Speak 4 Languages)</span>
                     </div>
                     <h1 className="text-5xl md:text-9xl font-bold text-white mb-4 tracking-tighter leading-none">
                         Hello,
@@ -111,15 +111,19 @@ export const Overlay = () => {
                                     <ul className="space-y-2 text-sm">
                                         <li className="flex items-center text-gray-300">
                                             <span className="w-1.5 h-1.5 bg-purple-400 rounded-full mr-2"></span>
-                                            Full-stack Development
+                                            Website Building
                                         </li>
                                         <li className="flex items-center text-gray-300">
                                             <span className="w-1.5 h-1.5 bg-purple-400 rounded-full mr-2"></span>
-                                            Database Management
+                                            Game Building using Unity
                                         </li>
                                         <li className="flex items-center text-gray-300">
                                             <span className="w-1.5 h-1.5 bg-purple-400 rounded-full mr-2"></span>
-                                            UI/UX Design Principles
+                                            Building simple app
+                                        </li>
+                                        <li className="flex items-center text-gray-300">
+                                            <span className="w-1.5 h-1.5 bg-purple-400 rounded-full mr-2"></span>
+                                            Using Linux Operating System
                                         </li>
                                     </ul>
                                 </div>
@@ -179,8 +183,7 @@ export const Overlay = () => {
                                     AI Digital Marketing Agency
                                 </h3>
                                 <p className="text-xs md:text-base text-gray-400 leading-relaxed">
-                                    Building an innovative AI-powered digital marketing agency combining
-                                    cutting-edge AI with creative storytelling.
+                                    Building website, AI chatbot, marketing campaign, boosting sales and saving times.
                                 </p>
                             </div>
                             <div className="absolute left-1/2 w-3 h-3 md:w-4 md:h-4 bg-gradient-to-r from-blue-500 to-teal-500 rounded-full border-2 md:border-4 border-black transform -translate-x-1/2 animate-pulse hidden md:block"></div>
@@ -261,49 +264,36 @@ export const Overlay = () => {
                             </span>
                         </h2>
                         <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
-                            Pioneering the future of digital marketing by combining artificial intelligence
-                            with creative storytelling to deliver unprecedented results.
+                            Specializing in high-performance website building and intelligent AI chatbots to automate your business.
                         </p>
                     </div>
 
                     {/* Case Studies */}
                     <div className="grid md:grid-cols-2 gap-8 mt-12">
                         <CaseStudyCard
-                            title="AI-Driven Content Strategy"
-                            category="Strategy"
-                            description="Leveraging AI to analyze trends and generate high-converting content ideas, reducing research time by 70%."
+                            title="Professional Website Building"
+                            category="Development"
+                            description="Custom, high-speed, and aesthetic websites designed to convert visitors into customers."
                             stats={[
-                                { label: "Efficiency", value: "+70%" },
-                                { label: "Engagement", value: "2.5x" },
-                                { label: "ROI", value: "150%" }
+                                { label: "Speed", value: "<1s" },
+                                { label: "SEO", value: "100%" },
+                                { label: "Conversion", value: "+50%" }
                             ]}
-                            image="/ai-strategy.jpg"
+
                             color="blue"
                         />
                         <CaseStudyCard
-                            title="Automated Customer Engagement"
+                            title="Intelligent AI Chatbots"
                             category="Automation"
-                            description="Implementing AI chatbots and personalized email sequences to nurture leads and drive sales 24/7."
+                            description="Automated customer support and lead generation chatbots that work 24/7 to boost your sales."
                             stats={[
-                                { label: "Response Time", value: "<1min" },
-                                { label: "Conversion", value: "+40%" },
-                                { label: "Satisfaction", value: "4.8/5" }
+                                { label: "Response", value: "Instant" },
+                                { label: "Sales", value: "+40%" },
+                                { label: "Support", value: "24/7" }
                             ]}
-                            image="/ai-automation.jpg"
+
                             color="teal"
                         />
-                    </div>
-
-                    {/* AI Tools Showcase (Simple List for now) */}
-                    <div className="mt-16 text-center">
-                        <h3 className="text-2xl font-bold text-white mb-8">Powered By Top AI Technologies</h3>
-                        <div className="flex flex-wrap justify-center gap-4">
-                            {['OpenAI', 'Midjourney', 'RunwayML', 'Jasper', 'Stable Diffusion'].map((tool) => (
-                                <span key={tool} className="px-6 py-3 bg-white/5 rounded-full border border-white/10 text-gray-300 hover:bg-white/10 transition-colors">
-                                    {tool}
-                                </span>
-                            ))}
-                        </div>
                     </div>
                 </div>
             </section>
@@ -332,17 +322,30 @@ export const Overlay = () => {
                             Let's discuss how we can create something extraordinary together.
                         </p>
 
-                        <div className="flex justify-center items-center">
+                        <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
                             <a
                                 href="https://wa.me/601111267609"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="px-8 py-4 bg-[#25D366] text-white rounded-full font-bold text-lg hover:scale-105 transition-transform shadow-lg hover:shadow-[#25D366]/25 flex items-center gap-2"
+                                className="px-8 py-4 bg-[#25D366] text-white rounded-full font-bold text-lg hover:scale-105 transition-transform shadow-lg hover:shadow-[#25D366]/25 flex items-center gap-2 w-full md:w-auto justify-center"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                                 </svg>
-                                Chat on WhatsApp
+                                Freelance / Creative
+                            </a>
+                            <a
+                                href="https://wa.me/601154455435"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="px-8 py-4 bg-gradient-to-r from-blue-500 to-teal-500 text-white rounded-full font-bold text-lg hover:scale-105 transition-transform shadow-lg hover:shadow-blue-500/25 flex items-center gap-2 w-full md:w-auto justify-center"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                                </svg>
+                                Agency Inquiry
                             </a>
                         </div>
                     </div>

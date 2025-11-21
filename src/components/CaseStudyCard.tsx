@@ -5,7 +5,7 @@ interface CaseStudyProps {
     category: string;
     description: string;
     stats: { label: string; value: string }[];
-    image: string;
+    image?: string;
     color: string;
 }
 
@@ -18,16 +18,18 @@ export const CaseStudyCard = ({ title, category, description, stats, image, colo
             transition={{ duration: 0.5 }}
             className="relative group overflow-hidden rounded-2xl bg-gray-900 border border-white/10 hover:border-white/20 transition-all"
         >
-            <div className="grid md:grid-cols-2 gap-0 h-full">
-                {/* Image Section */}
-                <div className="relative h-64 md:h-full overflow-hidden">
-                    <div className={`absolute inset-0 bg-${color}-500/20 mix-blend-overlay z-10 group-hover:bg-transparent transition-colors duration-500`}></div>
-                    <img
-                        src={image}
-                        alt={title}
-                        className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
-                    />
-                </div>
+            <div className={`grid ${image ? 'md:grid-cols-2' : 'grid-cols-1'} gap-0 h-full`}>
+                {/* Image Section - Only render if image exists */}
+                {image && (
+                    <div className="relative h-64 md:h-full overflow-hidden">
+                        <div className={`absolute inset-0 bg-${color}-500/20 mix-blend-overlay z-10 group-hover:bg-transparent transition-colors duration-500`}></div>
+                        <img
+                            src={image}
+                            alt={title}
+                            className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                        />
+                    </div>
+                )}
 
                 {/* Content Section */}
                 <div className="p-8 flex flex-col justify-center relative">
