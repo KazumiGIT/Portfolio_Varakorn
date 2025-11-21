@@ -2,7 +2,6 @@ import { Canvas } from '@react-three/fiber';
 import { Experience } from './components/Experience';
 import { Overlay } from './components/Overlay';
 import { CustomCursor } from './components/CustomCursor';
-import { Navigation } from './components/Navigation';
 import { LoadingScreen } from './components/LoadingScreen';
 import { SpaceBackground } from './components/SpaceBackground';
 import { ThemeToggle } from './components/ThemeToggle';
@@ -13,13 +12,6 @@ import { useState } from 'react';
 
 function AppContent() {
   const [isLoading, setIsLoading] = useState(true);
-
-  const handleNavigate = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
 
   if (isLoading) {
     return (
@@ -36,7 +28,6 @@ function AppContent() {
       <SectionSelector />
       <SpaceBackground />
       <CustomCursor />
-      <Navigation onNavigate={handleNavigate} />
       <ThemeToggle />
 
       <div

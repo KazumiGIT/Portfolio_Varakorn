@@ -19,7 +19,7 @@ export const Overlay = () => {
             }}
         >
             {/* Section 0: Hero */}
-            <section className="h-screen w-screen flex flex-col justify-center items-start p-6 md:p-24 max-w-4xl pointer-events-auto">
+            <section id="hero" className="h-screen w-screen flex flex-col justify-center items-start p-6 md:p-24 max-w-4xl pointer-events-auto">
                 <div className="space-y-6 animate-fade-in">
                     <div className="inline-block px-4 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full border border-purple-500/30 mb-4">
                         <span className="text-purple-300 text-sm font-medium">✨ AI Digital Marketing Specialist</span>
@@ -53,7 +53,7 @@ export const Overlay = () => {
             </section>
 
             {/* Section 1: Timeline */}
-            <section className="min-h-screen w-screen flex flex-col justify-center items-center p-6 md:p-24 pointer-events-auto">
+            <section id="timeline" className="min-h-screen w-screen flex flex-col justify-center items-center p-6 md:p-24 pointer-events-auto">
                 <div className="max-w-5xl w-full space-y-12">
                     <h2 className="text-4xl md:text-7xl font-bold text-white mb-8 tracking-tight text-center">
                         My Journey
@@ -217,7 +217,7 @@ export const Overlay = () => {
             </section>
 
             {/* Section 2: HYGR Experience (Detailed) */}
-            <section className="min-h-screen w-screen flex flex-col justify-center items-center p-6 md:p-24 bg-gradient-to-b from-black via-pink-900/10 to-black pointer-events-auto">
+            <section id="hygr" className="min-h-screen w-screen flex flex-col justify-center items-center p-6 md:p-24 bg-gradient-to-b from-black via-pink-900/10 to-black pointer-events-auto">
                 <div className="max-w-7xl w-full space-y-12">
                     {/* Header */}
                     <div className="text-center space-y-6">
@@ -252,7 +252,7 @@ export const Overlay = () => {
             </section>
 
             {/* Section 3: Current Project - AI Agency */}
-            <section className="min-h-screen w-screen flex flex-col justify-center items-center p-6 md:p-24 pointer-events-auto">
+            <section id="ai-agency" className="min-h-screen w-screen flex flex-col justify-center items-center p-6 md:p-24 pointer-events-auto">
                 <div className="max-w-7xl w-full space-y-12">
                     <div className="text-center space-y-4">
                         <div className="inline-block px-4 py-2 bg-gradient-to-r from-blue-500/20 to-teal-500/20 rounded-full border border-blue-500/30 mb-4 animate-pulse">
@@ -314,7 +314,7 @@ export const Overlay = () => {
             </section>
 
             {/* Section 4: Testimonials & Contact */}
-            <section className="min-h-screen w-screen flex flex-col justify-center items-center p-6 md:p-24 text-center pointer-events-auto">
+            <section id="testimonials" className="min-h-screen w-screen flex flex-col justify-center items-center p-6 md:p-24 text-center pointer-events-auto">
                 <div className="max-w-5xl w-full space-y-16">
                     {/* Testimonials */}
                     <div>
