@@ -24,7 +24,12 @@ export const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
     }, []);
 
     return (
-        <div className="fixed inset-0 z-[9999] loading-screen flex items-center justify-center bg-gradient-to-b from-[#0a0a1f] via-[#1a1a3e] to-[#0f0f2e] transition-opacity duration-500">
+        <div
+            className="fixed inset-0 z-[9999] loading-screen flex items-center justify-center transition-opacity duration-500"
+            style={{
+                background: 'linear-gradient(to bottom, #0a0a1f, #1a1a3e, #0f0f2e)'
+            }}
+        >
             {/* Animated stars background */}
             <div className="absolute inset-0 overflow-hidden">
                 {[...Array(30)].map((_, i) => (
