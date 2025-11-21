@@ -7,6 +7,8 @@ import { LoadingScreen } from './components/LoadingScreen';
 import { SpaceBackground } from './components/SpaceBackground';
 import { ThemeToggle } from './components/ThemeToggle';
 import { ThemeProvider } from './context/ThemeContext';
+import { SEO } from './components/SEO';
+import { ScrollProgress } from './components/ScrollProgress';
 import { useState } from 'react';
 
 function AppContent() {
@@ -30,6 +32,8 @@ function AppContent() {
 
   return (
     <>
+      <SEO />
+      <ScrollProgress />
       <SpaceBackground />
       <CustomCursor />
       <Navigation onNavigate={handleNavigate} />
@@ -40,14 +44,15 @@ function AppContent() {
         style={{
           position: 'relative',
           width: '100vw',
-          height: '100vh',
+          minHeight: '100vh',
           overflowY: 'auto',
-          overflowX: 'hidden'
-        }}
+          overflowX: 'hidden',
+          WebkitOverflowScrolling: 'touch'
+        } as React.CSSProperties}
       >
         <Canvas
           camera={{ position: [0, 0, 5], fov: 75 }}
-          style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%' }}
+          style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}
         >
           <Experience />
         </Canvas>
