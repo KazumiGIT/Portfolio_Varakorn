@@ -18,7 +18,12 @@ export const AuthModal = ({ isOpen, onClose, initialTab = 'login' }: AuthModalPr
         password: '',
         phone: '',
         avatarConfig: {
-            seed: `user-${Date.now()}`
+            seed: `user-${Date.now()}`,
+            gender: 'male' as 'male' | 'female',
+            hairStyle: 'shortHair',
+            hairColor: '000000',
+            clothingType: 'hoodie',
+            clothingColor: '000000'
         }
     });
     const [loginError, setLoginError] = useState('');
@@ -67,7 +72,12 @@ export const AuthModal = ({ isOpen, onClose, initialTab = 'login' }: AuthModalPr
                 password: '',
                 phone: '',
                 avatarConfig: {
-                    seed: `user-${Date.now()}`
+                    seed: `user-${Date.now()}`,
+                    gender: 'male' as 'male' | 'female',
+                    hairStyle: 'shortHair',
+                    hairColor: '000000',
+                    clothingType: 'hoodie',
+                    clothingColor: '000000'
                 }
             });
         } else {
@@ -277,7 +287,17 @@ export const AuthModal = ({ isOpen, onClose, initialTab = 'login' }: AuthModalPr
                                 <div className="flex justify-center py-4">
                                     <div
                                         className="relative group cursor-pointer"
-                                        onClick={() => setSignupData(prev => ({ ...prev, avatarConfig: { seed: `user-${Date.now()}-${Math.random()}` } }))}
+                                        onClick={() => setSignupData(prev => ({
+                                            ...prev,
+                                            avatarConfig: {
+                                                seed: `user-${Date.now()}-${Math.random()}`,
+                                                gender: 'male' as 'male' | 'female',
+                                                hairStyle: 'shortHair',
+                                                hairColor: '000000',
+                                                clothingType: 'hoodie',
+                                                clothingColor: '000000'
+                                            }
+                                        }))}
                                         title="Click to randomize avatar"
                                     >
                                         <div className="absolute inset-0 bg-purple-500 blur-xl opacity-20 rounded-full group-hover:opacity-40 transition-opacity"></div>

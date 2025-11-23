@@ -107,7 +107,16 @@ export const ProfileDashboard = ({ isOpen, onClose }: ProfileDashboardProps) => 
                                 </div>
                                 <div className="pt-4">
                                     <button
-                                        onClick={() => updateProfile({ avatarConfig: { seed: `user-${Date.now()}-${Math.random()}` } })}
+                                        onClick={() => updateProfile({
+                                            avatarConfig: {
+                                                seed: `user-${Date.now()}-${Math.random()}`,
+                                                gender: 'male' as 'male' | 'female',
+                                                hairStyle: 'shortHair',
+                                                hairColor: '000000',
+                                                clothingType: 'hoodie',
+                                                clothingColor: '000000'
+                                            }
+                                        })}
                                         className="w-full px-4 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-white transition-colors flex items-center justify-center gap-2"
                                     >
                                         <span>🎲</span> Randomize Avatar

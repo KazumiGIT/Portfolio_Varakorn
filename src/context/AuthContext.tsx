@@ -25,7 +25,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 password: '',
                 role: 'guest',
                 avatarConfig: {
-                    seed: 'guest'
+                    seed: 'guest',
+                    gender: 'male',
+                    hairStyle: 'shortHair',
+                    hairColor: '000000',
+                    clothingType: 'hoodie',
+                    clothingColor: '000000'
                 }
             };
             setCurrentUser(guestUser);
@@ -89,7 +94,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             password: '',
             role: 'guest',
             avatarConfig: {
-                seed: 'guest'
+                seed: 'guest',
+                gender: 'male',
+                hairStyle: 'shortHair',
+                hairColor: '000000',
+                clothingType: 'hoodie',
+                clothingColor: '000000'
             }
         };
         setCurrentUser(guestUser);
@@ -119,7 +129,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 password: '',
                 role: 'admin',
                 avatarConfig: {
-                    seed: 'admin'
+                    seed: 'admin',
+                    gender: 'male',
+                    hairStyle: 'shortHair',
+                    hairColor: '000000',
+                    clothingType: 'hoodie',
+                    clothingColor: '000000'
                 }
             };
             setCurrentUser(adminUser);

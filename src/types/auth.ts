@@ -1,5 +1,10 @@
 export interface AvatarConfig {
     seed: string;
+    gender: 'male' | 'female';
+    hairStyle: string;
+    hairColor: string;
+    clothingType: string;
+    clothingColor: string;
 }
 
 export interface User {
