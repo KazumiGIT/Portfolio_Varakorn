@@ -5,7 +5,11 @@ import { AnimatedCounter } from "./AnimatedCounter";
 import { CaseStudyCard } from "./CaseStudyCard";
 import { TestimonialCarousel } from "./TestimonialCarousel";
 
-export const Overlay = () => {
+interface OverlayProps {
+    onOpenAuthModal: (tab: 'login' | 'signup') => void;
+}
+
+export const Overlay = ({ onOpenAuthModal }: OverlayProps) => {
     const educationRef = useRef<HTMLDivElement>(null);
     const hygrRef = useRef<HTMLDivElement>(null);
     const aiAgencyRef = useRef<HTMLDivElement>(null);
@@ -303,7 +307,7 @@ export const Overlay = () => {
                     {/* Testimonials */}
                     <div>
                         <h2 className="text-3xl md:text-5xl font-bold text-white mb-8">Client Success Stories</h2>
-                        <TestimonialCarousel />
+                        <TestimonialCarousel onOpenAuthModal={onOpenAuthModal} />
                     </div>
 
                     {/* Contact */}

@@ -10,8 +10,8 @@ export const Navigation = ({ onNavigate }: NavigationProps) => {
     const sections = [
         { id: 'hero', label: 'Home' },
         { id: 'timeline', label: 'Timeline' },
-        { id: 'hygr', label: 'HYGR' },
-        { id: 'ai-agency', label: 'AI Agency' },
+        { id: 'hygr', label: 'Past Works' },
+        { id: 'ai-agency', label: 'MY AI Agency' },
         { id: 'contact', label: 'Contact' },
     ];
 
