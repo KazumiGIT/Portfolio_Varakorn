@@ -10,8 +10,16 @@ body,
   margin: 0;
   padding: 0;
   overflow-x: hidden;
-  background-color: black;
+  background-color: #050505;
+  color: #ffffff;
+  cursor: url('/cursor_default.png'), auto;
   font-family: 'Poppins', 'Inter', sans-serif;
+}
+
+a,
+button,
+.cursor-pointer {
+  cursor: url('/cursor_pointer.png'), pointer;
 }
 
 body,
@@ -20,8 +28,7 @@ a,
 input,
 textarea,
 select {
-  cursor: none !important;
-  /* Hide default cursor - custom animated cursor will still show */
+  /* cursor: none !important; - Removed to allow pixel cursor */
 }
 
 .pixel-cursor {

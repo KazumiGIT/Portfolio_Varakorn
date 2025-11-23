@@ -1,7 +1,6 @@
 import { Canvas } from '@react-three/fiber';
 import { Experience } from './components/Experience';
 import { Overlay } from './components/Overlay';
-import { CustomCursor } from './components/CustomCursor';
 import { LoadingScreen } from './components/LoadingScreen';
 import { SpaceBackground } from './components/SpaceBackground';
 import { ProfileBar } from './components/ProfileBar';
@@ -52,7 +51,6 @@ function AppContent({ isMusicPlaying, setIsMusicPlaying }: { isMusicPlaying: boo
   if (isLoading) {
     return (
       <>
-        <CustomCursor />
         <LoadingScreen onComplete={() => setIsLoading(false)} />
       </>
     );
@@ -63,7 +61,6 @@ function AppContent({ isMusicPlaying, setIsMusicPlaying }: { isMusicPlaying: boo
       <SEO />
       <SectionSelector />
       <SpaceBackground />
-      <CustomCursor />
 
       <ProfileBar
         isMusicPlaying={isMusicPlaying}
