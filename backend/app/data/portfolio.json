@@ -1,0 +1,610 @@
+{
+  "profile": {
+    "name": "Varakorn",
+    "alias": "Kazumi",
+    "role": "Full Stack AI Engineer",
+    "business": "Orion Automation (SSM-registered sole proprietorship)",
+    "email": "varakornm0403@gmail.com",
+    "location": "Shah Alam, Selangor, Malaysia",
+    "languages": [
+      "English",
+      "Malay",
+      "Chinese",
+      "Spoken Thai"
+    ],
+    "bio": "Full Stack AI Engineer shipping BPA, workflow automation, and AI agents. Also content creator — HYGR campaigns crossed 38M+ views across social media.",
+    "tagline": "I build AI agents, automation pipelines, and content that travels.",
+    "what_i_do": [
+      "Full-stack web apps (FastAPI + React + TypeScript)",
+      "AI agents & RAG pipelines (Langchain, OpenAI, embeddings)",
+      "Business process automation (BPA) & workflow automation",
+      "SEO / AEO / GEO via vibe coding",
+      "Content strategy for viral campaigns (38M+ views)"
+    ],
+    "socials": [
+      {
+        "id": "whatsapp",
+        "label": "WhatsApp",
+        "href": "https://wa.me/601111267609",
+        "glyph": "✆",
+        "accent": "#a7f070",
+        "kind": "link",
+        "group": "primary"
+      },
+      {
+        "id": "save-contact",
+        "label": "Save Contact",
+        "href": "#vcard",
+        "glyph": "☉",
+        "accent": "#ffcd75",
+        "kind": "vcard",
+        "group": "primary"
+      },
+      {
+        "id": "agency",
+        "label": "My Agency",
+        "href": "https://www.orionautomation.xyz/",
+        "glyph": "⬥",
+        "accent": "#41a6f6",
+        "kind": "link",
+        "group": "primary"
+      },
+      {
+        "id": "tiktok",
+        "label": "TikTok",
+        "href": "https://www.tiktok.com/@kazumi_v?_r=1&_t=ZS-95ktkA5N5dt",
+        "glyph": "♪",
+        "accent": "#b13e53",
+        "kind": "link",
+        "group": "others"
+      },
+      {
+        "id": "instagram",
+        "label": "Instagram",
+        "href": "https://www.instagram.com/_kazumi.v_?igsh=MXA3cGFxZnppYTVtMw%3D%3D&utm_source=qr",
+        "glyph": "◉",
+        "accent": "#b55088",
+        "kind": "link",
+        "group": "others"
+      },
+      {
+        "id": "youtube",
+        "label": "YouTube",
+        "href": "https://youtube.com/@kazumi_v?si=u2A2rCqUtJVKPdAZ",
+        "glyph": "▶",
+        "accent": "#ea4f36",
+        "kind": "link",
+        "group": "others"
+      },
+      {
+        "id": "github",
+        "label": "GitHub",
+        "href": "https://github.com/KazumiGIT",
+        "glyph": "⌘",
+        "accent": "#c7dcd0",
+        "kind": "link",
+        "group": "others"
+      },
+      {
+        "id": "email",
+        "label": "Email",
+        "href": "mailto:varakornm0403@gmail.com",
+        "glyph": "✉",
+        "accent": "#ffcd75",
+        "kind": "link",
+        "group": "others"
+      },
+      {
+        "id": "pinterest",
+        "label": "Pinterest",
+        "href": "https://pin.it/3UYRRbP2F",
+        "glyph": "P",
+        "accent": "#e43b44",
+        "kind": "link",
+        "group": "others"
+      },
+      {
+        "id": "discord",
+        "label": "Discord",
+        "href": "https://discord.com/users/648789120512163840",
+        "glyph": "⌂",
+        "accent": "#7f708a",
+        "kind": "link",
+        "group": "others"
+      },
+      {
+        "id": "donation",
+        "label": "Donation",
+        "href": "#donation",
+        "glyph": "♡",
+        "accent": "#fee761",
+        "kind": "donation",
+        "group": "others"
+      },
+      {
+        "id": "x",
+        "label": "X",
+        "href": "#",
+        "glyph": "X",
+        "accent": "#566c86",
+        "kind": "link",
+        "group": "others",
+        "disabled": true
+      }
+    ]
+  },
+  "education": [
+    {
+      "id": "edu-kk",
+      "school": "Kolej Komuniti",
+      "program": "IT Certificate",
+      "highlight": "Foundation in software, networking, systems."
+    },
+    {
+      "id": "edu-gamuda",
+      "school": "Gamuda AI Academy",
+      "program": "Full Stack AI Engineer",
+      "highlight": "Presented prototype to Minister YB Chang Lih Kang."
+    }
+  ],
+  "experience": [
+    {
+      "id": "exp-hygr",
+      "org": "HYGR",
+      "role": "Content Creator / Campaigns",
+      "summary": "Content creation and campaigns for Natural Deodorant line. 38M+ combined views across platforms."
+    },
+    {
+      "id": "exp-orion",
+      "org": "Orion Automation",
+      "role": "Founder / Engineer",
+      "summary": "Custom web solutions, BPA, workflow automation, SEO/AEO/GEO via vibe coding."
+    }
+  ],
+  "projects": [
+    {
+      "id": "tendervise",
+      "title": "Tendervise AI",
+      "subtitle": "Tender analysis assistant",
+      "description": "AI agent that parses tender documents, extracts requirements, and drafts compliant responses. FastAPI + Langchain + RAG.",
+      "stack": [
+        "Python",
+        "FastAPI",
+        "Langchain",
+        "Pydantic",
+        "Postgres"
+      ],
+      "outcomes": [
+        "Cut tender response drafting from days to hours",
+        "Structured requirement extraction"
+      ],
+      "floor_id": 3,
+      "icon": "sword"
+    },
+    {
+      "id": "abang-mystery",
+      "title": "Abang Mystery",
+      "subtitle": "Narrative experience",
+      "description": "Branching narrative web experience with AI-driven character dialog.",
+      "stack": [
+        "React",
+        "TypeScript",
+        "OpenAI",
+        "FastAPI"
+      ],
+      "outcomes": [
+        "Dynamic story branching",
+        "Character memory across sessions"
+      ],
+      "floor_id": 3,
+      "icon": "scroll"
+    },
+    {
+      "id": "health-monitor",
+      "title": "Health Monitor",
+      "subtitle": "IoT + AI health dashboard",
+      "description": "Real-time health metric dashboard with anomaly detection and alerting.",
+      "stack": [
+        "Python",
+        "FastAPI",
+        "React",
+        "WebSockets"
+      ],
+      "outcomes": [
+        "Sub-second metric updates",
+        "Anomaly alerts"
+      ],
+      "floor_id": 3,
+      "icon": "gem"
+    },
+    {
+      "id": "hygr-ops",
+      "title": "HYGR Operations Automation",
+      "subtitle": "Content + ops workflow automation",
+      "description": "End-to-end automation for HYGR: posting schedule, analytics pipeline, campaign tracking.",
+      "stack": [
+        "Python",
+        "FastAPI",
+        "n8n",
+        "Langchain"
+      ],
+      "outcomes": [
+        "38M+ views supported by automated pipeline",
+        "Hours saved weekly"
+      ],
+      "floor_id": 2,
+      "icon": "scroll"
+    }
+  ],
+  "skills": [
+    {
+      "id": "py",
+      "name": "Python",
+      "category": "language",
+      "proficiency": 5,
+      "rune_glyph": "🐍",
+      "note": "Primary language — backend, automation, AI."
+    },
+    {
+      "id": "fastapi",
+      "name": "FastAPI",
+      "category": "framework",
+      "proficiency": 5,
+      "rune_glyph": "⚡",
+      "note": "Production APIs, async, Pydantic v2."
+    },
+    {
+      "id": "react",
+      "name": "React",
+      "category": "framework",
+      "proficiency": 4,
+      "rune_glyph": "⚛",
+      "note": "TypeScript, hooks, Zustand."
+    },
+    {
+      "id": "langchain",
+      "name": "Langchain",
+      "category": "ai",
+      "proficiency": 4,
+      "rune_glyph": "🔗",
+      "note": "RAG pipelines, agents, tool use."
+    },
+    {
+      "id": "agents",
+      "name": "AI Agents",
+      "category": "ai",
+      "proficiency": 4,
+      "rune_glyph": "🤖",
+      "note": "Tool-calling agents, multi-step flows."
+    },
+    {
+      "id": "backend",
+      "name": "Backend Dev",
+      "category": "framework",
+      "proficiency": 5,
+      "rune_glyph": "🛠",
+      "note": "APIs, databases, workflows."
+    },
+    {
+      "id": "ai-integration",
+      "name": "AI Integration",
+      "category": "ai",
+      "proficiency": 5,
+      "rune_glyph": "✦",
+      "note": "LLMs, embeddings, retrieval."
+    }
+  ],
+  "floors": [
+    {
+      "id": 0,
+      "slug": "entrance",
+      "name": "Entrance",
+      "theme": "The mouth of the dungeon. A cold stone portal hums.",
+      "palette": [
+        "#0e0e12",
+        "#1a1c2c",
+        "#3e3546",
+        "#b13e53",
+        "#ffcd75"
+      ],
+      "ambient": "Wind whistles. Portal hums.",
+      "width": 18,
+      "height": 12,
+      "spawn": [
+        3,
+        8
+      ],
+      "exits": [],
+      "interactables": [
+        {
+          "id": "entrance-portal",
+          "kind": "portal_entrance",
+          "x": 13,
+          "y": 4,
+          "w": 2,
+          "h": 3,
+          "label": "Dungeon Portal",
+          "title": "STEP INTO THE DUNGEON",
+          "body": "Ancient runes flicker. Step into the portal.",
+          "accent": "#b13e53",
+          "meta": {
+            "to_floor": 1
+          }
+        }
+      ],
+      "soft_gate_required": []
+    },
+    {
+      "id": 1,
+      "slug": "education",
+      "name": "Education",
+      "theme": "Dust. Broken desks. Rows of study halls.",
+      "palette": [
+        "#1a1c2c",
+        "#29366f",
+        "#41a6f6",
+        "#a7f070",
+        "#ffcd75"
+      ],
+      "ambient": "Pages turning. Humming ancient wiring.",
+      "width": 26,
+      "height": 14,
+      "spawn": [
+        3,
+        7
+      ],
+      "exits": [],
+      "interactables": [
+        {
+          "id": "chest-kk",
+          "kind": "chest",
+          "x": 7,
+          "y": 4,
+          "w": 1,
+          "h": 1,
+          "label": "Chest - IT Cert",
+          "title": "KOLEJ KOMUNITI - IT CERTIFICATE",
+          "body": "Where the adventure began. IT fundamentals - hardware, networking, software.",
+          "accent": "#ffcd75"
+        },
+        {
+          "id": "chest-python",
+          "kind": "chest",
+          "x": 13,
+          "y": 4,
+          "w": 1,
+          "h": 1,
+          "label": "Chest - Python Bootcamp",
+          "title": "PYTHON BOOTCAMP",
+          "body": "Intensive Python - syntax, patterns, automation, scripting, package ecosystem.",
+          "accent": "#a7f070"
+        },
+        {
+          "id": "chest-gamuda",
+          "kind": "chest",
+          "x": 19,
+          "y": 4,
+          "w": 1,
+          "h": 1,
+          "label": "Chest - Gamuda AI",
+          "title": "GAMUDA AI ACADEMY - FULL STACK AI ENGINEER",
+          "body": "Python, FastAPI, React, Langchain, AI agents. Presented prototype to Minister YB Chang Lih Kang.",
+          "accent": "#41a6f6"
+        },
+        {
+          "id": "enemy-slime-1",
+          "kind": "enemy",
+          "x": 9,
+          "y": 9,
+          "w": 1,
+          "h": 1,
+          "label": "Dust Slime",
+          "title": "",
+          "body": "",
+          "accent": "#a7f070",
+          "meta": {
+            "hp": 2,
+            "speed": 32,
+            "damage": 1,
+            "species": "slime"
+          }
+        },
+        {
+          "id": "enemy-slime-2",
+          "kind": "enemy",
+          "x": 17,
+          "y": 9,
+          "w": 1,
+          "h": 1,
+          "label": "Dust Slime",
+          "title": "",
+          "body": "",
+          "accent": "#a7f070",
+          "meta": {
+            "hp": 2,
+            "speed": 32,
+            "damage": 1,
+            "species": "slime"
+          }
+        },
+        {
+          "id": "portal-edu-to-exp",
+          "kind": "portal_locked",
+          "x": 23,
+          "y": 6,
+          "w": 1,
+          "h": 2,
+          "label": "Portal - Work Experience",
+          "title": "Portal Sealed",
+          "body": "Loot all three chests to break the seal.",
+          "accent": "#b13e53",
+          "meta": {
+            "to_floor": 2
+          }
+        }
+      ],
+      "soft_gate_required": [
+        "chest-kk",
+        "chest-python",
+        "chest-gamuda"
+      ]
+    },
+    {
+      "id": 2,
+      "slug": "experience",
+      "name": "Work Experience",
+      "theme": "Old studio. Cameras. Screens flicker with engagement graphs.",
+      "palette": [
+        "#0e0e12",
+        "#29366f",
+        "#b13e53",
+        "#b55088",
+        "#fee761"
+      ],
+      "ambient": "Muffled studio noise. Distant applause.",
+      "width": 22,
+      "height": 14,
+      "spawn": [
+        2,
+        10
+      ],
+      "exits": [],
+      "interactables": [
+        {
+          "id": "chest-hygr",
+          "kind": "chest",
+          "x": 11,
+          "y": 5,
+          "w": 1,
+          "h": 1,
+          "label": "Chest - HYGR",
+          "title": "HYGR - CONTENT CREATOR / CAMPAIGNS",
+          "body": "Natural Deodorant campaigns - voice, pacing, editing engineered for the algorithm. 38M+ views across platforms.",
+          "accent": "#b13e53"
+        },
+        {
+          "id": "enemy-ghost-1",
+          "kind": "enemy",
+          "x": 8,
+          "y": 8,
+          "w": 1,
+          "h": 1,
+          "label": "Screen Ghost",
+          "title": "",
+          "body": "",
+          "accent": "#b55088",
+          "meta": {
+            "hp": 3,
+            "speed": 40,
+            "damage": 1,
+            "species": "ghost"
+          }
+        },
+        {
+          "id": "enemy-ghost-2",
+          "kind": "enemy",
+          "x": 15,
+          "y": 8,
+          "w": 1,
+          "h": 1,
+          "label": "Screen Ghost",
+          "title": "",
+          "body": "",
+          "accent": "#b55088",
+          "meta": {
+            "hp": 3,
+            "speed": 40,
+            "damage": 1,
+            "species": "ghost"
+          }
+        },
+        {
+          "id": "portal-exp-to-agency",
+          "kind": "portal_locked",
+          "x": 20,
+          "y": 6,
+          "w": 1,
+          "h": 2,
+          "label": "Portal - Orion",
+          "title": "Portal Sealed",
+          "body": "Loot the HYGR chest to break the seal.",
+          "accent": "#b13e53",
+          "meta": {
+            "to_floor": 3
+          }
+        }
+      ],
+      "soft_gate_required": [
+        "chest-hygr"
+      ]
+    },
+    {
+      "id": 3,
+      "slug": "agency",
+      "name": "Orion Automation",
+      "theme": "The throne of the dungeon. Gold runes. The final floor.",
+      "palette": [
+        "#1a1c2c",
+        "#29366f",
+        "#b13e53",
+        "#fee761",
+        "#f4f0bc"
+      ],
+      "ambient": "Golden hum. Runes breathing.",
+      "width": 22,
+      "height": 14,
+      "spawn": [
+        2,
+        11
+      ],
+      "exits": [],
+      "interactables": [
+        {
+          "id": "chest-orion",
+          "kind": "chest",
+          "x": 10,
+          "y": 5,
+          "w": 1,
+          "h": 1,
+          "label": "Chest - Orion Automation",
+          "title": "ORION AUTOMATION - MY AGENCY",
+          "body": "Running my own agency - Custom Automation, Website Workflows, Chatbots, Marketing SEO/AEO/GEO. SSM-registered in Shah Alam/Selangor.",
+          "accent": "#fee761"
+        },
+        {
+          "id": "enemy-boss",
+          "kind": "enemy",
+          "x": 14,
+          "y": 6,
+          "w": 1,
+          "h": 1,
+          "label": "Shadow Lord",
+          "title": "",
+          "body": "",
+          "accent": "#b13e53",
+          "meta": {
+            "hp": 5,
+            "speed": 28,
+            "damage": 1,
+            "species": "boss"
+          }
+        },
+        {
+          "id": "chest-contact",
+          "kind": "chest_contact",
+          "x": 17,
+          "y": 5,
+          "w": 1,
+          "h": 1,
+          "label": "Crystal Chest - Contact",
+          "title": "SEND A MESSAGE",
+          "body": "A Crystal Chest. Peer inside to reach Varakorn directly.",
+          "accent": "#41a6f6"
+        }
+      ],
+      "soft_gate_required": [
+        "chest-orion"
+      ]
+    }
+  ]
+}
