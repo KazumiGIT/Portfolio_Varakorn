@@ -20,6 +20,7 @@ import { HealthHUD } from "@/ui/HealthHUD";
 import { LoadingScreen } from "@/ui/LoadingScreen";
 import { MobileControls } from "@/ui/MobileControls";
 import { ProfileCard } from "@/ui/ProfileCard";
+import { ProfileCardPage } from "@/ui/ProfileCardPage";
 import { ResumeModal } from "@/ui/ResumeModal";
 import type { Floor } from "@/types/game";
 
@@ -31,6 +32,10 @@ function isTouch(): boolean {
 }
 
 export default function App() {
+  const isCardRoute =
+    typeof window !== "undefined" &&
+    (window.location.pathname === "/card" || window.location.pathname === "/card/");
+
   const floorId = useGame((s) => s.floorId);
   const loading = useGame((s) => s.loading);
   const setLoading = useGame((s) => s.setLoading);
@@ -47,6 +52,7 @@ export default function App() {
   }, [muted]);
 
   useEffect(() => {
+    if (isCardRoute) return;
     let cancelled = false;
     (async () => {
       try {
@@ -71,8 +77,9 @@ export default function App() {
     return () => {
       cancelled = true;
     };
-  }, [setLoading, setTotalContentCount]);
+  }, [isCardRoute, setLoading, setTotalContentCount]);
 
+  if (isCardRoute) return <ProfileCardPage />;
   if (loading) return <LoadingScreen />;
   if (err) return <ErrorBoundary detail={err} />;
 
