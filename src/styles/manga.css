@@ -57,22 +57,6 @@ body.manga {
   padding: clamp(3.6rem, 12vw, 4.4rem) 0 2.4rem;
 }
 
-.m-note-desktop {
-  display: none;
-  text-align: center;
-  font-size: 0.7rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: #8a7c64;
-  margin-bottom: 0.9rem;
-}
-
-@media (min-width: 680px) {
-  .m-note-desktop {
-    display: block;
-  }
-}
-
 .m-book {
   background: var(--m-ink);
   border: 3px solid var(--m-ink);

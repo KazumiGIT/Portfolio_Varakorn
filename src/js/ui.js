@@ -6,6 +6,22 @@
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const finePointer = matchMedia('(pointer: fine)').matches;
 
+/* ---------- night mode (the desk lamp is the switch) ----------------------- */
+export function isNight() {
+  return document.documentElement.classList.contains('night');
+}
+
+export function toggleNight() {
+  const on = document.documentElement.classList.toggle('night');
+  try {
+    localStorage.setItem('theme', on ? 'night' : 'day');
+  } catch {
+    /* private mode */
+  }
+  window.dispatchEvent(new CustomEvent('themechange', { detail: { night: on } }));
+  return on;
+}
+
 /** Wipe the curtain in, then navigate. Used by link clicks and the 3D nav. */
 export function navigateWithCurtain(url) {
   const curtain = document.querySelector('.curtain');
@@ -46,7 +62,10 @@ function initCurtain() {
     if (!a) return;
     const href = a.getAttribute('href') || '';
     const internal =
-      /\.html(#[\w-]*)?$/.test(href) && !href.startsWith('http') && !a.target && !e.metaKey && !e.ctrlKey;
+      /^\/(home|journey|experience|blog|contact)(#[\w-]*)?$/.test(href) &&
+      !a.target &&
+      !e.metaKey &&
+      !e.ctrlKey;
     if (!internal) return;
     e.preventDefault();
     navigateWithCurtain(href);
@@ -97,7 +116,8 @@ function initNav() {
   addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 
-  const here = location.pathname.split('/').pop() || 'index.html';
+  let here = location.pathname.replace(/\.html$/, '').replace(/\/+$/, '');
+  if (here === '' || here === '/index') here = '/home';
   document.querySelectorAll('.nav-link, .menu-link').forEach((a) => {
     if ((a.getAttribute('href') || '') === here) a.classList.add('is-active');
   });

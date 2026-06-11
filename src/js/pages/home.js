@@ -1,20 +1,27 @@
 import '../../styles/main.css';
 import { initSite, prefersReducedMotion } from '../ui.js';
 import { renderSocials, tagList } from '../render.js';
-import { stats, projects, services, timeline } from '../data.js';
+import { valueCategories, projects, services, timeline } from '../data.js';
 
 renderSocials();
 
-/* stats */
-const statsEl = document.querySelector('[data-stats]');
-if (statsEl) {
-  statsEl.innerHTML = stats
+/* value categories — three short chapters instead of a flat stat row */
+const valuesEl = document.querySelector('[data-values]');
+if (valuesEl) {
+  valuesEl.innerHTML = valueCategories
     .map(
-      (s) => `
-      <div class="stat" data-reveal>
-        <div class="num"><span data-count="${s.value}">0</span><span class="suf">${s.suffix}</span></div>
-        <div class="lbl">${s.label}</div>
-      </div>`
+      (c) => `
+      <article class="vcard">
+        <div class="v-head">
+          <span class="v-no" aria-hidden="true">${c.no}</span>
+          <span class="v-kicker">${c.kicker}</span>
+        </div>
+        <h3 class="v-title">${c.title}</h3>
+        <div class="v-num"><span data-count="${c.stat.value}">0</span><span class="suf">${c.stat.suffix}</span></div>
+        <div class="v-lbl">${c.stat.label}</div>
+        <p class="v-story">${c.story}</p>
+        <div class="v-chips">${tagList(c.chips)}</div>
+      </article>`
     )
     .join('');
 }
@@ -25,7 +32,7 @@ if (projEl) {
   projEl.innerHTML = projects
     .map(
       (p) => `
-      <a class="proj-row" href="experience.html" data-reveal data-cursor>
+      <a class="proj-row" href="/experience" data-reveal data-cursor>
         <div class="idx">${p.index}</div>
         <div>
           <h3 class="name">${p.title} <span class="go" aria-hidden="true">→</span></h3>
@@ -60,7 +67,7 @@ if (chEl) {
   chEl.innerHTML = timeline
     .map(
       (t) => `
-      <a class="chapter" href="journey.html">
+      <a class="chapter" href="/journey">
         <span class="chap-chip" aria-hidden="true">${t.chip}</span>
         <div class="yr">${t.year}</div>
         <h3>${t.title}</h3>

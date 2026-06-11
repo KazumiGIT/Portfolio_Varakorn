@@ -44,13 +44,13 @@ function watch(page, label) {
 const desktop = await browser.newContext({ viewport: { width: 1440, height: 900 } });
 const dp = await desktop.newPage();
 watch(dp, 'desktop');
-await shoot(dp, 'home-hero', 'index.html', { fullPage: false });
+await shoot(dp, 'home-hero', 'home', { fullPage: false });
 await scrollThrough(dp);
 await dp.screenshot({ path: `${OUT}/home-full.png`, fullPage: true });
 console.log('✓ home-full');
-await shoot(dp, 'journey', 'journey.html');
-await shoot(dp, 'experience', 'experience.html');
-await shoot(dp, 'blog', 'blog.html');
+await shoot(dp, 'journey', 'journey');
+await shoot(dp, 'experience', 'experience');
+await shoot(dp, 'blog', 'blog');
 
 // blog reader open
 await dp.click('.post-card');
@@ -59,7 +59,7 @@ await dp.screenshot({ path: `${OUT}/blog-reader.png`, fullPage: false });
 console.log('✓ blog-reader');
 
 // trading cards: front + flip
-await dp.goto(`${BASE}/experience.html`, { waitUntil: 'networkidle' });
+await dp.goto(`${BASE}/experience`, { waitUntil: 'networkidle' });
 await dp.waitForTimeout(3500);
 const firstCard = dp.locator('.tcard').first();
 await firstCard.scrollIntoViewIfNeeded();
@@ -73,38 +73,38 @@ console.log('✓ cards-flipped');
 
 // ultra-wide hero (title/floor overlap check)
 await dp.setViewportSize({ width: 2400, height: 1180 });
-await dp.goto(`${BASE}/index.html`, { waitUntil: 'networkidle' });
+await dp.goto(`${BASE}/home`, { waitUntil: 'networkidle' });
 await dp.waitForTimeout(4200);
 await dp.screenshot({ path: `${OUT}/home-wide.png`, fullPage: false });
 console.log('✓ home-wide');
 await dp.setViewportSize({ width: 1440, height: 900 });
 
 // secret gate at the end of the journey rail → manga contact page
-await dp.goto(`${BASE}/journey.html`, { waitUntil: 'networkidle' });
+await dp.goto(`${BASE}/journey`, { waitUntil: 'networkidle' });
 await dp.waitForTimeout(3000);
 await dp.evaluate(() => scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }));
 await dp.waitForTimeout(900);
 await dp.click('.secret-gate');
-await dp.waitForURL('**/contact.html', { timeout: 6000 });
+await dp.waitForURL('**/contact', { timeout: 6000 });
 await dp.waitForTimeout(1200);
-console.log('✓ secret gate → contact.html');
+console.log('✓ secret gate → contact');
 
 // diegetic 3D nav: pin click → journey
-await dp.goto(`${BASE}/index.html`, { waitUntil: 'networkidle' });
+await dp.goto(`${BASE}/home`, { waitUntil: 'networkidle' });
 await dp.waitForTimeout(4200);
 await dp.screenshot({ path: `${OUT}/home-pins.png`, fullPage: false });
 console.log('✓ home-pins');
 await dp.click('.pin:has-text("Journey")');
-await dp.waitForURL('**/journey.html', { timeout: 6000 });
-console.log('✓ 3D nav: Journey pin → journey.html');
+await dp.waitForURL('**/journey', { timeout: 6000 });
+console.log('✓ 3D nav: Journey pin → journey');
 
 // diegetic 3D nav: clicking the monitor object itself → experience
-await dp.goto(`${BASE}/index.html`, { waitUntil: 'networkidle' });
+await dp.goto(`${BASE}/home`, { waitUntil: 'networkidle' });
 await dp.waitForTimeout(4200);
 const pinBox = await dp.locator('.pin', { hasText: 'Experience' }).boundingBox();
 await dp.mouse.click(pinBox.x + pinBox.width / 2, pinBox.y + pinBox.height + 70);
-await dp.waitForURL('**/experience.html', { timeout: 6000 });
-console.log('✓ 3D nav: monitor object click → experience.html');
+await dp.waitForURL('**/experience', { timeout: 6000 });
+console.log('✓ 3D nav: monitor object click → experience');
 
 // mobile
 const mobile = await browser.newContext({
@@ -115,7 +115,7 @@ const mobile = await browser.newContext({
 });
 const mp = await mobile.newPage();
 watch(mp, 'mobile');
-await shoot(mp, 'home-mobile-hero', 'index.html', { fullPage: false });
+await shoot(mp, 'home-mobile-hero', 'home', { fullPage: false });
 await scrollThrough(mp);
 await mp.screenshot({ path: `${OUT}/home-mobile-full.png`, fullPage: true });
 console.log('✓ home-mobile-full');
@@ -127,7 +127,7 @@ await mp.screenshot({ path: `${OUT}/home-mobile-menu.png`, fullPage: false });
 console.log('✓ home-mobile-menu');
 
 // manga contact page (mobile-first) — full page + top fold
-await shoot(mp, 'contact-manga', 'contact.html');
+await shoot(mp, 'contact-manga', 'contact');
 await mp.evaluate(() => scrollTo({ top: 0, behavior: 'instant' }));
 await mp.waitForTimeout(500);
 await mp.screenshot({ path: `${OUT}/contact-fold.png`, fullPage: false });

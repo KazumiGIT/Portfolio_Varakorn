@@ -43,7 +43,7 @@ if (tl) {
   gate.setAttribute('aria-label', 'A small gate');
   gate.innerHTML =
     '<span class="b1"></span><span class="b2"></span><span class="p1"></span><span class="p2"></span>';
-  gate.addEventListener('click', () => navigateWithCurtain('contact.html'));
+  gate.addEventListener('click', () => navigateWithCurtain('/contact'));
   tl.appendChild(gate);
 }
 

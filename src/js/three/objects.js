@@ -134,6 +134,7 @@ export function buildMonitor() {
   grp.add(glow);
 
   grp.userData.screenTex = tex;
+  grp.userData.screen = screen; // for swapping the screen content (terminal)
   return grp;
 }
 

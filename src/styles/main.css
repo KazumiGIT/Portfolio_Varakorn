@@ -20,13 +20,43 @@
   --green: #76865b;
   --blue: #64788f;
 
-  --font-display: 'Shippori Mincho B1', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
-  --font-body: 'Zen Kaku Gothic New', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif;
+  --font-display: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+  --font-body: 'Manrope', 'Avenir Next', system-ui, sans-serif;
 
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --shadow-press: 4px 4px 0 var(--ink);
   --container: 1180px;
   --nav-h: 72px;
+}
+
+/* ---------- night mode (toggled by the desk lamp on the home page) ---------- */
+html.night {
+  --paper: #221c12;
+  --paper-2: #2b2316;
+  --paper-3: #171209;
+  --paper-deep: #3b301d;
+  --ink: #f0e6d0;
+  --ink-2: #c3b394;
+  --ink-3: #8a7a5e;
+  --line: rgba(240, 230, 208, 0.18);
+  --line-soft: rgba(240, 230, 208, 0.1);
+  --shadow-press: 4px 4px 0 #0e0a05;
+}
+
+html.night body,
+html.night .nav.is-scrolled,
+html.night .menu,
+html.night .curtain {
+  transition: background 0.45s, background-color 0.45s;
+}
+
+html.night .polaroid {
+  background: #31291a;
+}
+
+html.night ::selection {
+  background: var(--red);
+  color: #f0e6d0;
 }
 
 /* ---------- reset ---------- */
@@ -46,6 +76,7 @@ html {
 body {
   background: var(--paper);
   color: var(--ink);
+  transition: background 0.45s, color 0.45s;
   font-family: var(--font-body);
   font-size: 1rem;
   line-height: 1.7;
@@ -624,6 +655,7 @@ body.has-cursor button {
   width: 100%;
   height: 100%;
   touch-action: pan-y;
+  z-index: 3;
 }
 
 /* melt the island floor into paper behind the headline */
@@ -633,42 +665,136 @@ body.has-cursor button {
   left: 0;
   right: 0;
   bottom: 0;
-  height: 48%;
-  background: linear-gradient(180deg, transparent 0%, var(--paper) 76%);
+  height: 38%;
+  background: linear-gradient(180deg, transparent 0%, var(--paper) 82%);
   pointer-events: none;
-  z-index: 2;
+  z-index: 4;
 }
 
+/* wide view: the name crowns the empty sky above the desk; tagline and
+   status share one row on the floor. Fades away while zoomed into the desk. */
 .hero-inner {
-  position: relative;
+  position: absolute;
+  inset: 0;
   z-index: 5;
-  width: min(var(--container), 100% - 3rem);
-  margin-inline: auto;
-  padding-bottom: clamp(2.5rem, 6vh, 4.5rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  padding-top: calc(var(--nav-h) + 2vh);
+  padding-bottom: 15vh;
   pointer-events: none;
+  transition: opacity 0.5s var(--ease-out);
 }
 
-.hero-inner .btn,
-.hero-inner a {
-  pointer-events: auto;
+.hero.is-zoomed .hero-inner {
+  opacity: 0;
+}
+
+.hero-sub {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.7rem 2.4rem;
+}
+
+.hero-sub .hero-tag,
+.hero-sub .hero-status {
+  margin-top: 0;
+}
+
+@media (max-width: 760px) {
+  .hero-inner {
+    justify-content: flex-start;
+    gap: 1.1rem;
+    padding-top: 53vh;
+    padding-bottom: 0;
+    padding-inline: 1rem;
+  }
+}
+
+/* close-up state: the name floats in the empty gap between the monitor
+   and the globe, centered */
+.hero-side {
+  position: absolute;
+  z-index: 5;
+  top: 11vh;
+  left: 46vw;
+  right: 19.5vw;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(26px);
+  transition: opacity 0.55s var(--ease-out), transform 0.55s var(--ease-out);
+}
+
+.hero.is-zoomed .hero-side {
+  opacity: 1;
+  transform: none;
+}
+
+/* terminal mode: clear everything off the screen so the chat is the star */
+.hero.is-term .hero-side,
+.hero.is-term .hero-hint {
+  opacity: 0;
+}
+
+.hero-side .hero-kicker {
+  white-space: normal;
+  line-height: 1.7;
+  justify-content: center;
+}
+
+.hero-side .hero-title {
+  font-size: clamp(2.6rem, 6vw, 5.5rem);
+}
+
+/* one line, scaled to the monitor-globe gap (which is ~33vw wide) */
+.hero-side .hero-tag {
+  margin-inline: auto;
+  max-width: none;
+  white-space: nowrap;
+  font-size: clamp(0.72rem, 0.97vw, 1.05rem);
+}
+
+@media (max-width: 760px) {
+  .hero-side {
+    top: 11vh;
+    left: 9vw;
+    right: 9vw;
+    transform: translateY(10px);
+  }
+  .hero.is-zoomed .hero-side {
+    transform: none;
+  }
+  .hero-side .hero-tag {
+    white-space: normal;
+    font-size: 0.95rem;
+  }
 }
 
 .hero-kicker {
-  margin-bottom: 1.1rem;
+  margin-bottom: 1rem;
 }
 
 .hero-title {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(3.4rem, 12vw, 8.2rem);
-  line-height: 0.98;
+  font-size: clamp(3rem, 5.5vw, 6rem);
+  line-height: 0.94;
   letter-spacing: 0.005em;
-  margin-left: -0.04em;
+  transition: color 0.45s;
+}
+
+html.night .hero-title {
+  text-shadow: 0 0 36px rgba(255, 214, 150, 0.16);
 }
 
 .hero-tag {
-  margin-top: 1.3rem;
-  max-width: 34rem;
+  margin-top: 1.2rem;
+  max-width: 36rem;
   font-size: clamp(1rem, 2vw, 1.18rem);
   color: var(--ink-2);
 }
@@ -1002,44 +1128,95 @@ body.has-cursor button {
   margin-top: 1rem;
 }
 
-.stats {
+/* value categories — three short chapters of what I bring */
+.values {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 1px;
   background: var(--line);
   border: 1px solid var(--line);
   margin-top: clamp(2.5rem, 6vw, 4rem);
 }
 
-@media (max-width: 760px) {
-  .stats {
-    grid-template-columns: repeat(2, 1fr);
+@media (max-width: 860px) {
+  .values {
+    grid-template-columns: 1fr;
   }
 }
 
-.stat {
+.vcard {
   background: var(--paper);
-  padding: 1.6rem 1.4rem 1.4rem;
+  padding: 1.8rem 1.6rem 1.6rem;
+  display: flex;
+  flex-direction: column;
+  transition: background 0.3s;
 }
 
-.stat .num {
+.vcard:hover {
+  background: var(--paper-2);
+}
+
+.vcard .v-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.vcard .v-no {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(2.1rem, 4.5vw, 3rem);
+  font-size: 0.8rem;
+  color: var(--red);
+}
+
+.vcard .v-kicker {
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-3, var(--ink-2));
+}
+
+.vcard .v-title {
+  margin: 0.55rem 0 1.1rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--ink);
+}
+
+.vcard .v-num {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.4rem, 5vw, 3.4rem);
   line-height: 1;
   color: var(--ink);
 }
 
-.stat .num .suf {
+.vcard .v-num .suf {
   color: var(--red);
   font-size: 0.62em;
 }
 
-.stat .lbl {
+.vcard .v-lbl {
   margin-top: 0.5rem;
   font-size: 0.78rem;
   letter-spacing: 0.06em;
   color: var(--ink-2);
+}
+
+.vcard .v-story {
+  margin: 1rem 0 1.2rem;
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: var(--ink-2);
+  flex: 1;
+}
+
+.vcard .v-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
 }
 
 /* ===========================================================================
@@ -1228,7 +1405,7 @@ body.has-cursor button {
   scrollbar-width: thin;
 }
 
-.chapter {
+.chapters .chapter {
   scroll-snap-align: start;
   border: 1px solid var(--line);
   background: var(--paper);
@@ -1242,13 +1419,13 @@ body.has-cursor button {
     border-color 0.35s;
 }
 
-.chapter:hover {
+.chapters .chapter:hover {
   transform: translateY(-6px);
   border-color: var(--ink);
   box-shadow: 6px 6px 0 rgba(50, 42, 32, 0.18);
 }
 
-.chapter .yr {
+.chapters .chapter .yr {
   font-family: var(--font-display);
   font-weight: 800;
   font-size: 1.7rem;
@@ -1256,7 +1433,7 @@ body.has-cursor button {
   line-height: 1;
 }
 
-.chapter .chap-chip {
+.chapters .chapter .chap-chip {
   position: absolute;
   top: 1.3rem;
   right: 1.1rem;
@@ -1267,14 +1444,14 @@ body.has-cursor button {
   letter-spacing: 0.08em;
 }
 
-.chapter h3 {
+.chapters .chapter h3 {
   font-family: var(--font-display);
   font-size: 1.06rem;
   font-weight: 700;
   line-height: 1.35;
 }
 
-.chapter p {
+.chapters .chapter p {
   font-size: 0.8rem;
   color: var(--ink-2);
   margin-top: auto;
@@ -1867,7 +2044,7 @@ body.has-cursor button {
 }
 
 .tface-back li::before {
-  content: '—';
+  content: '·';
   position: absolute;
   left: 0;
   color: var(--accent);

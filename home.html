@@ -3,13 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Varakorn — Full Stack AI Engineer & Content Creator</title>
+    <title>Varakorn · Full Stack AI Engineer &amp; Content Creator</title>
     <meta
       name="description"
-      content="Varakorn (Kazumi) — Full Stack AI Engineer building AI agents, automation pipelines, and content that travels. 38M+ views. Founder of Orion Automation, Shah Alam, Malaysia."
+      content="Varakorn (Kazumi) is a Full Stack AI Engineer building AI agents, automation pipelines, and content that travels. 38M+ views. Founder of Orion Automation, Subang Jaya, Malaysia."
     />
     <meta name="theme-color" content="#f3ebdd" />
-    <meta property="og:title" content="Varakorn — Full Stack AI Engineer & Content Creator" />
+    <meta property="og:title" content="Varakorn · Full Stack AI Engineer &amp; Content Creator" />
     <meta
       property="og:description"
       content="AI agents, automation pipelines, and content that travels. 38M+ views · Orion Automation."
@@ -20,12 +20,17 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
+    <script>
+      try { if (localStorage.theme === 'night') document.documentElement.classList.add('night'); } catch (e) {}
+    </script>
     <style>
       body { margin: 0; background: #f3ebdd; color: #322a20; }
       .curtain { position: fixed; inset: 0; background: #e2d4b8; z-index: 1500; }
+      html.night body { background: #221c12; color: #f0e6d0; }
+      html.night .curtain { background: #171209; }
     </style>
     <script type="module" src="/src/js/pages/home.js"></script>
   </head>
@@ -33,19 +38,19 @@
     <!-- chrome -->
     <header class="nav">
       <div class="nav-inner">
-        <a class="brand" href="index.html" aria-label="Varakorn — home">
+        <a class="brand" href="/home" aria-label="Varakorn home">
           <span class="hanko" aria-hidden="true">V</span>
           <span>Varakorn<span class="kana">PORTFOLIO</span></span>
         </a>
         <nav aria-label="Primary">
           <ul class="nav-links">
-            <li><a class="nav-link" href="index.html">Home</a></li>
-            <li><a class="nav-link" href="journey.html">Journey</a></li>
-            <li><a class="nav-link" href="experience.html">Experience</a></li>
-            <li><a class="nav-link" href="blog.html">Blog</a></li>
+            <li><a class="nav-link" href="/home">Home</a></li>
+            <li><a class="nav-link" href="/journey">Journey</a></li>
+            <li><a class="nav-link" href="/experience">Experience</a></li>
+            <li><a class="nav-link" href="/blog">Blog</a></li>
           </ul>
         </nav>
-        <a class="btn btn--ghost nav-cta" href="mailto:varakornm0403@gmail.com">Hire me</a>
+        <a class="btn btn--ghost nav-cta" href="https://wa.me/601111267609?text=Nice%20Website.%20I%20want%20to%20know%20more." target="_blank" rel="noopener noreferrer">WhatsApp me</a>
         <button class="burger" aria-label="Open menu" aria-expanded="false">
           <span></span><span></span>
         </button>
@@ -54,36 +59,46 @@
 
     <div class="menu" aria-label="Mobile menu">
       <ul class="menu-links">
-        <li><a class="menu-link" href="index.html"><span class="idx">01</span>Home</a></li>
-        <li><a class="menu-link" href="journey.html"><span class="idx">02</span>Journey</a></li>
-        <li><a class="menu-link" href="experience.html"><span class="idx">03</span>Experience</a></li>
-        <li><a class="menu-link" href="blog.html"><span class="idx">04</span>Blog</a></li>
+        <li><a class="menu-link" href="/home"><span class="idx">01</span>Home</a></li>
+        <li><a class="menu-link" href="/journey"><span class="idx">02</span>Journey</a></li>
+        <li><a class="menu-link" href="/experience"><span class="idx">03</span>Experience</a></li>
+        <li><a class="menu-link" href="/blog"><span class="idx">04</span>Blog</a></li>
       </ul>
       <div class="menu-foot">
         <span>varakornm0403@gmail.com</span>
-        <span>Shah Alam · Malaysia</span>
+        <span>Subang Jaya · Malaysia</span>
       </div>
     </div>
 
     <!-- ============ HERO ============ -->
     <section class="hero">
-      <canvas id="hero-canvas" class="hero-canvas" aria-label="Interactive 3D desk diorama — the monitor, books, and gate lead to the other pages"></canvas>
-      <div class="pins" id="hero-pins"></div>
+      <!-- wide view: the name crowns the empty sky above the desk; the
+           tagline and status share one row on the floor below -->
       <div class="hero-inner">
-        <p class="kicker hero-kicker" data-reveal>Full Stack AI Engineer · Content Creator</p>
-        <h1 class="hero-title" data-reveal style="--d:.08s">Varakorn</h1>
-        <p class="hero-tag" data-reveal style="--d:.16s">
-          I build AI agents, automation pipelines, and content that travels.
-        </p>
-        <p class="hero-status" data-reveal style="--d:.2s">
-          <span class="dot" aria-hidden="true"></span>Shah Alam, Malaysia · Open to work &amp; projects
-        </p>
-        <div class="hero-ctas" data-reveal style="--d:.24s">
-          <a class="btn btn--solid" href="journey.html">My journey</a>
-          <a class="btn" href="https://wa.me/601111267609" target="_blank" rel="noopener noreferrer">WhatsApp me</a>
+        <div class="hero-head">
+          <p class="kicker hero-kicker" data-reveal>Full Stack AI Engineer · Content Creator</p>
+          <h1 class="hero-title" data-reveal style="--d:.08s">Varakorn</h1>
+        </div>
+        <div class="hero-sub">
+          <p class="hero-tag" data-reveal style="--d:.16s">
+            I build AI agents, automation pipelines, and content that travels.
+          </p>
+          <p class="hero-status" data-reveal style="--d:.22s">
+            <span class="dot" aria-hidden="true"></span>Subang Jaya, Malaysia · Open to work &amp; projects
+          </p>
         </div>
       </div>
-      <div class="hero-hint">click the monitor · the books · the gate</div>
+      <canvas id="hero-canvas" class="hero-canvas" aria-label="Interactive 3D desk diorama. Scroll to zoom in, drag to pan. The monitor, books, and globe lead to the other pages."></canvas>
+      <div class="pins" id="hero-pins"></div>
+      <!-- close-up state: the name rides the empty space beside the monitor -->
+      <div class="hero-side" aria-hidden="true">
+        <p class="kicker hero-kicker">Full Stack AI Engineer · Content Creator</p>
+        <div class="hero-title">Varakorn</div>
+        <p class="hero-tag">
+          I build AI agents, automation pipelines, and content that travels.
+        </p>
+      </div>
+      <div class="hero-hint">scroll to zoom · drag to pan · click the keyboard to ask my AI</div>
     </section>
 
     <div class="scene-tip" id="scene-tip" role="status">
@@ -94,8 +109,8 @@
     <!-- ============ MARQUEE ============ -->
     <div class="marquee" aria-hidden="true">
       <div class="marquee-track">
-        <span>38,000,000+ views <em>·</em> 261+ videos <em>·</em> 4 languages <em>·</em> AI agents <em>·</em> business automation <em>·</em> Shah Alam → the world <em>·</em>&nbsp;</span>
-        <span>38,000,000+ views <em>·</em> 261+ videos <em>·</em> 4 languages <em>·</em> AI agents <em>·</em> business automation <em>·</em> Shah Alam → the world <em>·</em>&nbsp;</span>
+        <span>38,000,000+ views <em>·</em> 261+ videos <em>·</em> 4 languages <em>·</em> AI agents <em>·</em> business automation <em>·</em> Subang Jaya → the world <em>·</em>&nbsp;</span>
+        <span>38,000,000+ views <em>·</em> 261+ videos <em>·</em> 4 languages <em>·</em> AI agents <em>·</em> business automation <em>·</em> Subang Jaya → the world <em>·</em>&nbsp;</span>
       </div>
     </div>
 
@@ -104,37 +119,37 @@
       <div class="container">
         <div class="section-head" data-reveal>
           <div>
-            <p class="kicker">01 — About</p>
-            <h2 class="display title">Sales-trained.<br /><em style="font-style:normal;color:var(--red)">Engineer-built.</em></h2>
+            <p class="kicker">01 · About</p>
+            <h2 class="display title">Sales trained.<br /><em style="font-style:normal;color:var(--red)">Engineer built.</em></h2>
           </div>
         </div>
         <div class="about-grid">
           <figure class="polaroid" data-reveal>
             <span class="tape" aria-hidden="true"></span>
             <img class="contain" src="/photos/avatar.png" alt="Chibi illustration of Varakorn" />
-            <figcaption class="cap">Varakorn — online, Kazumi</figcaption>
+            <figcaption class="cap">Varakorn, online as Kazumi</figcaption>
             <span class="hanko-stamp" aria-hidden="true">V</span>
           </figure>
           <div class="about-copy" data-reveal style="--d:.12s">
             <p>
-              I'm <strong>Varakorn</strong> — <em style="font-style:normal">Kazumi</em> online — a
-              Full Stack AI Engineer from Shah Alam, Malaysia. I spent two years in front of the
+              I'm <strong>Varakorn</strong>, <em style="font-style:normal">Kazumi</em> online, a
+              Full Stack AI Engineer from Subang Jaya, Malaysia. I spent two years in front of the
               camera making 261+ videos that crossed 38 million views, then moved behind the
               terminal: Python, FastAPI, React, Langchain.
             </p>
             <p>
               At Gamuda AI Academy I led the team that built Tendervise AI and presented it to
               Malaysia's Minister of Science, Technology and Innovation. Now I run
-              <strong>Orion Automation</strong> — an SSM-registered studio building AI agents,
+              <strong>Orion Automation</strong>, an SSM registered studio building AI agents,
               workflow automation, and websites that quietly do the busywork.
             </p>
             <p>
               The unusual part: I can sell what I build, in four languages. Most engineers can't
-              pitch; most creators can't ship. I do both — that's the whole point.
+              pitch; most creators can't ship. I do both. That's the whole point.
             </p>
           </div>
         </div>
-        <div class="stats" data-stats></div>
+        <div class="values" data-values data-stagger></div>
       </div>
     </section>
 
@@ -143,13 +158,13 @@
       <div class="container">
         <div class="section-head" data-reveal>
           <div>
-            <p class="kicker">02 — Selected work</p>
+            <p class="kicker">02 · Selected work</p>
             <h2 class="display title">Things I've built</h2>
           </div>
         </div>
         <div class="proj-list" data-projects></div>
         <div class="center-cta" data-reveal>
-          <a class="btn" href="experience.html">Full experience &amp; toolkit</a>
+          <a class="btn" href="/experience">Full experience &amp; toolkit</a>
         </div>
       </div>
     </section>
@@ -159,7 +174,7 @@
       <div class="container">
         <div class="section-head" data-reveal>
           <div>
-            <p class="kicker">03 — What I do</p>
+            <p class="kicker">03 · What I do</p>
             <h2 class="display title">Three crafts, one desk</h2>
           </div>
         </div>
@@ -172,13 +187,13 @@
       <div class="container">
         <div class="section-head" data-reveal>
           <div>
-            <p class="kicker">04 — The road so far</p>
+            <p class="kicker">04 · The road so far</p>
             <h2 class="display title">Five chapters</h2>
           </div>
         </div>
         <div class="chapters" data-chapters data-stagger></div>
         <div class="center-cta" data-reveal>
-          <a class="btn btn--solid" href="journey.html">Read the whole story</a>
+          <a class="btn btn--solid" href="/journey">Read the whole story</a>
         </div>
       </div>
     </section>
@@ -186,12 +201,12 @@
     <!-- ============ CONTACT ============ -->
     <section class="section contact" id="contact">
       <div class="container contact-inner">
-        <p class="kicker" data-reveal>05 — Contact</p>
+        <p class="kicker" data-reveal>05 · Contact</p>
         <h2 class="display" data-reveal style="--d:.08s">
           Got busywork?<br /><em>Let it disappear.</em>
         </h2>
         <p class="sub" data-reveal style="--d:.14s">
-          AI agents, automation pipelines, websites, content strategy — or a job offer. My inbox
+          AI agents, automation pipelines, websites, content strategy, or a job offer. My inbox
           reads four languages. The fastest way is WhatsApp.
         </p>
         <div class="row" data-reveal style="--d:.2s">
@@ -206,23 +221,23 @@
     <footer class="footer">
       <div class="container footer-grid">
         <div class="fbrand">
-          <a class="brand" href="index.html">
+          <a class="brand" href="/home">
             <span class="hanko" aria-hidden="true">V</span>
             <span>Varakorn<span class="kana">PORTFOLIO</span></span>
           </a>
           <div class="jp-line">Until next time.</div>
           <div class="small">
             Full Stack AI Engineer &amp; Content Creator<br />
-            Shah Alam · Selangor · Malaysia
+            Subang Jaya · Selangor · Malaysia
           </div>
         </div>
         <div>
           <h4>Pages</h4>
           <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="journey.html">Journey</a></li>
-            <li><a href="experience.html">Experience &amp; Goals</a></li>
-            <li><a href="blog.html">Blog</a></li>
+            <li><a href="/home">Home</a></li>
+            <li><a href="/journey">Journey</a></li>
+            <li><a href="/experience">Experience &amp; Goals</a></li>
+            <li><a href="/blog">Blog</a></li>
           </ul>
         </div>
         <div>
@@ -240,7 +255,7 @@
       </div>
       <div class="watermark" aria-hidden="true">VARAKORN</div>
       <div class="container legal">
-        <span>© <span data-year></span> Varakorn — Orion Automation</span>
+        <span>© <span data-year></span> Varakorn · Orion Automation</span>
         <span>Designed &amp; built by hand.</span>
       </div>
     </footer>

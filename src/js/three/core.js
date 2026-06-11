@@ -7,6 +7,7 @@ import * as THREE from 'three';
 
 export const PALETTE = {
   paper: 0xf3ebdd,
+  paperNight: 0x221c12,
   paperDeep: 0xe0cfa9,
   ink: 0x322a20,
   ink2: 0x6e5f4b,
@@ -138,7 +139,7 @@ export function glyphSprite(char, color = '#6e5f4b', size = 0.5) {
   const c = document.createElement('canvas');
   c.width = c.height = 128;
   const g = c.getContext('2d');
-  g.font = `700 86px "Shippori Mincho B1", "Hiragino Mincho ProN", serif`;
+  g.font = `700 86px "Fraunces", Georgia, serif`;
   g.textAlign = 'center';
   g.textBaseline = 'middle';
   g.fillStyle = color;
@@ -183,7 +184,12 @@ export function createStage(canvas, opts = {}) {
   renderer.setClearColor(0x000000, 0);
 
   const scene = new THREE.Scene();
-  scene.fog = new THREE.Fog(PALETTE.paper, fogNear, fogFar);
+  // fog matches the page paper so geometry melts into it — track night mode
+  const night = () => document.documentElement.classList.contains('night');
+  scene.fog = new THREE.Fog(night() ? PALETTE.paperNight : PALETTE.paper, fogNear, fogFar);
+  window.addEventListener('themechange', () => {
+    scene.fog.color.setHex(night() ? PALETTE.paperNight : PALETTE.paper);
+  });
 
   const camera = new THREE.PerspectiveCamera(fov, 1, 0.1, 60);
   camera.position.set(...camPos);

@@ -12,7 +12,7 @@ if (cardsEl) {
     .map(
       (x) => `
       <div class="tcard accent-${x.card.accent}" data-reveal tabindex="0" role="button"
-           aria-label="${x.org} card — activate to flip">
+           aria-label="${x.org} card. Activate to flip.">
         <div class="tcard-inner">
           <div class="tface tface-front">
             <header class="tc-head">

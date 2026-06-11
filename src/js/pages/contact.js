@@ -5,7 +5,7 @@ import { socials } from '../data.js';
 
 /* contact rows, from the same source of truth as the footer */
 const META = {
-  whatsapp: { mono: 'W', note: 'Fastest reply — usually within the hour' },
+  whatsapp: { mono: 'W', note: 'Fastest reply, usually within the hour' },
   email: { mono: '@', note: 'For anything formal' },
   linkedin: { mono: 'in', note: 'The professional me' },
   github: { mono: '<>', note: 'Where the code lives' },
@@ -35,7 +35,7 @@ if (linksEl) {
     rows +
     `<a class="m-link m-save" href="/varakorn.vcf" download>
        <span class="m-mono" aria-hidden="true">↓</span>
-       <span class="txt"><b>Save my contact card</b><em>.vcf — straight into your phone</em></span>
+       <span class="txt"><b>Save my contact card</b><em>straight into your phone</em></span>
        <span class="arr" aria-hidden="true">↓</span>
      </a>`;
 }
