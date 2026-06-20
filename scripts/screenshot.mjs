@@ -79,7 +79,7 @@ await dp.screenshot({ path: `${OUT}/home-wide.png`, fullPage: false });
 console.log('✓ home-wide');
 await dp.setViewportSize({ width: 1440, height: 900 });
 
-// secret gate at the end of the journey rail → manga contact page
+// secret gate at the end of the journey rail → contact page; shoot it on desktop
 await dp.goto(`${BASE}/journey`, { waitUntil: 'networkidle' });
 await dp.waitForTimeout(3000);
 await dp.evaluate(() => scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }));
@@ -87,7 +87,9 @@ await dp.waitForTimeout(900);
 await dp.click('.secret-gate');
 await dp.waitForURL('**/contact', { timeout: 6000 });
 await dp.waitForTimeout(1200);
-console.log('✓ secret gate → contact');
+await scrollThrough(dp);
+await dp.screenshot({ path: `${OUT}/contact-desktop.png`, fullPage: true });
+console.log('✓ secret gate → contact (contact-desktop)');
 
 // diegetic 3D nav: pin click → journey
 await dp.goto(`${BASE}/home`, { waitUntil: 'networkidle' });
@@ -126,8 +128,8 @@ await mp.waitForTimeout(800);
 await mp.screenshot({ path: `${OUT}/home-mobile-menu.png`, fullPage: false });
 console.log('✓ home-mobile-menu');
 
-// manga contact page (mobile-first) — full page + top fold
-await shoot(mp, 'contact-manga', 'contact');
+// contact page (mobile) — full page + top fold
+await shoot(mp, 'contact-mobile', 'contact');
 await mp.evaluate(() => scrollTo({ top: 0, behavior: 'instant' }));
 await mp.waitForTimeout(500);
 await mp.screenshot({ path: `${OUT}/contact-fold.png`, fullPage: false });

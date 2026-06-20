@@ -6,13 +6,16 @@
     <title>Varakorn · Contact</title>
     <meta
       name="description"
-      content="Varakorn (Kazumi). Full Stack AI Engineer &amp; Content Creator. All my contacts in one place."
+      content="Varakorn. Full Stack AI Engineer &amp; Content Creator. WhatsApp, email, and every other way to reach me, in one place."
     />
     <meta name="robots" content="noindex" />
-    <meta name="theme-color" content="#f8f3e6" />
+    <meta name="theme-color" content="#f3ebdd" />
     <meta property="og:title" content="Varakorn · Contact" />
-    <meta property="og:description" content="AI engineer &amp; creator. WhatsApp, email, socials. Pick your panel." />
-    <meta property="og:image" content="/photos/avatar.png" />
+    <meta
+      property="og:description"
+      content="AI engineer and creator. WhatsApp, email, and every other way to reach me, in one place."
+    />
+    <meta property="og:image" content="/photos/varakorn-portrait.jpg" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -24,68 +27,156 @@
       try { if (localStorage.theme === 'night') document.documentElement.classList.add('night'); } catch (e) {}
     </script>
     <style>
-      body { margin: 0; background: #f8f3e6; color: #1b1511; }
+      body { margin: 0; background: #f3ebdd; color: #322a20; }
       .curtain { position: fixed; inset: 0; background: #e2d4b8; z-index: 1500; }
       html.night body { background: #221c12; color: #f0e6d0; }
       html.night .curtain { background: #171209; }
     </style>
     <script type="module" src="/src/js/pages/contact.js"></script>
   </head>
-  <body class="manga">
-    <a class="m-back" href="/home">← Portfolio</a>
-
-    <main class="m-page">
-      <div class="m-book">
-        <!-- 1. cover -->
-        <section class="panel p-cover" data-reveal>
-          <div class="rays" aria-hidden="true"></div>
-          <span class="chapter">CHAPTER 01 · CONTACT</span>
-          <h1>VARAKORN</h1>
-          <p class="role"><b>Full Stack AI Engineer</b><br />past Content Creator</p>
-          <div class="m-portrait">
-            <span class="disc" aria-hidden="true"></span>
-            <img src="/photos/avatar.png" alt="Illustration of Varakorn" />
-          </div>
-          <span class="m-greet" aria-hidden="true">Hello!</span>
-          <p class="est">SUBANG JAYA · MALAYSIA</p>
-        </section>
-
-        <!-- 2. intro -->
-        <section class="panel p-intro" data-reveal>
-          <img class="mug" src="/photos/avatar.png" alt="" aria-hidden="true" />
-          <p class="bubble">
-            I'm <strong>Varakorn</strong>, a Full Stack AI Engineer and a former content
-            creator. I build AI agents and automation at <strong>Orion Automation</strong>, and
-            I speak four languages. Let's talk.
-          </p>
-        </section>
-
-        <!-- 3. stats -->
-        <section class="panel p-stats" data-reveal>
-          <div class="cell"><span class="n">38M+</span><span class="l">VIEWS</span></div>
-          <div class="cell"><span class="n">261+</span><span class="l">VIDEOS</span></div>
-          <div class="cell"><span class="n">4</span><span class="l">LANGUAGES</span></div>
-          <div class="cap">THE NUMBERS THAT FOLLOW ME AROUND</div>
-        </section>
-
-        <!-- 4. contact -->
-        <section class="panel p-contact" data-reveal>
-          <div class="m-title">
-            <h2>Contact Me</h2>
-            <span class="line" aria-hidden="true"></span>
-            <span class="tag">REACH OUT</span>
-          </div>
-          <div class="m-links" data-mlinks></div>
-        </section>
-
-        <!-- 5. closing -->
-        <section class="panel p-end" data-reveal>
-          <p class="big">Let's build something.</p>
-          <p class="sub">AI agents, automation, a website, or just a hello.</p>
-          <a class="back-link" href="/home">Back to the portfolio →</a>
-        </section>
+  <body>
+    <header class="nav">
+      <div class="nav-inner">
+        <a class="brand" href="/home" aria-label="Varakorn home">
+          <span class="hanko" aria-hidden="true">V</span>
+          <span>Varakorn<span class="kana">PORTFOLIO</span></span>
+        </a>
+        <nav aria-label="Primary">
+          <ul class="nav-links">
+            <li><a class="nav-link" href="/home">Home</a></li>
+            <li><a class="nav-link" href="/journey">Journey</a></li>
+            <li><a class="nav-link" href="/experience">Experience</a></li>
+            <li><a class="nav-link" href="/blog">Blog</a></li>
+          </ul>
+        </nav>
+        <a class="btn btn--ghost nav-cta" href="https://wa.me/601111267609?text=Nice%20Website.%20I%20want%20to%20know%20more." target="_blank" rel="noopener noreferrer">WhatsApp me</a>
+        <button class="burger" aria-label="Open menu" aria-expanded="false">
+          <span></span><span></span>
+        </button>
       </div>
-    </main>
+    </header>
+
+    <div class="menu" aria-label="Mobile menu">
+      <ul class="menu-links">
+        <li><a class="menu-link" href="/home"><span class="idx">01</span>Home</a></li>
+        <li><a class="menu-link" href="/journey"><span class="idx">02</span>Journey</a></li>
+        <li><a class="menu-link" href="/experience"><span class="idx">03</span>Experience</a></li>
+        <li><a class="menu-link" href="/blog"><span class="idx">04</span>Blog</a></li>
+      </ul>
+      <div class="menu-foot">
+        <span>varakornm0403@gmail.com</span>
+        <span>Subang Jaya · Malaysia</span>
+      </div>
+    </div>
+
+    <!-- ============ PAGE HEAD — identity + availability ============ -->
+    <section class="page-head">
+      <div class="container page-head-grid">
+        <div>
+          <p class="kicker" data-reveal>Let's talk · usually reply within the hour</p>
+          <h1 class="display" data-reveal style="--d:.06s">Contact</h1>
+          <p class="lede" data-reveal style="--d:.12s">
+            I'm Varakorn. I build AI agents and automation at Orion Automation,
+            my own studio, and I speak four languages. Whether it's a product, a pipeline, or just a
+            hello, the fastest way to reach me is right here.
+          </p>
+          <div class="id-meta" data-reveal style="--d:.18s">
+            <p class="id-name">Varakorn</p>
+            <p class="id-role">Full Stack AI Engineer · past Content Creator</p>
+            <p class="id-loc">Subang Jaya, Selangor, Malaysia</p>
+          </div>
+        </div>
+        <figure class="polaroid" data-reveal style="--d:.1s">
+          <span class="tape" aria-hidden="true"></span>
+          <img src="/photos/varakorn-portrait.jpg" alt="Varakorn speaking at the Gamuda AI Academy graduation" width="380" height="475" loading="eager" />
+          <span class="hanko-stamp" aria-hidden="true">V</span>
+          <figcaption class="cap">Varakorn</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ============ CONTACT ============ -->
+    <section class="section">
+      <div class="container">
+        <!-- credibility strip -->
+        <div class="stat-row" data-reveal>
+          <div class="stat"><span class="n">38<span class="suf">M+</span></span><span class="l">Views</span></div>
+          <div class="stat"><span class="n">261<span class="suf">+</span></span><span class="l">Videos</span></div>
+          <div class="stat"><span class="n">4</span><span class="l">Languages</span></div>
+        </div>
+
+        <!-- featured action: WhatsApp -->
+        <div class="chan-feature-wrap">
+          <p class="hero-status" data-reveal><span class="dot" aria-hidden="true"></span>Open to work and collaborations</p>
+          <a class="chan--feature" href="https://wa.me/601111267609" target="_blank" rel="noopener noreferrer" data-reveal>
+            <span class="cf-lead">
+              <span class="chan-mono is-wa" aria-hidden="true">W</span>
+              <span class="cf-txt">
+                <b>WhatsApp</b>
+                <em>Fastest reply, usually within the hour</em>
+                <span class="cf-num">+60 11 1126 7609</span>
+              </span>
+            </span>
+            <span class="btn btn--solid cf-go">Message me now</span>
+          </a>
+        </div>
+
+        <!-- every other channel + vCard, rendered from data.js -->
+        <p class="kicker" data-reveal>More ways to reach me</p>
+        <div class="chan-grid" data-channels data-reveal></div>
+
+        <!-- closing -->
+        <div class="center-cta" data-reveal>
+          <a class="btn btn--solid" href="https://wa.me/601111267609" target="_blank" rel="noopener noreferrer">Message me now</a>
+        </div>
+        <p class="note-dim" style="text-align:center; margin-top:1.4rem" data-reveal>
+          Prefer the long version? <a class="link-u" href="/home">Back to the portfolio →</a>
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="footer">
+      <div class="container footer-grid">
+        <div class="fbrand">
+          <a class="brand" href="/home">
+            <span class="hanko" aria-hidden="true">V</span>
+            <span>Varakorn<span class="kana">PORTFOLIO</span></span>
+          </a>
+          <div class="jp-line">Until next time.</div>
+          <div class="small">
+            Full Stack AI Engineer &amp; Content Creator<br />
+            Subang Jaya · Selangor · Malaysia
+          </div>
+        </div>
+        <div>
+          <h4>Pages</h4>
+          <ul>
+            <li><a href="/home">Home</a></li>
+            <li><a href="/journey">Journey</a></li>
+            <li><a href="/experience">Experience &amp; Goals</a></li>
+            <li><a href="/blog">Blog</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Elsewhere</h4>
+          <ul data-socials></ul>
+        </div>
+        <div>
+          <h4>Direct</h4>
+          <ul>
+            <li><a href="mailto:varakornm0403@gmail.com">varakornm0403@gmail.com</a></li>
+            <li><a href="https://wa.me/601111267609" target="_blank" rel="noopener noreferrer">WhatsApp</a></li>
+            <li><a href="/Varakorn_Resume_2026.pdf" target="_blank" rel="noopener noreferrer">Resume (PDF)</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="watermark" aria-hidden="true">CONTACT</div>
+      <div class="container legal">
+        <span>© <span data-year></span> Varakorn · Orion Automation</span>
+        <span>Designed &amp; built by hand.</span>
+      </div>
+    </footer>
 
     <div class="curtain"><span class="hanko" aria-hidden="true">V</span></div>
     <div class="grain" aria-hidden="true"></div>

@@ -1,0 +1,315 @@
+/* ===========================================================================
+   CONTACT PAGE — professional, print-inspired, beige.
+   A native sibling of the other subpages: it reuses the main.css system
+   (nav, page-head, polaroid, hairline grids, printed-matter buttons, footer)
+   and only adds the handful of contact-specific pieces below. Every value is
+   a token, so day/night mode come for free.
+   =========================================================================== */
+
+/* ---------- identity block under the kicker / lede ---------- */
+.id-meta {
+  margin-top: 1.6rem;
+}
+
+.id-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+
+.id-name span {
+  color: var(--ink-3);
+  font-weight: 600;
+}
+
+.id-role {
+  color: var(--ink-2);
+  font-size: 0.92rem;
+  margin-top: 0.25rem;
+}
+
+.id-loc {
+  color: var(--ink-3);
+  font-size: 0.82rem;
+  margin-top: 0.15rem;
+}
+
+/* ---------- credibility stat strip (hairline grid, .vcard numeral scale) --- */
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  margin-bottom: clamp(2.2rem, 5vw, 3.2rem);
+}
+
+.stat {
+  background: var(--paper);
+  padding: 1.4rem 1.2rem;
+  text-align: center;
+  min-width: 0; /* let the three 1fr tracks shrink instead of overflowing */
+}
+
+.stat .n {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+  line-height: 1;
+  color: var(--ink);
+}
+
+.stat .n .suf {
+  color: var(--red);
+  font-size: 0.6em;
+}
+
+.stat .l {
+  display: block;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  margin-top: 0.45rem;
+}
+
+/* the numbers stay legible — never collapse this strip to one column.
+   On narrow phones the wide-tracked uppercase labels ("LANGUAGES") would
+   otherwise force each track past its 1fr share and push the strip off-screen,
+   so tighten the padding + label spacing instead of dropping a column. */
+@media (max-width: 460px) {
+  .stat {
+    padding: 1.2rem 0.5rem;
+  }
+  .stat .l {
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+  }
+}
+
+/* ---------- shared mono badge (clones the .skill-cell .mark idiom) --------- */
+.chan-mono {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.9rem;
+  transform: rotate(-3deg);
+  transition: background 0.2s;
+}
+
+/* ---------- featured channel: WhatsApp (the available -> message diagonal) -- */
+.chan-feature-wrap {
+  margin-bottom: clamp(2.2rem, 5vw, 3.2rem);
+}
+
+.chan--feature {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.2rem;
+  margin-top: 0.9rem;
+  padding: 1.4rem 1.5rem;
+  background: var(--paper-2);
+  border: 1.5px solid var(--ink);
+  box-shadow: var(--shadow-press);
+  transition: transform 0.18s var(--ease-out), box-shadow 0.18s var(--ease-out),
+    border-color 0.18s;
+}
+
+.chan--feature:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--ink);
+  border-color: var(--green);
+}
+
+/* green marks the one live, human channel — scoped to this panel only, so the
+   site-wide red-hover law on real .btn elements is never touched */
+.chan--feature:hover .chan-mono.is-wa {
+  background: var(--green);
+}
+
+.cf-lead {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  min-width: 0;
+}
+
+.chan--feature .cf-txt b {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.5rem;
+  line-height: 1.1;
+}
+
+.chan--feature .cf-txt em {
+  display: block;
+  font-style: normal;
+  color: var(--ink-2);
+  font-size: 0.85rem;
+  margin-top: 0.2rem;
+}
+
+.chan--feature .cf-num {
+  display: block;
+  color: var(--ink-3);
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  margin-top: 0.2rem;
+}
+
+.chan--feature .cf-go {
+  flex: none; /* a real .btn.btn--solid — keeps its standard red hover */
+}
+
+@media (max-width: 520px) {
+  .chan--feature {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .chan--feature .cf-go {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ---------- channel grid (the .skill-grid hairline pattern, same breakpoints) */
+.chan-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  margin-top: clamp(1.2rem, 3vw, 1.8rem);
+}
+
+@media (max-width: 860px) {
+  .chan-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 540px) {
+  .chan-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chan {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  min-height: 64px;
+  padding: 1.2rem 1.3rem;
+  background: var(--paper);
+  transition: background 0.25s, padding-left 0.25s var(--ease-out);
+}
+
+.chan:hover {
+  background: var(--paper-2);
+}
+
+.chan:hover .chan-mono {
+  background: var(--red);
+}
+
+/* stacked: each row reads like an editorial .proj-row, nudging on touch */
+@media (max-width: 540px) {
+  .chan:hover,
+  .chan:active {
+    padding-left: 1rem;
+  }
+}
+
+.chan .chan-txt {
+  min-width: 0;
+}
+
+.chan .chan-txt b {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.chan .chan-txt em {
+  display: block;
+  font-style: normal;
+  font-size: 0.8rem;
+  color: var(--ink-2);
+  margin-top: 0.15rem;
+}
+
+.chan .arr {
+  margin-left: auto;
+  font-weight: 700;
+  color: var(--red);
+  transition: transform 0.2s var(--ease-out);
+}
+
+.chan:hover .arr {
+  transform: translateX(4px);
+}
+
+/* the vCard tear-off: a dashed cell that fills the directory's last row.
+   At 3 columns it spans the two trailing slots beside the final channel
+   (no empty band); at 2 and 1 columns it sits as a normal cell / stacks. */
+.chan--save {
+  grid-column: span 2;
+  border: 1px dashed var(--ink-3);
+  background: var(--paper);
+}
+
+@media (max-width: 860px) {
+  .chan--save {
+    grid-column: auto;
+  }
+}
+
+.chan--save:hover {
+  background: var(--paper-2);
+  border-color: var(--ink);
+  border-style: solid;
+  box-shadow: var(--shadow-press);
+}
+
+.chan--save:hover .chan-mono {
+  background: var(--ink);
+}
+
+/* ---------- touch polish ---------------------------------------------------
+   Mobile has no :hover, so mirror the press states on :active, and drop the
+   default grey tap-flash so the custom feedback reads cleanly. */
+.chan,
+.chan--feature,
+.chan--feature .cf-go,
+.center-cta .btn {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.chan--feature:active {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--ink);
+  border-color: var(--green);
+}
+
+.chan--feature:active .chan-mono.is-wa {
+  background: var(--green);
+}
+
+.chan:active {
+  background: var(--paper-2);
+}
+
+.chan:active .chan-mono {
+  background: var(--red);
+}
