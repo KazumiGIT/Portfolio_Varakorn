@@ -1581,6 +1581,28 @@ html.night .hero-title {
   z-index: 2;
 }
 
+/* ---------- mobile footer ---------------------------------------------------
+   The flex + space-between row wraps awkwardly on phones (link groups pinned
+   to opposite edges with a dead gap, "Direct" dangling alone). Lay it out as a
+   tidy two-column grid: brand spans the top, the link groups align left. */
+@media (max-width: 680px) {
+  .footer {
+    padding-bottom: 4.5rem;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.4rem 1.4rem;
+  }
+  .footer .fbrand {
+    grid-column: 1 / -1;
+    max-width: 42ch;
+  }
+  .footer .legal {
+    margin-top: 3rem;
+  }
+}
+
 /* ===========================================================================
    SUBPAGE HEADER
    =========================================================================== */
