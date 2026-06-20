@@ -86,14 +86,6 @@ export const projects = [
       'A personalized AI doctor focused on daily health tracking. Long term data analysis surfaces potential risks before they become critical.',
     stack: ['Python', 'FastAPI', 'React', 'WebSockets'],
   },
-  {
-    index: '04',
-    title: 'HYGR Ops Automation',
-    kicker: 'Content ops pipeline',
-    description:
-      'End to end automation behind a content machine with 38M views: posting schedules, an analytics pipeline, and campaign tracking that gave back hours every week.',
-    stack: ['Python', 'n8n', 'Langchain', 'FastAPI'],
-  },
 ];
 
 export const services = [
