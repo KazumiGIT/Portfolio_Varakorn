@@ -33,5 +33,10 @@ other edit. To retire a stand-in entirely, delete it from the stack in
 ## Where the script face is used
 
 `src/styles/main.css`, the SCRIPT ACCENT block: `.script`, `<em>` inside article
-bodies and ledes, `<mark>` search hits, and the footer's closing line. Wrap any
-word in `<span class="script">word</span>` to give it the accent face.
+bodies, ledes and hero tags, `<mark>` search hits, page kickers, and the footer's
+closing line. Wrap any word in `<span class="script">word</span>` to give it the
+accent face.
+
+Article subheads (`.article-body h3`) stay on the slab on purpose. A reader
+meets a dozen of them in one post and the script stops being readable at that
+rate, so weight and the red bar carry the hierarchy there instead.

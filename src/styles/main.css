@@ -2683,8 +2683,8 @@ h3 .script,
   color: inherit;
 }
 
-/* 2. section headings inside an article live with the rest of the article
-      styles, see `.article-body h3` further down */
+/* 2. article subheads deliberately do NOT take the script face: too many in a
+      row and it stops being readable. See `.article-body h3` further down. */
 
 /* 3. page kickers. Uppercase at 0.32em tracking tears a script face apart,
    so this one drops the caps and the tracking and grows instead. */
@@ -3130,14 +3130,16 @@ html.night .pc-plate[data-cat='learning'] {
   color: var(--ink);
 }
 
-/* script face, so the subheads read as handwriting against the slab body */
+/* the slab, not the script: a reader hits a dozen of these in a row and the
+   script face stops being readable at that rate. Weight and the red bar carry
+   the hierarchy instead. */
 .article-body h3 {
-  font-family: var(--font-script);
-  font-size: 1.7rem;
-  font-weight: 400;
-  line-height: 1.3;
-  letter-spacing: 0.01em;
-  margin: 2.3rem 0 0.8rem;
+  font-family: var(--font-display);
+  font-size: 1.42rem;
+  font-weight: 700;
+  line-height: 1.34;
+  letter-spacing: 0.004em;
+  margin: 2.4rem 0 0.85rem;
   padding-left: 0.9rem;
   border-left: 3px solid var(--red);
 }
