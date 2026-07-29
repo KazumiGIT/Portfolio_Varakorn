@@ -3,6 +3,27 @@
    Design language: warm paper, mincho serif, hanko red, printed-matter UI.
    =========================================================================== */
 
+/* ---------- fonts ----------
+   local() first, so a copy installed on the viewer's machine wins. The url()
+   lines are live once the licensed webfont kits sit in public/fonts. */
+@font-face {
+  font-family: 'Volta';
+  src: local('Volta Regular'), local('Volta');
+  /* url('/fonts/volta-regular.woff2') format('woff2'); */
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Rocket Script';
+  src: local('Rocket Script'), local('RocketScript');
+  /* url('/fonts/rocket-script.woff2') format('woff2'); */
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ---------- tokens ---------- */
 :root {
   --paper: #f3ebdd;
@@ -20,8 +41,14 @@
   --green: #76865b;
   --blue: #64788f;
 
-  --font-display: 'Fraunces', 'Iowan Old Style', Georgia, serif;
-  --font-body: 'Manrope', 'Avenir Next', system-ui, sans-serif;
+  /* Volta carries the page, Rocket Script is the accent. Both are licensed, so
+     until the kits land in public/fonts the free stand-ins do the work:
+     Zilla Slab for the 1950s advertising slab, Yellowtail for the sign script.
+     Drop the real files in and they win automatically, no other edit. */
+  --font-display: 'Volta', 'Zilla Slab', 'Iowan Old Style', Georgia, serif;
+  --font-body: 'Volta', 'Zilla Slab', 'Iowan Old Style', Georgia, serif;
+  --font-script: 'Rocket Script', 'Yellowtail', 'Segoe Script', 'Snell Roundhand',
+    'Brush Script MT', cursive;
 
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --shadow-press: 4px 4px 0 var(--ink);
@@ -101,6 +128,22 @@ button {
   background: none;
   border: none;
   cursor: pointer;
+}
+
+/* beats any component display rule (grid/flex) when JS toggles .hidden */
+[hidden] {
+  display: none !important;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 ::selection {
@@ -1514,9 +1557,11 @@ html.night .hero-title {
 }
 
 .footer .fbrand .jp-line {
-  font-family: var(--font-display);
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-family: var(--font-script);
+  font-size: 1.7rem;
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--red);
   margin-top: 0.9rem;
 }
 
@@ -2248,8 +2293,469 @@ html.night .hero-title {
 }
 
 /* ===========================================================================
-   BLOG
+   BLOG — shelves, filters, search
    =========================================================================== */
+.blog-controls {
+  margin-bottom: clamp(2.2rem, 5vw, 3.4rem);
+}
+
+/* ---- shelf tabs: printed index tabs ---- */
+.cat-tabs {
+  display: flex;
+  border: 1px solid var(--line);
+  background: var(--paper-2);
+}
+
+.cat-tab {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  align-items: flex-start;
+  padding: 0.85rem clamp(0.85rem, 2vw, 1.4rem);
+  padding-right: 2.4rem;
+  text-align: left;
+  color: var(--ink-2);
+  transition: background 0.28s var(--ease-out), color 0.28s;
+}
+
+.cat-tab + .cat-tab {
+  border-left: 1px solid var(--line);
+}
+
+.cat-tab::after {
+  content: '';
+  position: absolute;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  height: 3px;
+  background: var(--red);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s var(--ease-out);
+}
+
+.cat-tab .ct-k {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  transition: color 0.28s;
+}
+
+.cat-tab .ct-l {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1rem, 2.1vw, 1.24rem);
+  line-height: 1.25;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cat-tab .ct-n {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.9rem;
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--ink-3);
+  transition: color 0.28s;
+}
+
+.cat-tab:hover {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.cat-tab.is-on {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.cat-tab.is-on::after {
+  transform: scaleX(1);
+}
+
+.cat-tab.is-on .ct-k {
+  color: var(--red);
+}
+
+.cat-tab.is-on .ct-n {
+  color: var(--ink-2);
+}
+
+/* ---- blurb + search ---- */
+.blog-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+  padding: 1.1rem 0 1rem;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.cat-blurb {
+  color: var(--ink-2);
+  font-size: 0.92rem;
+  max-width: 48ch;
+}
+
+.blog-search {
+  position: relative;
+  flex: 0 1 clamp(200px, 30vw, 310px);
+}
+
+.blog-search input {
+  width: 100%;
+  font: inherit;
+  font-size: 0.88rem;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 0;
+  padding: 0.6rem 2.4rem 0.6rem 0.9rem;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.blog-search input::placeholder {
+  color: var(--ink-3);
+}
+
+.blog-search input:focus {
+  outline: none;
+  border-color: var(--ink);
+  box-shadow: 3px 3px 0 var(--line);
+}
+
+.blog-search input:focus-visible {
+  outline: none;
+}
+
+.bs-icon {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  margin-top: -8px;
+  width: 11px;
+  height: 11px;
+  border: 1.6px solid var(--ink-3);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.bs-icon::after {
+  content: '';
+  position: absolute;
+  right: -5px;
+  bottom: -3px;
+  width: 7px;
+  height: 1.6px;
+  background: var(--ink-3);
+  transform: rotate(45deg);
+}
+
+/* ---- year + topic dropdowns ---- */
+.facets {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.7rem 2rem;
+  padding-top: 1.1rem;
+}
+
+.facet {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.facet-label {
+  flex: none;
+  width: 3.4rem;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.facet-select {
+  position: relative;
+  width: clamp(160px, 21vw, 240px);
+}
+
+.facet-select select {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  min-height: 44px;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 0;
+  padding: 0.6rem 2.5rem 0.6rem 0.85rem;
+  text-overflow: ellipsis;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+/* the popup is drawn by the OS, so it needs its own colours */
+.facet-select option {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+html.night .facet-select select {
+  color-scheme: dark;
+}
+
+.facet-select select:hover {
+  border-color: var(--ink);
+}
+
+.facet-select select:focus-visible {
+  outline: none;
+  border-color: var(--ink);
+  box-shadow: 3px 3px 0 var(--line);
+}
+
+/* caret */
+.facet-select::after {
+  content: '';
+  position: absolute;
+  right: 1.05rem;
+  top: 50%;
+  margin-top: -5px;
+  width: 7px;
+  height: 7px;
+  border-right: 1.6px solid var(--ink-3);
+  border-bottom: 1.6px solid var(--ink-3);
+  transform: rotate(45deg);
+  pointer-events: none;
+}
+
+/* an active filter reads at a glance across the whole control */
+.facet-select.is-on select {
+  background: var(--red);
+  border-color: var(--red);
+  color: #fbf4e6;
+}
+
+.facet-select.is-on::after {
+  border-color: rgba(251, 244, 230, 0.8);
+}
+
+/* ---- result line ---- */
+.result-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.15rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--line-soft);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.clear-btn {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--red);
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 1px;
+  transition: color 0.2s, opacity 0.2s;
+}
+
+.clear-btn:hover {
+  color: var(--ink);
+}
+
+/* ---- empty state ---- */
+.blog-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  text-align: center;
+  padding: clamp(2.8rem, 8vw, 4.6rem) 1.5rem;
+  border: 1px dashed var(--line);
+}
+
+.blog-empty h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.25rem, 3vw, 1.6rem);
+}
+
+.blog-empty p {
+  color: var(--ink-2);
+  font-size: 0.92rem;
+}
+
+.be-seal {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1.5px dashed var(--line);
+  color: var(--ink-3);
+  font-family: var(--font-display);
+  font-weight: 800;
+  border-radius: 7px;
+  transform: rotate(-4deg);
+}
+
+.link-jump {
+  font-weight: 700;
+  color: var(--red);
+  border-bottom: 1px solid currentColor;
+}
+
+.link-jump:hover {
+  color: var(--ink);
+}
+
+/* ---- search hit highlight ---- */
+mark {
+  background: rgba(207, 154, 63, 0.36);
+  color: inherit;
+  padding: 0 0.12em;
+}
+
+html.night mark {
+  background: rgba(207, 154, 63, 0.3);
+  color: var(--ink);
+}
+
+/* ===========================================================================
+   SCRIPT ACCENT — highlighted words and keywords
+   A script face runs small and tight beside a text face, so every use below
+   is nudged up and given air. Each block is separate on purpose: drop one and
+   the rest keep working.
+   =========================================================================== */
+
+/* 1. keywords: anything wearing .script, plus emphasis and search hits */
+.script,
+.article-body em,
+.lede em,
+.hero-tag em,
+.display em,
+mark {
+  font-family: var(--font-script);
+  font-style: normal;
+  font-size: 1.1em;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  /* script side bearings are tiny, so words collide without this */
+  margin-inline: 0.1em;
+}
+
+.script {
+  color: var(--red);
+}
+
+/* inside a heading the size is already set, so only swap the family */
+h1 .script,
+h2 .script,
+h3 .script,
+.display .script,
+.display em,
+.hero-title .script {
+  font-size: 1.06em;
+  color: inherit;
+}
+
+/* 2. section headings inside an article live with the rest of the article
+      styles, see `.article-body h3` further down */
+
+/* 3. page kickers. Uppercase at 0.32em tracking tears a script face apart,
+   so this one drops the caps and the tracking and grows instead. */
+.kicker {
+  font-family: var(--font-script);
+  font-size: 1.05rem;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  color: var(--red);
+}
+
+.kicker::before {
+  width: 7px;
+  height: 7px;
+}
+
+/* the hero kicker sits above a very large name, so it carries a little more */
+.hero-kicker {
+  font-size: clamp(1.05rem, 1.8vw, 1.35rem);
+}
+
+@media (max-width: 700px) {
+  .cat-tabs {
+    flex-direction: column;
+  }
+  .cat-tab {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 0.7rem;
+    padding: 0.72rem 1rem;
+    padding-right: 2.6rem;
+  }
+  .cat-tab + .cat-tab {
+    border-left: none;
+    border-top: 1px solid var(--line);
+  }
+  .cat-tab .ct-n {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .cat-tab::after {
+    top: -1px;
+    bottom: -1px;
+    right: auto;
+    width: 3px;
+    height: auto;
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  .cat-tab.is-on::after {
+    transform: scaleY(1);
+  }
+  .blog-search {
+    flex: 1 1 100%;
+  }
+  .facets {
+    gap: 0.55rem;
+  }
+  /* one facet per line, dropdown takes the rest of the width */
+  .facet {
+    flex: 1 1 100%;
+    gap: 0.75rem;
+  }
+  .facet-select {
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 0;
+  }
+}
+
 .post-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -2266,10 +2772,8 @@ html.night .hero-title {
   position: relative;
   border: 1px solid var(--line);
   background: var(--paper);
-  padding: clamp(1.5rem, 3vw, 2.1rem);
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
   text-align: left;
   width: 100%;
   transition: transform 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out),
@@ -2281,6 +2785,7 @@ html.night .hero-title {
 .post-card::before {
   content: '';
   position: absolute;
+  z-index: 2; /* the fold cuts the cover, not the other way round */
   top: 0;
   right: 0;
   width: 26px;
@@ -2288,6 +2793,148 @@ html.night .hero-title {
   background: var(--paper-3);
   border-left: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
+}
+
+.pc-body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: clamp(1.5rem, 3vw, 2.1rem);
+}
+
+/* ---- featured image ---- */
+.pc-cover {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--paper-2);
+  border-bottom: 1px solid var(--line);
+}
+
+.pc-cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s var(--ease-out);
+}
+
+.post-card:hover .pc-cover img {
+  transform: scale(1.045);
+}
+
+html.night .pc-cover img {
+  filter: brightness(0.86) saturate(0.9);
+}
+
+/* ---- generated plate, for posts with no photo yet ---- */
+.pc-plate {
+  display: grid;
+  place-items: center;
+}
+
+.pc-plate[data-cat='blog'] {
+  background: var(--paper-2);
+}
+.pc-plate[data-cat='journey'] {
+  background: var(--paper-3);
+}
+.pc-plate[data-cat='learning'] {
+  background: var(--paper-deep);
+}
+
+html.night .pc-plate[data-cat='learning'] {
+  background: var(--paper-2);
+}
+
+/* printed pattern, picked from the slug so a post always keeps its own */
+.pc-plate::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.55;
+}
+
+.pc-plate[data-pat='0']::after {
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent 0 11px,
+    var(--line) 11px 12px
+  );
+}
+.pc-plate[data-pat='1']::after {
+  background-image: radial-gradient(var(--line) 1.6px, transparent 1.7px);
+  background-size: 15px 15px;
+}
+.pc-plate[data-pat='2']::after {
+  background-image: repeating-radial-gradient(
+    circle at 82% 18%,
+    transparent 0 15px,
+    var(--line) 15px 16px
+  );
+}
+.pc-plate[data-pat='3']::after {
+  background-image: repeating-linear-gradient(0deg, transparent 0 10px, var(--line) 10px 11px);
+}
+.pc-plate[data-pat='4']::after {
+  background-image: repeating-linear-gradient(0deg, transparent 0 16px, var(--line) 16px 17px),
+    repeating-linear-gradient(90deg, transparent 0 16px, var(--line) 16px 17px);
+}
+.pc-plate[data-pat='5']::after {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent 0 7px,
+    var(--line) 7px 8px,
+    transparent 8px 22px
+  );
+}
+
+.pcp-seal,
+.pcp-kicker,
+.pcp-no {
+  position: relative;
+  z-index: 1;
+}
+
+.pcp-seal {
+  display: grid;
+  place-items: center;
+  width: clamp(52px, 9vw, 66px);
+  aspect-ratio: 1;
+  background: var(--red);
+  color: #fbf4e6;
+  border-radius: 6px;
+  font-size: clamp(1.5rem, 3.4vw, 1.9rem);
+  line-height: 1;
+  box-shadow: 3px 3px 0 rgba(50, 42, 32, 0.14);
+  transition: transform 0.4s var(--ease-out);
+}
+
+.post-card:hover .pcp-seal {
+  transform: rotate(-4deg) scale(1.05);
+}
+
+.pcp-kicker {
+  position: absolute;
+  top: 0.9rem;
+  left: 1rem;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.pcp-no {
+  position: absolute;
+  right: 1rem;
+  bottom: 0.8rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  color: var(--ink-3);
 }
 
 .post-card:hover {
@@ -2429,6 +3076,11 @@ html.night .hero-title {
   color: var(--ink-2);
 }
 
+.article .a-meta span:first-child {
+  font-weight: 700;
+  color: var(--red);
+}
+
 .article h1 {
   font-family: var(--font-display);
   font-weight: 800;
@@ -2442,6 +3094,24 @@ html.night .hero-title {
   height: 4px;
   background: var(--red);
   margin: 1.6rem 0 2.2rem;
+}
+
+/* the card's cover, opened up across the column */
+.article .pc-cover {
+  aspect-ratio: 3 / 2;
+  border: 1px solid var(--line);
+  margin-bottom: 0.9rem;
+}
+
+.article .a-caption {
+  margin: -0.2rem 0 2.2rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
+}
+
+.article .pc-cover + .article-body {
+  margin-top: 2.2rem;
 }
 
 .article-body p {
@@ -2460,11 +3130,14 @@ html.night .hero-title {
   color: var(--ink);
 }
 
+/* script face, so the subheads read as handwriting against the slab body */
 .article-body h3 {
-  font-family: var(--font-display);
-  font-size: 1.35rem;
-  font-weight: 700;
-  margin: 2.1rem 0 0.8rem;
+  font-family: var(--font-script);
+  font-size: 1.7rem;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+  margin: 2.3rem 0 0.8rem;
   padding-left: 0.9rem;
   border-left: 3px solid var(--red);
 }
@@ -2472,6 +3145,16 @@ html.night .hero-title {
 .article-body em {
   font-style: normal;
   background-image: linear-gradient(transparent 62%, rgba(207, 154, 63, 0.38) 62%);
+}
+
+.article-body code {
+  font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+  font-size: 0.86em;
+  padding: 0.1em 0.36em;
+  background: var(--paper-2);
+  border: 1px solid var(--line-soft);
+  color: var(--ink);
+  overflow-wrap: break-word;
 }
 
 .article .a-end {

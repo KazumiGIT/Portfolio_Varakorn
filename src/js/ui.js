@@ -150,16 +150,20 @@ function initMenu() {
 }
 
 /* ---------- scroll reveals --------------------------------------------------- */
-function initReveals() {
+
+/** Reveal every [data-reveal] inside `root`. Safe to call again after a
+    dynamic re-render (blog filtering) so fresh nodes get observed too. */
+export function revealIn(root = document) {
   // auto-stagger children of [data-stagger]
-  document.querySelectorAll('[data-stagger]').forEach((wrap) => {
+  root.querySelectorAll('[data-stagger]').forEach((wrap) => {
     [...wrap.children].forEach((child, i) => {
       child.setAttribute('data-reveal', '');
       child.style.setProperty('--d', `${i * 0.08}s`);
     });
   });
 
-  const els = document.querySelectorAll('[data-reveal]');
+  const els = root.querySelectorAll('[data-reveal]:not(.is-in)');
+  if (!els.length) return;
   if (reduced) {
     els.forEach((el) => el.classList.add('is-in'));
     return;
@@ -176,6 +180,10 @@ function initReveals() {
     { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
   );
   els.forEach((el) => io.observe(el));
+}
+
+function initReveals() {
+  revealIn(document);
 }
 
 /* ---------- counters --------------------------------------------------------- */

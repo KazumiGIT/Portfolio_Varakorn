@@ -16,7 +16,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@300;400;500;600;700&family=Yellowtail&display=swap"
       rel="stylesheet"
     />
     <script>
@@ -73,7 +73,8 @@
           <h1 class="display" data-reveal style="--d:.06s">Blog</h1>
           <p class="lede" data-reveal style="--d:.12s">
             Content, code, and automation, written by someone who has shipped all three. No
-            listicles, no growth hacks, just what actually happened and what it taught me.
+            listicles, no growth hacks, just <span class="script">what actually happened</span> and
+            what it taught me.
           </p>
         </div>
         <canvas id="accent-canvas" class="accent-canvas" aria-label="Floating open book shedding kana characters. Drag to spin."></canvas>
@@ -83,7 +84,42 @@
     <!-- ============ POSTS ============ -->
     <section class="section">
       <div class="container">
+        <!-- shelves + filters -->
+        <div class="blog-controls" data-reveal>
+          <div class="cat-tabs" role="tablist" aria-label="Blog categories" data-cats></div>
+
+          <div class="blog-bar">
+            <p class="cat-blurb" data-blurb></p>
+            <div class="blog-search">
+              <label class="sr-only" for="blog-q">Search notes</label>
+              <input
+                id="blog-q"
+                type="search"
+                placeholder="Search titles, tags, text"
+                autocomplete="off"
+                data-search
+              />
+              <span class="bs-icon" aria-hidden="true"></span>
+            </div>
+          </div>
+
+          <div class="facets" data-facets></div>
+
+          <div class="result-line">
+            <span class="rl-count" data-result-count aria-live="polite"></span>
+            <button class="clear-btn" type="button" data-clear hidden>Clear filters</button>
+          </div>
+        </div>
+
         <div class="post-grid" data-posts></div>
+
+        <div class="blog-empty" data-empty hidden>
+          <span class="be-seal" aria-hidden="true">V</span>
+          <h3>Nothing filed under that</h3>
+          <p data-empty-note></p>
+          <button class="btn btn--ghost" type="button" data-clear-2>Clear filters</button>
+        </div>
+
         <p class="note-dim" style="margin-top:2.5rem" data-reveal>
           New notes land here when something is worth writing down.
         </p>
