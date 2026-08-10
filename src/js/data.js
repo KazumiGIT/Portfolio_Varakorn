@@ -6,7 +6,7 @@ export const profile = {
   name: 'Varakorn',
   alias: 'Kazumi',
   role: 'Full Stack AI Engineer',
-  roleSecond: 'Content Creator',
+  roleSecond: 'AI Marketing',
   tagline: 'I build AI agents, automation pipelines, and content that travels.',
   location: 'Subang Jaya · Selangor · Malaysia',
   email: 'varakornm0403@gmail.com',
@@ -23,7 +23,7 @@ export const profile = {
 export const valueCategories = [
   {
     no: '01',
-    title: 'Content Creator',
+    title: 'AI Marketing',
     kicker: 'the reach',
     stat: { value: 38, suffix: 'M+', label: 'views across social platforms' },
     story:
