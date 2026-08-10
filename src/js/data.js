@@ -177,7 +177,7 @@ export const experience = [
       'AI video editing: automated cut, caption, and repurpose pipelines that ship real campaigns.',
     ],
     card: {
-      no: '004',
+      no: '005',
       type: 'SPECIALIST',
       accent: 'green',
       photo: '/photos/P10X-Working-Space.jpg',
@@ -202,7 +202,7 @@ export const experience = [
     ],
     link: 'https://www.orionautomation.xyz/',
     card: {
-      no: '003',
+      no: '004',
       type: 'FOUNDER',
       accent: 'gold',
       photo: '/photos/Orion-Automation-Work-Space.jpg',
@@ -226,7 +226,7 @@ export const experience = [
       'Advanced Python, agentic workflows, and system integration, daily and intensively.',
     ],
     card: {
-      no: '002',
+      no: '003',
       type: 'ENGINEER',
       accent: 'blue',
       photo: '/photos/Varakorn-Gamuda-Ai-Academy.jpg',
@@ -250,7 +250,7 @@ export const experience = [
       'Drove to every state in Malaysia for brand campaigns on the ground.',
     ],
     card: {
-      no: '001',
+      no: '002',
       type: 'CREATOR',
       accent: 'red',
       photo: '/photos/Varakorn-HYGR-Content-Creator.jpg',
@@ -260,6 +260,30 @@ export const experience = [
         { k: 'Views', v: '38,000,000+' },
         { k: 'Videos', v: '261+' },
         { k: 'States toured', v: '13 / 13' },
+      ],
+    },
+  },
+  {
+    org: 'College Community Pasir Salak',
+    role: 'Cert in Information Technology',
+    period: 'Aug 2022 to Jan 2024',
+    place: 'Perak, Malaysia',
+    points: [
+      'Web development foundations: HTML, CSS and PHP.',
+      'Game development in Unity and Unreal Engine, plus mobile apps and IoT experiments.',
+      'Where I learned I liked building things more than studying them.',
+    ],
+    card: {
+      no: '001',
+      type: 'STUDENT',
+      accent: 'blue',
+      photo: '/photos/College-Community-Pasir-Salak-STM.jpg',
+      photoPos: '50% 45%',
+      flavor: 'Base form. First taste of typing something and watching it appear on screen.',
+      stats: [
+        { k: 'Cert', v: 'Information Technology' },
+        { k: 'Stack', v: 'HTML · PHP · Unity' },
+        { k: 'Class', v: 'Sijil Teknologi Maklumat' },
       ],
     },
   },
