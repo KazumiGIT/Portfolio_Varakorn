@@ -21,6 +21,7 @@ Standing rules from the owner (Varakorn). These outlive any chat session; follow
 - Owner is based in **Subang Jaya, Selangor** (never Shah Alam).
 - P10X Media = marketing department of P10X, located in **Sunway, Subang Jaya**. Role title: AI Specialist (owner's own framing: "Full Stack AI Engineer").
 - Owner's first 3M Pro Shop blog article is `self-healing-ppf-vs-self-healing-coating` — articles from it onward are his; the Proton eMAS 7 article is **not** his.
+- Orion Automation was registered **November 2025** (two months after leaving HYGR, before the Python bootcamp and Gamuda) — not 2026. It has **zero revenue to date**; the owner tells this honestly on the site. Its domain runs until November 2026. Never present Orion as a revenue-generating business.
 - "Figma Weavy" is one product name (not Figma + Weavy). Astro is "soon to be used" at P10X, not in use yet.
 
 ## Adding a page (checklist)
