@@ -10,6 +10,7 @@ const PAGES = [
   'experience/ai-specialist-p10x-media',
   'experience/orion-automation-founder',
   'experience/gamuda-ai-academy',
+  'experience/jomhack-python-bootcamp',
   'experience/hygr-content-creator',
   'experience/college-community-pasir-salak',
 ];
@@ -90,6 +91,7 @@ export default defineConfig(({ mode }) => {
           expP10x: resolve(__dirname, 'experience/ai-specialist-p10x-media.html'),
           expOrion: resolve(__dirname, 'experience/orion-automation-founder.html'),
           expGamuda: resolve(__dirname, 'experience/gamuda-ai-academy.html'),
+          expBootcamp: resolve(__dirname, 'experience/jomhack-python-bootcamp.html'),
           expHygr: resolve(__dirname, 'experience/hygr-content-creator.html'),
           expCollege: resolve(__dirname, 'experience/college-community-pasir-salak.html'),
         },

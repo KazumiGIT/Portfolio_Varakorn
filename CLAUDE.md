@@ -22,6 +22,9 @@ Standing rules from the owner (Varakorn). These outlive any chat session; follow
 - P10X Media = marketing department of P10X, located in **Sunway, Subang Jaya**. Role title: AI Specialist (owner's own framing: "Full Stack AI Engineer").
 - Owner's first 3M Pro Shop blog article is `self-healing-ppf-vs-self-healing-coating` — articles from it onward are his; the Proton eMAS 7 article is **not** his.
 - Orion Automation was registered **November 2025** (two months after leaving HYGR, before the Python bootcamp and Gamuda) — not 2026. It has **zero revenue to date**; the owner tells this honestly on the site. Its domain runs until November 2026. Never present Orion as a revenue-generating business.
+- Experience order (newest first): P10X Media, Gamuda AI Academy, Python Bootcamp, Orion Automation, HYGR, College Pasir Salak. Cards numbered 001 (College) to 006 (P10X).
+- Python Bootcamp = **JomHack Free Python Bootcamp**, Dec 2025 cohort, found via **Mr Inbaraj's TikTok lives** (tiktok.com/@inbaraj.s) — credit him respectfully. It led to Gamuda AI Academy (GAIA), fully sponsored by Yayasan Gamuda; owner passed the coding assessment with only a Cert in IT.
+- Gamuda AI Academy: Cohort 5, KL Campus, Jan–Mar 2026, 9am–12pm classes + 1pm–5pm capstone; Full Stack Dev + AI Engineer fundamentals (AI Engineer ≠ ML Engineer). Team = **JAAVIS** (Jason, Alan, Adam, Varakorn, Irfan, Shasha), owner was youngest + team lead. Only 2 of 7 teams presented to YB Datuk Chang Lih Kang (MOSTI); Team 2 won 1st for presentation. Second YB he spoke with (first: YB Syed Saddiq, during HYGR). Key mentors quoted on site: Meng (ex HYGR boss) and Mr Johan Nasir.
 - "Figma Weavy" is one product name (not Figma + Weavy). Astro is "soon to be used" at P10X, not in use yet.
 
 ## Adding a page (checklist)
