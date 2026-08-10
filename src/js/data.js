@@ -121,10 +121,10 @@ export const timeline = [
     period: 'Jan 2024 to Aug 2025',
     chip: 'the airwaves',
     title: 'HYGR',
-    role: 'Content Creator',
+    role: 'Video Editor Intern → Content Creator',
     page: '/experience/hygr-content-creator',
     story:
-      'I joined a local brand and learned the algorithm by feeding it. 261+ videos for HYGR’s Natural Deodorant and Tinted Lip Balm lines, 38 million views across every platform, booth sales in all 13 states of Malaysia. I learned voice, pacing, editing, and how to sell face to face.',
+      'An IT student with one multimedia class snuck into a video editor internship, moved to the city, and learned the algorithm by feeding it. 261+ videos for HYGR’s Natural Deodorant and Tinted Lip Balm lines, 38 million views across every platform, booth pop ups in all 13 states of Malaysia. I learned voice, pacing, editing, and how to sell face to face.',
   },
   {
     year: '2025',
@@ -274,13 +274,14 @@ export const experience = [
   },
   {
     org: 'HYGR',
-    role: 'Content Creator',
+    role: 'Video Editor Intern → Content Creator',
     period: 'Jan 2024 to Aug 2025',
     place: 'Malaysia · all 13 states',
     page: '/experience/hygr-content-creator',
     points: [
+      'Started as a video editor intern in Jan 2024 (an IT student with one multimedia class and a club video portfolio); full time by June.',
       'Produced viral video content for the Natural Deodorant and Tinted Lip Balm lines: 38M+ views across 261+ videos.',
-      'Supported offline booth sales directly. Sales floor and camera, same day.',
+      'Supported offline booth sales directly, including pop ups with ZUS. Sales floor and camera, same day.',
       'Drove to every state in Malaysia for brand campaigns on the ground.',
     ],
     card: {
@@ -547,7 +548,7 @@ export const posts = [
       <p>I was a mediocre student in the parts that required memorising and a much better one in the parts that required building. That gap told me something I did not act on for another three years.</p>
       <h3>The habit that survived</h3>
       <p>The specific technologies aged badly. PHP is not in my stack. I have not opened Unreal since. What survived was the reflex: when I do not understand something, I build a small version of it. That reflex is doing all the work in my career right now, and it started in a computer lab in Perak with a project deadline I was going to miss.</p>
-      <p>I left in January 2024 without a clear plan, which is how the next chapter ended up being a camera instead of a keyboard.</p>
+      <p>In my final semester the internship hunt began, and I found my loophole: one multimedia class on an IT syllabus, plus the videos I had been making for our club. That portfolio got me into HYGR as a video editor intern in January 2024, which is how the next chapter ended up being a camera instead of a keyboard.</p>
     `,
   },
   {
@@ -561,7 +562,7 @@ export const posts = [
     tags: ['hygr', 'content'],
     minutes: 5,
     body: `
-      <p>January 2024. I joined HYGR, a Malaysian brand making natural deodorant and tinted lip balm, as their content creator. The job description was short. The job was not.</p>
+      <p>January 2024. I joined HYGR, a Malaysian brand making natural deodorant and tinted lip balm, as a video editor intern who talked his way in with one multimedia class and a folder of college club videos. By June they offered me full time, and the role grew into content creator. The job description was short. The job was not.</p>
       <p>Script, shoot, edit, post, read the numbers, repeat. Two product lines, every platform, no crew. By the time I left in August 2025 the counter said 261 videos and 38 million views.</p>
       <h3>Learning the algorithm by feeding it</h3>
       <p>You cannot read your way into understanding distribution. I tried. Every article says the same six things and none of them tell you why your video died at 40% retention on a Tuesday. The only teacher is volume with attention: ship, watch where people leave, change one thing, ship again.</p>
