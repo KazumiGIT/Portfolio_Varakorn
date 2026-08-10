@@ -173,6 +173,59 @@
   max-width: 68ch;
 }
 
+/* ---------- horizontal video strip (TikTok embeds) ---------- */
+.vid-strip {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 325px;
+  gap: 1.1rem;
+  overflow-x: auto;
+  padding: 1rem 0.2rem 1.5rem;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 480px) {
+  .vid-strip {
+    grid-auto-columns: min(325px, 86vw);
+  }
+}
+
+.vid-strip > * {
+  scroll-snap-align: center;
+}
+
+.vid-strip .tiktok-embed {
+  margin: 0 !important;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.vid-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.7rem;
+  border: 1px solid var(--line);
+  background: var(--paper-2);
+  padding: 1.5rem;
+  min-height: 320px;
+}
+
+.vid-card .big {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.35rem;
+  line-height: 1.25;
+}
+
+.vid-card p {
+  color: var(--ink-2);
+  font-size: 0.92rem;
+}
+
 /* ---------- prev / next experiences ---------- */
 .xp-nextprev {
   display: grid;
