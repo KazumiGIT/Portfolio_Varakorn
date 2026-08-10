@@ -1817,10 +1817,22 @@ html.night .hero-title {
    =========================================================================== */
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  grid-auto-flow: column;
+  grid-auto-columns: clamp(270px, 24vw, 330px);
   gap: clamp(1.4rem, 3.5vw, 2.4rem);
   max-width: 1060px;
   margin-inline: auto;
+  overflow-x: auto;
+  /* vertical air so the tilt/shadow/flip never clips against the scroller */
+  padding: 1.2rem 0.6rem 1.6rem;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+  -webkit-overflow-scrolling: touch;
+}
+
+.card-grid .tcard {
+  scroll-snap-align: center;
 }
 
 .tcard {
