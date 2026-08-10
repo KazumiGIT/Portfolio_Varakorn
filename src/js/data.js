@@ -174,7 +174,7 @@ export const experience = [
     org: 'P10X Media',
     role: 'AI Specialist',
     period: 'May 2026 to present',
-    place: 'Malaysia',
+    place: 'Sunway, Subang Jaya',
     page: '/experience/ai-specialist-p10x-media',
     points: [
       'AI workflows: pipelines that connect models, data, and tools into systems that run themselves.',
