@@ -1,4 +1,5 @@
 import '../../styles/main.css';
+import '../../styles/expnav.css';
 import { initSite, revealIn, prefersReducedMotion } from '../ui.js';
 import { renderSocials } from '../render.js';
 import { posts, postCategories } from '../data.js';

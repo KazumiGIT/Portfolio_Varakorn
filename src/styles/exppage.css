@@ -1,0 +1,217 @@
+/* ===========================================================================
+   EXPERIENCE DETAIL PAGES — breadcrumbs, fact sheet, prose, FAQ.
+   Reuses the paper/ink tokens from main.css; loaded only by expDetail.js.
+   =========================================================================== */
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: baseline;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+}
+
+.crumbs a {
+  color: var(--ink-2);
+}
+
+.crumbs a:hover {
+  color: var(--red);
+}
+
+.crumbs .sep {
+  color: var(--ink-3);
+}
+
+/* ---------- quick fact sheet under the hero ---------- */
+.xp-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0;
+  border: 1px solid var(--line);
+  background: var(--paper-2);
+  margin-top: 2.4rem;
+}
+
+.xp-fact {
+  padding: 1rem 1.2rem;
+  border-right: 1px solid var(--line-soft);
+}
+
+.xp-fact:last-child {
+  border-right: none;
+}
+
+@media (max-width: 700px) {
+  .xp-fact {
+    border-right: none;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .xp-fact:last-child {
+    border-bottom: none;
+  }
+}
+
+.xp-fact .k {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.xp-fact .v {
+  display: block;
+  margin-top: 0.2rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* ---------- long-form prose ---------- */
+.xp-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .xp-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.xp-prose h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 3vw, 1.8rem);
+  margin: 2.2rem 0 0.8rem;
+}
+
+.xp-prose h2:first-child {
+  margin-top: 0;
+}
+
+.xp-prose p {
+  color: var(--ink-2);
+  margin-bottom: 1rem;
+  max-width: 62ch;
+}
+
+.xp-prose strong {
+  color: var(--ink);
+}
+
+.xp-prose ul {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+}
+
+.xp-prose ul li {
+  position: relative;
+  padding-left: 1.4rem;
+  margin-bottom: 0.55rem;
+  color: var(--ink-2);
+}
+
+.xp-prose ul li::before {
+  content: '◆';
+  position: absolute;
+  left: 0;
+  top: 0.15em;
+  font-size: 0.6em;
+  color: var(--red);
+}
+
+/* ---------- FAQ ---------- */
+.faq-list {
+  border-top: 1px solid var(--line);
+}
+
+.faq-item {
+  border-bottom: 1px solid var(--line);
+}
+
+.faq-item summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 1.1rem 0.2rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.02rem;
+}
+
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-item summary::after {
+  content: '+';
+  color: var(--red);
+  font-size: 1.2rem;
+  line-height: 1;
+  flex: none;
+  transition: transform 0.25s var(--ease-out);
+}
+
+.faq-item[open] summary::after {
+  transform: rotate(45deg);
+}
+
+.faq-item .faq-a {
+  padding: 0 0.2rem 1.2rem;
+  color: var(--ink-2);
+  max-width: 68ch;
+}
+
+/* ---------- prev / next experiences ---------- */
+.xp-nextprev {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 2.5rem;
+}
+
+@media (max-width: 700px) {
+  .xp-nextprev {
+    grid-template-columns: 1fr;
+  }
+}
+
+.xp-np {
+  display: block;
+  border: 1px solid var(--line);
+  background: var(--paper-2);
+  padding: 1rem 1.2rem;
+  transition: transform 0.18s var(--ease-out), background 0.18s;
+}
+
+.xp-np:hover {
+  transform: translateY(-3px);
+  background: var(--paper);
+}
+
+.xp-np .lab {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.xp-np .ttl {
+  display: block;
+  margin-top: 0.2rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+}

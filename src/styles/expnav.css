@@ -1,0 +1,115 @@
+/* ===========================================================================
+   EXPERIENCE DROPDOWN — desktop nav flyout + mobile submenu.
+   Lives outside main.css so every page entry can import it independently.
+   =========================================================================== */
+.nav-drop {
+  position: relative;
+}
+
+.nav-drop > .nav-link {
+  flex-direction: row;
+  align-items: baseline;
+  gap: 0.3rem;
+}
+
+.nav-drop .drop-caret {
+  font-size: 0.55rem;
+  color: var(--ink-3);
+  transition: transform 0.25s var(--ease-out);
+}
+
+.nav-drop:hover .drop-caret,
+.nav-drop:focus-within .drop-caret {
+  transform: translateY(2px);
+  color: var(--red);
+}
+
+/* hover bridge across the gap so the flyout doesn't close mid-travel */
+.nav-drop::before {
+  content: '';
+  position: absolute;
+  left: -0.6rem;
+  right: -0.6rem;
+  top: 100%;
+  height: 16px;
+}
+
+.nav-drop-menu {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 50%;
+  translate: -50% 0;
+  min-width: 265px;
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+  box-shadow: var(--shadow-press);
+  list-style: none;
+  padding: 0.45rem;
+  margin: 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: opacity 0.22s var(--ease-out), transform 0.22s var(--ease-out),
+    visibility 0.22s;
+  z-index: 1000;
+}
+
+.nav-drop:hover .nav-drop-menu,
+.nav-drop:focus-within .nav-drop-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+
+.nav-drop-menu a {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 0.52rem 0.65rem;
+  border-bottom: 1px solid var(--line-soft);
+  transition: background 0.15s, color 0.15s;
+}
+
+.nav-drop-menu li:last-child a {
+  border-bottom: none;
+}
+
+.nav-drop-menu a:hover,
+.nav-drop-menu a:focus-visible {
+  background: var(--paper-2);
+  color: var(--red);
+}
+
+.nav-drop-menu .sub {
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+/* ---------- mobile menu submenu ---------- */
+.menu-sub {
+  list-style: none;
+  margin: 0.15rem 0 0;
+  padding: 0 0 0.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-sub a {
+  display: block;
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: var(--ink-2);
+  padding: 0.32rem 0 0.32rem 2.6rem;
+}
+
+.menu-sub a:active {
+  color: var(--red);
+}

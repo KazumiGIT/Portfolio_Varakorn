@@ -38,6 +38,39 @@
       html.night .curtain { background: #171209; }
     </style>
     <script type="module" src="/src/js/pages/journey.js"></script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://www.varakorn.me/journey",
+          "url": "https://www.varakorn.me/journey",
+          "name": "Journey · Varakorn",
+          "description": "Varakorn's story in six chapters: an IT certificate in Pasir Salak, 38M views at HYGR, a Python bootcamp, Gamuda AI Academy, founding Orion Automation, and AI Specialist at P10X Media.",
+          "inLanguage": "en",
+          "about": { "@id": "https://www.varakorn.me/#varakorn" }
+        },
+        {
+          "@type": "Person",
+          "@id": "https://www.varakorn.me/#varakorn",
+          "name": "Varakorn",
+          "alternateName": "Kazumi",
+          "url": "https://www.varakorn.me/home",
+          "jobTitle": "Full Stack AI Engineer & AI Digital Marketing",
+          "address": { "@type": "PostalAddress", "addressLocality": "Subang Jaya", "addressRegion": "Selangor", "addressCountry": "MY" },
+          "sameAs": [
+            "https://www.linkedin.com/in/varakorn-meunukdomn",
+            "https://github.com/KazumiGIT",
+            "https://www.tiktok.com/@kazumi_v",
+            "https://www.instagram.com/_kazumi.v_",
+            "https://youtube.com/@kazumi_v",
+            "https://www.orionautomation.xyz/"
+          ]
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
     <header class="nav">
@@ -50,7 +83,16 @@
           <ul class="nav-links">
             <li><a class="nav-link" href="/home">Home</a></li>
             <li><a class="nav-link" href="/journey">Journey</a></li>
-            <li><a class="nav-link" href="/experience">Experience</a></li>
+            <li class="nav-drop">
+              <a class="nav-link" href="/experience">Experience <span class="drop-caret" aria-hidden="true">&#9662;</span></a>
+              <ul class="nav-drop-menu" aria-label="Experience pages">
+                <li><a href="/experience/ai-specialist-p10x-media">P10X Media <span class="sub">AI Specialist</span></a></li>
+                <li><a href="/experience/orion-automation-founder">Orion Automation <span class="sub">Founder</span></a></li>
+                <li><a href="/experience/gamuda-ai-academy">Gamuda AI Academy <span class="sub">Engineer</span></a></li>
+                <li><a href="/experience/hygr-content-creator">HYGR <span class="sub">Content Creator</span></a></li>
+                <li><a href="/experience/college-community-pasir-salak">Pasir Salak <span class="sub">Student</span></a></li>
+              </ul>
+            </li>
             <li><a class="nav-link" href="/blog">Blog</a></li>
           </ul>
         </nav>
@@ -65,7 +107,16 @@
       <ul class="menu-links">
         <li><a class="menu-link" href="/home"><span class="idx">01</span>Home</a></li>
         <li><a class="menu-link" href="/journey"><span class="idx">02</span>Journey</a></li>
-        <li><a class="menu-link" href="/experience"><span class="idx">03</span>Experience</a></li>
+        <li>
+          <a class="menu-link" href="/experience"><span class="idx">03</span>Experience</a>
+          <ul class="menu-sub" aria-label="Experience pages">
+            <li><a href="/experience/ai-specialist-p10x-media">AI Specialist · P10X Media</a></li>
+            <li><a href="/experience/orion-automation-founder">Founder · Orion Automation</a></li>
+            <li><a href="/experience/gamuda-ai-academy">Engineer · Gamuda AI Academy</a></li>
+            <li><a href="/experience/hygr-content-creator">Content Creator · HYGR</a></li>
+            <li><a href="/experience/college-community-pasir-salak">Student · Pasir Salak</a></li>
+          </ul>
+        </li>
         <li><a class="menu-link" href="/blog"><span class="idx">04</span>Blog</a></li>
       </ul>
       <div class="menu-foot">

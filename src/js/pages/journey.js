@@ -1,4 +1,5 @@
 import '../../styles/main.css';
+import '../../styles/expnav.css';
 import { initSite, prefersReducedMotion, navigateWithCurtain } from '../ui.js';
 import { renderSocials } from '../render.js';
 import { timeline } from '../data.js';
@@ -19,6 +20,7 @@ if (tl) {
         <h3>${t.title}</h3>
         <div class="role">${t.role}</div>
         <p class="story">${t.story}</p>
+        ${t.page ? `<p><a class="link-u" href="${t.page}">Read the full chapter →</a></p>` : ''}
         ${
           t.photo
             ? `<figure class="polaroid">

@@ -514,7 +514,8 @@ export function mountHeroScene(canvas, tipEl, pinsEl) {
   diorama.add(globe);
 
   // floating experience cards — the résumé drifting around the desk
-  const expCards = experience.map((x) =>
+  // (only the three most recent roles; there are only three sky spots)
+  const expCards = experience.slice(0, 3).map((x) =>
     buildExpCard({
       type: x.card.type,
       title: x.org,

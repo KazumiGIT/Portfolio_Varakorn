@@ -1,4 +1,5 @@
 import '../../styles/main.css';
+import '../../styles/expnav.css';
 import { initSite, prefersReducedMotion } from '../ui.js';
 import { renderSocials, tagList } from '../render.js';
 import { valueCategories, projects, services, timeline } from '../data.js';

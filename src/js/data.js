@@ -110,6 +110,7 @@ export const timeline = [
     chip: 'the origin',
     title: 'College Community Pasir Salak',
     role: 'Cert in Information Technology',
+    page: '/experience/college-community-pasir-salak',
     photo: '/photos/College-Community-Pasir-Salak-STM.jpg',
     photoCaption: 'Sijil Teknologi Maklumat · Pasir Salak',
     story:
@@ -121,6 +122,7 @@ export const timeline = [
     chip: 'the airwaves',
     title: 'HYGR',
     role: 'Content Creator',
+    page: '/experience/hygr-content-creator',
     story:
       'I joined a local brand and learned the algorithm by feeding it. 261+ videos for HYGR’s Natural Deodorant and Tinted Lip Balm lines, 38 million views across every platform, booth sales in all 13 states of Malaysia. I learned voice, pacing, editing, and how to sell face to face.',
   },
@@ -139,6 +141,7 @@ export const timeline = [
     chip: 'the leap',
     title: 'Gamuda AI Academy',
     role: 'Full Stack AI Engineer · Project Team Lead',
+    page: '/experience/gamuda-ai-academy',
     photo: '/photos/gamuda-graduation.jpg',
     photoCaption: 'Graduation speech · Gamuda AI Academy, KL Campus, March 2026',
     story:
@@ -150,6 +153,7 @@ export const timeline = [
     chip: 'the founding',
     title: 'Orion Automation',
     role: 'Founder · Engineer',
+    page: '/experience/orion-automation-founder',
     story:
       'My own SSM registered automation studio in Subang Jaya. Custom web solutions, business process automation, chatbots, and SEO, AEO and GEO for businesses that want their busywork to disappear. A hybrid talent: communication trained on the sales floor, systems built like an engineer.',
   },
@@ -159,6 +163,7 @@ export const timeline = [
     chip: 'the specialist',
     title: 'P10X Media',
     role: 'AI Specialist',
+    page: '/experience/ai-specialist-p10x-media',
     story:
       'The hybrid goes professional. At P10X Media I put my current strengths to work every day: AI workflows, agentic AI systems, AI marketing workflows, and AI video editing. The camera years taught me what travels; the engineering years taught me how to automate it. This role uses both at once.',
   },
@@ -170,6 +175,7 @@ export const experience = [
     role: 'AI Specialist',
     period: 'May 2026 to present',
     place: 'Malaysia',
+    page: '/experience/ai-specialist-p10x-media',
     points: [
       'AI workflows: pipelines that connect models, data, and tools into systems that run themselves.',
       'Agentic AI: autonomous agents that read, decide, and act on real business tasks.',
@@ -195,6 +201,7 @@ export const experience = [
     role: 'Founder / Engineer',
     period: '2026 to present',
     place: 'Subang Jaya, Selangor',
+    page: '/experience/orion-automation-founder',
     points: [
       'AI workflow design and agentic AI: agents that read, decide, and act for real businesses.',
       'AI marketing workflows and AI video editing: content systems informed by 38M+ views.',
@@ -220,6 +227,7 @@ export const experience = [
     role: 'Full Stack AI Engineer Trainee · Project Team Lead',
     period: 'Jan 2026 to Mar 2026',
     place: 'Kuala Lumpur',
+    page: '/experience/gamuda-ai-academy',
     points: [
       'Led the Tendervise AI capstone: tender document analysis with ESG scoring agents, targeting a 50% efficiency gain.',
       'Presented the team prototype to YB Chang Lih Kang, Minister of Science, Technology and Innovation.',
@@ -244,6 +252,7 @@ export const experience = [
     role: 'Content Creator',
     period: 'Jan 2024 to Aug 2025',
     place: 'Malaysia · all 13 states',
+    page: '/experience/hygr-content-creator',
     points: [
       'Produced viral video content for the Natural Deodorant and Tinted Lip Balm lines: 38M+ views across 261+ videos.',
       'Supported offline booth sales directly. Sales floor and camera, same day.',
@@ -268,6 +277,7 @@ export const experience = [
     role: 'Cert in Information Technology',
     period: 'Aug 2022 to Jan 2024',
     place: 'Perak, Malaysia',
+    page: '/experience/college-community-pasir-salak',
     points: [
       'Web development foundations: HTML, CSS and PHP.',
       'Game development in Unity and Unreal Engine, plus mobile apps and IoT experiments.',

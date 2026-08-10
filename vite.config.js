@@ -1,7 +1,18 @@
 import { defineConfig, loadEnv } from 'vite';
 import { resolve } from 'node:path';
 
-const PAGES = ['home', 'journey', 'experience', 'blog', 'contact'];
+const PAGES = [
+  'home',
+  'journey',
+  'experience',
+  'blog',
+  'contact',
+  'experience/ai-specialist-p10x-media',
+  'experience/orion-automation-founder',
+  'experience/gamuda-ai-academy',
+  'experience/hygr-content-creator',
+  'experience/college-community-pasir-salak',
+];
 
 /** Serve clean URLs (/journey -> journey.html) in dev & preview, matching
     Vercel's cleanUrls behavior in production. "/" serves the home page. */
@@ -76,6 +87,11 @@ export default defineConfig(({ mode }) => {
           experience: resolve(__dirname, 'experience.html'),
           blog: resolve(__dirname, 'blog.html'),
           contact: resolve(__dirname, 'contact.html'),
+          expP10x: resolve(__dirname, 'experience/ai-specialist-p10x-media.html'),
+          expOrion: resolve(__dirname, 'experience/orion-automation-founder.html'),
+          expGamuda: resolve(__dirname, 'experience/gamuda-ai-academy.html'),
+          expHygr: resolve(__dirname, 'experience/hygr-content-creator.html'),
+          expCollege: resolve(__dirname, 'experience/college-community-pasir-salak.html'),
         },
       },
       chunkSizeWarningLimit: 800,

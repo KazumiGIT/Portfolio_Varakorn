@@ -1,4 +1,5 @@
 import '../../styles/main.css';
+import '../../styles/expnav.css';
 import { initSite, prefersReducedMotion } from '../ui.js';
 import { renderSocials } from '../render.js';
 import { experience, skills, goals, profile } from '../data.js';
@@ -49,6 +50,11 @@ if (cardsEl) {
             <div class="tb-role">${x.role}</div>
             <div class="tb-meta">${x.period} · ${x.place}</div>
             <ul>${x.points.map((p) => `<li>${p}</li>`).join('')}</ul>
+            ${
+              x.page
+                ? `<p class="tb-link"><a class="link-u" href="${x.page}">Full story: ${x.org} →</a></p>`
+                : ''
+            }
             ${
               x.link
                 ? `<p class="tb-link"><a class="link-u" href="${x.link}" target="_blank" rel="noopener noreferrer">Visit ${x.org} ↗</a></p>`
