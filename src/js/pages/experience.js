@@ -8,6 +8,7 @@ renderSocials();
 /* ---------- trading cards ---------- */
 const cardsEl = document.querySelector('[data-cards]');
 if (cardsEl) {
+  const total = String(experience.length).padStart(3, '0');
   cardsEl.innerHTML = experience
     .map(
       (x) => `
@@ -21,8 +22,13 @@ if (cardsEl) {
               <h3>${x.org}</h3>
             </header>
             <div class="tc-art" data-letter="${x.org[0]}">
-              <canvas data-art="${x.card.art}" aria-hidden="true"></canvas>
-              <span class="tc-no">No. ${x.card.no} / 003</span>
+              ${
+                x.card.photo
+                  ? `<img src="${x.card.photo}" alt="Varakorn at ${x.org}" loading="lazy"
+                       style="object-position:${x.card.photoPos || '50% 30%'}" />`
+                  : `<canvas data-art="${x.card.art}" aria-hidden="true"></canvas>`
+              }
+              <span class="tc-no">No. ${x.card.no} / ${total}</span>
             </div>
             <ul class="tc-stats">
               ${x.card.stats
@@ -104,8 +110,11 @@ if (cardsEl) {
     });
   } else {
     cardsEl.querySelectorAll('.tc-art').forEach((art) => {
-      art.classList.add('no3d');
-      art.querySelector('canvas')?.remove();
+      const cv = art.querySelector('canvas');
+      if (cv) {
+        art.classList.add('no3d');
+        cv.remove();
+      }
     });
   }
 }

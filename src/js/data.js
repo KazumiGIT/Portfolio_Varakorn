@@ -16,7 +16,7 @@ export const profile = {
   agency: 'Orion Automation',
   agencyUrl: 'https://www.orionautomation.xyz/',
   resume: '/Varakorn_Resume_2026.pdf',
-  languages: ['English', 'Malay', 'Chinese', 'Thai (spoken)'],
+  languages: ['English', 'Malay', 'Chinese', 'Thai'],
 };
 
 /* What I bring, told in three categories instead of a flat number row. */
@@ -106,10 +106,12 @@ export const services = [
 export const timeline = [
   {
     year: '2022',
-    period: 'Sep 2022 to Jan 2024',
+    period: 'Aug 2022 to Jan 2024',
     chip: 'the origin',
     title: 'College Community Pasir Salak',
-    role: 'Information Technology',
+    role: 'Cert in Information Technology',
+    photo: '/photos/College-Community-Pasir-Salak-STM.jpg',
+    photoCaption: 'Sijil Teknologi Maklumat · Pasir Salak',
     story:
       'Where it all begins. A practical IT foundation: web development with HTML, CSS and PHP, game development in Unity and Unreal Engine, mobile apps, IoT experiments. I learned that I liked building things more than studying them.',
   },
@@ -143,7 +145,7 @@ export const timeline = [
       'Selected for an intensive AI engineering program. As team lead I built Tendervise AI, a tender analysis agent for the construction industry, and presented our prototype to YB Chang Lih Kang, Minister of Science, Technology and Innovation. Python, FastAPI, React, Langchain, agentic workflows: the full stack, for real this time.',
   },
   {
-    year: 'NOW',
+    year: '2026',
     period: '2026 to present',
     chip: 'the founding',
     title: 'Orion Automation',
@@ -151,30 +153,65 @@ export const timeline = [
     story:
       'My own SSM registered automation studio in Subang Jaya. Custom web solutions, business process automation, chatbots, and SEO, AEO and GEO for businesses that want their busywork to disappear. A hybrid talent: communication trained on the sales floor, systems built like an engineer.',
   },
+  {
+    year: 'NOW',
+    period: 'May 2026 to present',
+    chip: 'the specialist',
+    title: 'P10X Media',
+    role: 'AI Specialist',
+    story:
+      'The hybrid goes professional. At P10X Media I put my current strengths to work every day: AI workflows, agentic AI systems, AI marketing workflows, and AI video editing. The camera years taught me what travels; the engineering years taught me how to automate it. This role uses both at once.',
+  },
 ];
 
 export const experience = [
+  {
+    org: 'P10X Media',
+    role: 'AI Specialist',
+    period: 'May 2026 to present',
+    place: 'Malaysia',
+    points: [
+      'AI workflows: pipelines that connect models, data, and tools into systems that run themselves.',
+      'Agentic AI: autonomous agents that read, decide, and act on real business tasks.',
+      'AI marketing workflows: content engines built on what 38M+ views taught me about attention.',
+      'AI video editing: automated cut, caption, and repurpose pipelines that ship real campaigns.',
+    ],
+    card: {
+      no: '004',
+      type: 'SPECIALIST',
+      accent: 'green',
+      photo: '/photos/P10X-Working-Space.jpg',
+      photoPos: '50% 55%',
+      flavor: 'Current form. Directs a fleet of AI systems instead of doing everything by hand.',
+      stats: [
+        { k: 'Craft', v: 'AI workflows' },
+        { k: 'Agents', v: 'Agentic AI' },
+        { k: 'Studio', v: 'AI marketing · AI video' },
+      ],
+    },
+  },
   {
     org: 'Orion Automation',
     role: 'Founder / Engineer',
     period: '2026 to present',
     place: 'Subang Jaya, Selangor',
     points: [
-      'SSM registered sole proprietorship offering custom automation, website workflows, and chatbots.',
-      'Business process automation (BPA) that gives clients their hours back.',
-      'SEO, AEO and GEO: search built for humans, answer engines, and generative engines.',
+      'AI workflow design and agentic AI: agents that read, decide, and act for real businesses.',
+      'AI marketing workflows and AI video editing: content systems informed by 38M+ views.',
+      'SSM registered studio. Custom automation, chatbots, and SEO, AEO and GEO on the side.',
     ],
     link: 'https://www.orionautomation.xyz/',
     card: {
       no: '003',
       type: 'FOUNDER',
       accent: 'gold',
-      art: 'stars',
+      photo: '/photos/Orion-Automation-Work-Space.jpg',
+      photoPos: '50% 50%',
       flavor: 'Named after the constellation. Builds systems that work the night shift.',
       stats: [
-        { k: 'Established', v: '2026 · SSM' },
-        { k: 'Craft', v: 'AI agents & automation' },
-        { k: 'Search', v: 'SEO · AEO · GEO' },
+        { k: 'AI workflow', v: 'End to end' },
+        { k: 'Agentic AI', v: 'Build & ship' },
+        { k: 'AI marketing', v: 'Workflow · video' },
       ],
     },
   },
@@ -192,7 +229,8 @@ export const experience = [
       no: '002',
       type: 'ENGINEER',
       accent: 'blue',
-      art: 'monitor',
+      photo: '/photos/Varakorn-Gamuda-Ai-Academy.jpg',
+      photoPos: '50% 30%',
       flavor: 'Evolved from Creator. Learns agentic workflows at an accelerated rate.',
       stats: [
         { k: 'Capstone', v: 'Tendervise AI' },
@@ -215,7 +253,8 @@ export const experience = [
       no: '001',
       type: 'CREATOR',
       accent: 'red',
-      art: 'camera',
+      photo: '/photos/Varakorn-HYGR-Content-Creator.jpg',
+      photoPos: '50% 60%',
       flavor: 'Wild form. Feeds the algorithm and sells face to face in 13 states.',
       stats: [
         { k: 'Views', v: '38,000,000+' },
@@ -234,7 +273,7 @@ export const skills = [
   { group: 'DevOps', items: ['Git', 'Docker', 'Vercel'] },
   {
     group: 'Natural Talent',
-    items: ['English', 'Malay', 'Chinese', 'Thai (spoken)', 'Leadership', 'Sales', 'Critical thinking', 'Adaptability'],
+    items: ['English', 'Malay', 'Chinese', 'Thai', 'Leadership', 'Sales', 'Critical thinking', 'Adaptability'],
   },
 ];
 
@@ -438,6 +477,9 @@ export const posts = [
       'HTML, PHP, Unity, a few IoT boards, and the discovery that I liked building things more than studying them.',
     tags: ['college', 'beginnings'],
     minutes: 4,
+    cover: '/photos/Varakorn_College-Community-Pasir-Salak-Graduate.jpg',
+    coverAlt: 'Receiving the Sijil Teknologi Maklumat at the Kolej Komuniti convocation',
+    coverPos: '50% 18%',
     body: `
       <p>College Community Pasir Salak, September 2022. Information Technology. If you are picturing a glass campus with a startup incubator, adjust downward considerably.</p>
       <p>What it did have was a syllabus wide enough to touch everything: web development with HTML, CSS and PHP, game development in Unity and Unreal, mobile apps, a semester of IoT where we wired sensors to boards and argued about why nothing lit up.</p>
