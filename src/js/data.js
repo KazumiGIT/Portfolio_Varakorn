@@ -304,8 +304,8 @@ export const skills = [
 export const goals = [
   {
     index: '01',
-    title: 'Scale Orion Automation',
-    body: 'From a one person SSM registered studio into the automation partner Malaysian SMEs call first. Small team, sharp craft, systems that pay for themselves.',
+    title: 'Push AI marketing further',
+    body: 'AI marketing workflows and AI video editing at production scale. Content engines that plan, cut, caption, and ship, while the numbers teach the next round.',
   },
   {
     index: '02',
