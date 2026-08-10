@@ -128,6 +128,16 @@ export const timeline = [
   },
   {
     year: '2025',
+    period: 'Nov 2025 to present',
+    chip: 'the founding',
+    title: 'Orion Automation',
+    role: 'Founder · Engineer',
+    page: '/experience/orion-automation-founder',
+    story:
+      'Two months after leaving HYGR I registered my own SSM sole proprietorship, mostly to learn what building a business actually feels like. A string of small experiments failed, savings ran thin, and revenue stayed at zero. The education did not. Thinking like a founder changed how I talk, decide, and solve problems.',
+  },
+  {
+    year: '2025',
     period: 'Dec 2025',
     chip: 'the training',
     title: 'Python Bootcamp',
@@ -146,16 +156,6 @@ export const timeline = [
     photoCaption: 'Graduation speech · Gamuda AI Academy, KL Campus, March 2026',
     story:
       'Selected for an intensive AI engineering program. As team lead I built Tendervise AI, a tender analysis agent for the construction industry, and presented our prototype to YB Chang Lih Kang, Minister of Science, Technology and Innovation. Python, FastAPI, React, Langchain, agentic workflows: the full stack, for real this time.',
-  },
-  {
-    year: '2026',
-    period: '2026 to present',
-    chip: 'the founding',
-    title: 'Orion Automation',
-    role: 'Founder · Engineer',
-    page: '/experience/orion-automation-founder',
-    story:
-      'My own SSM registered automation studio in Subang Jaya. Custom web solutions, business process automation, chatbots, and SEO, AEO and GEO for businesses that want their busywork to disappear. A hybrid talent: communication trained on the sales floor, systems built like an engineer.',
   },
   {
     year: 'NOW',
@@ -199,7 +199,7 @@ export const experience = [
   {
     org: 'Orion Automation',
     role: 'Founder / Engineer',
-    period: '2026 to present',
+    period: 'Nov 2025 to present',
     place: 'Subang Jaya, Selangor',
     page: '/experience/orion-automation-founder',
     points: [
@@ -605,23 +605,23 @@ export const posts = [
     category: 'journey',
     date: '2026-04-06',
     dateLabel: 'Apr 6, 2026',
-    title: 'Chapter five: registering Orion Automation',
+    title: 'Chapter five: the truth about Orion Automation',
     excerpt:
-      'An SSM registration, a desk in Subang Jaya, and the decision to sell time back to businesses instead of selling my own.',
+      'I registered a company in November 2025 with no backup plan. It made zero ringgit and taught me more than anything that worked.',
     tags: ['orion', 'business'],
     minutes: 4,
     body: `
-      <p>After Gamuda the sensible move was a junior AI engineer role somewhere with a good ceiling. I registered a company instead.</p>
-      <p>Orion Automation, SSM registered, based in Subang Jaya. Custom web solutions, business process automation, chatbots, and SEO, AEO and GEO for businesses that want their busywork to disappear.</p>
-      <h3>Why not a job, honestly</h3>
-      <p>Not because I am allergic to employment. Because the thing I am actually good at is the combination, and a job would have paid me for one half of it. Companies hire engineers to engineer and creators to create. Very few roles want the person who can build the agent, write the landing page, film the explainer and close the client.</p>
-      <p>That combination is worth more assembled than split. So I assembled it.</p>
-      <h3>The first clients set the shape</h3>
-      <p>Nobody asked me for AI transformation. They asked me to stop a spreadsheet from eating their Tuesday nights. Orders copied by hand from WhatsApp. The same eight customer questions answered every day. Invoices chased manually.</p>
-      <p>So that became the offer: find the tasks that are repeated, rule based and resented, and make them go away. Unglamorous, measurable, and easy to say yes to.</p>
-      <h3>What now looks like</h3>
-      <p>A studio of one that does not feel like one, because the two halves of my background cover for each other. The engineering makes the promise real. The creator years make it legible. Subang Jaya is the address, the internet is the market, and this site is the shop window.</p>
-      <p>The story is still going. That is what the rest of this blog is for.</p>
+      <p>On paper, Orion Automation is an SSM registered sole proprietorship in Subang Jaya. Custom web solutions, business process automation, chatbots. That is the shop window. Here is the back room.</p>
+      <p>I registered it in November 2025, two months after leaving HYGR, with thin savings and no backup plan. The honest reason was not a grand vision. I wanted to know what building a business actually feels like, and the only way I learn anything is by building the small version first.</p>
+      <h3>The graveyard of small bets</h3>
+      <p>Between November and December 2025 I started more small businesses than most people attempt in a decade, and finished none of them. An Etsy shop selling Notion templates. An e book. An AI influencer generated with ComfyUI on my old HP Victus war machine. A chatbot built to sell to small businesses. A partnership exploration with my cousin for a marketing agency aimed at one very specific industry I keep private. Each one either failed quietly or I quit halfway.</p>
+      <h3>The freest, most stressful months of my life</h3>
+      <p>Unemployment has a strange rhythm. Evenings of procrastination I am not proud of. Then the after dinner rush of motivation, researching and building until midnight, chasing the version of me who had it figured out. Savings shrinking in the background the whole time. Free in every direction and stressed in every direction, at once.</p>
+      <h3>Zero revenue, full tuition</h3>
+      <p>Orion Automation has generated exactly zero ringgit of revenue. There was a time I pointed at the website as proof that I ran a business, and technically I did. What nobody saw was that I was surviving on savings, not sales. I am done polishing that part of the story.</p>
+      <p>What the company actually paid out was education. Thinking like a founder. Weighing every decision against runway. Looking at my own work from the customer's chair. That thinking followed me into Gamuda AI Academy, into P10X Media, and into how I solve problems everywhere.</p>
+      <h3>What happens to Orion now</h3>
+      <p>The domain runs until November 2026. If I ship something with visible revenue before then, Orion Automation graduates from a lesson into a company. If not, it retires with my gratitude. Either way, the founder it built keeps going.</p>
     `,
   },
 
