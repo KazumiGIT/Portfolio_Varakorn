@@ -27,6 +27,39 @@ function sql(env = process.env) {
   return neon(url);
 }
 
+/* Self-heal: if the table is missing (fresh database), create it and retry.
+   Mirrors db/schema.sql — keep the two in sync. */
+async function ensureSchema(db) {
+  await db.query(`create table if not exists comments (
+    id         bigint generated always as identity primary key,
+    page       text        not null,
+    name       text        not null,
+    body       text        not null,
+    approved   boolean     not null default false,
+    ip_hash    text,
+    created_at timestamptz not null default now()
+  )`);
+  await db.query(
+    'create index if not exists comments_page_idx on comments (page, approved, created_at desc)'
+  );
+  await db.query(
+    'create index if not exists comments_ip_recent_idx on comments (ip_hash, created_at desc)'
+  );
+}
+
+const isMissingTable = (e) =>
+  e?.code === '42P01' || /relation "comments" does not exist/.test(e?.message || '');
+
+async function withSchema(db, fn) {
+  try {
+    return await fn();
+  } catch (e) {
+    if (!isMissingTable(e)) throw e;
+    await ensureSchema(db);
+    return fn();
+  }
+}
+
 const hashIp = (ip) =>
   createHash('sha256')
     .update('vk-guestbook:' + (ip || 'unknown'))
@@ -38,12 +71,12 @@ export async function listComments(page, env = process.env) {
   const db = sql(env);
   if (!db) return { offline: true };
   if (!PAGE_RE.test(String(page || ''))) throw err(400, 'unknown page');
-  const rows = await db`
+  const rows = await withSchema(db, () => db`
     select id, name, body, created_at
     from comments
     where page = ${page} and approved
     order by created_at desc
-    limit 200`;
+    limit 200`);
   return { comments: rows };
 }
 
@@ -70,9 +103,9 @@ export async function createComment({ page, name, body, website, elapsed, ip }, 
   if (!Number.isFinite(+elapsed) || +elapsed < MIN_FILL_MS) return { ok: true };
 
   const ipHash = hashIp(ip);
-  const [{ n }] = await db`
+  const [{ n }] = await withSchema(db, () => db`
     select count(*)::int as n from comments
-    where ip_hash = ${ipHash} and created_at > now() - ${RATE_WINDOW}::interval`;
+    where ip_hash = ${ipHash} and created_at > now() - ${RATE_WINDOW}::interval`);
   if (n >= RATE_MAX) throw err(429, 'too many notes, try again in a few minutes');
 
   await db`
