@@ -1,6 +1,7 @@
 /* ===========================================================================
-   GUESTBOOK — printed-matter comment space on experience pages and the
-   blog reader. Rides the site tokens, so night mode is automatic.
+   GUESTBOOK COMMENTS — Google sign in, replies, likes. Printed-matter UI on
+   experience pages and the blog reader. Rides the site tokens, so night mode
+   is automatic.
    =========================================================================== */
 
 .guestbook {
@@ -20,6 +21,11 @@
   margin-bottom: 2rem;
 }
 
+.gb-offline {
+  color: var(--ink-3);
+  font-style: italic;
+}
+
 /* ---------- list ---------- */
 .gb-count {
   font-size: 0.72rem;
@@ -30,22 +36,34 @@
   margin-bottom: 0.4rem;
 }
 
-.gb-list {
+.gb-list,
+.gb-replies {
   list-style: none;
 }
 
 .gb-note {
-  padding: 1.1rem 0 1.2rem;
+  padding: 1.1rem 0 1rem;
   border-top: 1px solid var(--line-soft);
 }
 
-.gb-list li:last-child {
+.gb-list > li:last-child {
   border-bottom: 1px solid var(--line-soft);
+}
+
+.gb-replies {
+  margin-top: 0.9rem;
+  padding-left: 1.1rem;
+  border-left: 2px solid var(--line);
+}
+
+.gb-note--reply {
+  border-top: none;
+  padding: 0.55rem 0;
 }
 
 .gb-note-head {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 1rem;
   margin-bottom: 0.3rem;
@@ -58,12 +76,22 @@
   font-weight: 700;
 }
 
-.gb-name::before {
-  content: '';
-  width: 7px;
-  height: 7px;
-  background: var(--red);
+.gb-ava {
+  width: 26px;
+  height: 26px;
+  object-fit: cover;
+  border: 1.5px solid var(--ink);
   flex: none;
+}
+
+.gb-ava--letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--red);
+  color: var(--paper);
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
 .gb-date {
@@ -86,28 +114,82 @@
   border-bottom: 1px solid var(--line-soft);
 }
 
-/* ---------- form ---------- */
-.gb-form {
-  margin-top: 2.2rem;
-  display: grid;
+/* ---------- like + reply row ---------- */
+.gb-note-foot {
+  display: flex;
+  align-items: center;
   gap: 1.1rem;
+  margin-top: 0.45rem;
 }
 
-.gb-field {
-  display: grid;
-  gap: 0.4rem;
-}
-
-.gb-field--name {
-  max-width: 320px;
-}
-
-.gb-label {
-  font-size: 0.72rem;
+.gb-like,
+.gb-reply-btn,
+.gb-cancel,
+.gb-signout {
+  font: inherit;
+  font-size: 0.82rem;
   font-weight: 700;
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
   color: var(--ink-2);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+}
+
+.gb-like {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.gb-like-mark {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.gb-like.is-on,
+.gb-like:not(:disabled):hover {
+  color: var(--red);
+}
+
+.gb-like:disabled {
+  cursor: default;
+  color: var(--ink-3);
+}
+
+.gb-reply-btn:hover,
+.gb-cancel:hover,
+.gb-signout:hover {
+  color: var(--red);
+}
+
+/* ---------- auth + form ---------- */
+.gb-auth {
+  margin-top: 2.2rem;
+}
+
+.gb-gsi {
+  display: inline-block;
+  /* the Google button paints its own chrome; give it a printed shadow */
+  box-shadow: var(--shadow-press);
+}
+
+.gb-me {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.9rem;
+}
+
+.gb-form {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.gb-form--reply {
+  margin-top: 0.8rem;
 }
 
 .gb-input {
@@ -133,16 +215,11 @@
 
 .gb-area {
   resize: vertical;
-  min-height: 110px;
+  min-height: 96px;
 }
 
-/* honeypot: parked off canvas, never display:none so lazy bots still fill it */
-.gb-trap {
-  position: absolute;
-  left: -9999px;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
+.gb-form--reply .gb-area {
+  min-height: 74px;
 }
 
 .gb-actions {

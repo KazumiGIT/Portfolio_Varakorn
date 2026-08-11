@@ -340,7 +340,7 @@ function openPost(slug, push = true) {
     <div class="guestbook guestbook--reader"></div>
   `;
   mountComments(article.querySelector('.guestbook'), `/blog#${post.slug}`, {
-    title: 'Guestbook',
+    title: 'Comments',
   });
   reader.classList.add('is-open');
   document.body.classList.add('reader-locked');

@@ -1,37 +1,31 @@
 // Vercel serverless function: the public guestbook API.
-//   GET  /api/comments?page=/experience/hygr-content-creator -> { comments }
-//   POST /api/comments { page, name, body, website, elapsed } -> { ok }
-// Notes land unapproved; moderation happens through scripts/comments-db.mjs,
-// never over HTTP. DATABASE_URL lives in the environment.
+//   GET  /api/comments?page=/experience/... -> { comments } (threads + likes)
+//   POST /api/comments { page, body, parent? } -> { ok } (signed in only)
+// Comments land unapproved; moderation happens through scripts/comments-db.mjs.
 import { listComments, createComment } from './_lib/guestbook.js';
-
-const clientIp = (req) =>
-  String(req.headers['x-forwarded-for'] || '')
-    .split(',')[0]
-    .trim() || req.socket?.remoteAddress;
+import { readSession } from './_lib/auth.js';
+import { readBody, getQuery, sendJson, clientIp } from './_lib/http.js';
 
 export default async function handler(req, res) {
   try {
+    const session = readSession(req);
     if (req.method === 'GET') {
-      const out = await listComments(req.query?.page);
-      res.status(200).json(out);
-      return;
+      const out = await listComments(getQuery(req).page, session?.uid);
+      return sendJson(res, 200, out);
     }
     if (req.method === 'POST') {
-      const b = req.body || {};
+      const b = await readBody(req);
       const out = await createComment({
         page: b.page,
-        name: b.name,
         body: b.body,
-        website: b.website,
-        elapsed: b.elapsed,
+        parent: b.parent,
+        uid: session?.uid,
         ip: clientIp(req),
       });
-      res.status(200).json(out);
-      return;
+      return sendJson(res, 200, out);
     }
-    res.status(405).json({ error: 'GET or POST only' });
+    sendJson(res, 405, { error: 'GET or POST only' });
   } catch (e) {
-    res.status(e.status || 500).json({ error: e.message || 'error' });
+    sendJson(res, e.status || 500, { error: e.message || 'error' });
   }
 }

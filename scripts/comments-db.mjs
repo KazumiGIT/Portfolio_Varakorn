@@ -42,8 +42,9 @@ if (cmd === 'setup') {
     console.log('nothing pending');
   } else {
     for (const r of rows) {
-      console.log(`#${r.id}  ${r.page}  ${new Date(r.created_at).toLocaleString()}`);
-      console.log(`  ${r.name}: ${r.body.replace(/\n/g, '\n  ')}\n`);
+      const kind = r.parent_id ? `reply to #${r.parent_id}` : 'comment';
+      console.log(`#${r.id}  ${kind}  ${r.page}  ${new Date(r.created_at).toLocaleString()}`);
+      console.log(`  ${r.name}${r.email ? ` <${r.email}>` : ''}: ${r.body.replace(/\n/g, '\n  ')}\n`);
     }
     console.log(`${rows.length} pending. Approve with: node scripts/comments-db.mjs approve <id>`);
   }

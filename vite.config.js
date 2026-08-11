@@ -76,60 +76,35 @@ function aiChatDev(env) {
   };
 }
 
-/** Dev twin of the Vercel function api/comments.js so the guestbook works
-    on localhost. Reads DATABASE_URL from .env via loadEnv. */
+/** Dev twins of the guestbook Vercel functions (api/auth.js, api/comments.js,
+    api/like.js). The handlers are written to run both on Vercel and as plain
+    connect middleware, so they mount directly. Env comes from .env. */
 function guestbookDev(env) {
-  const handle = (req, res) => {
-    res.setHeader('content-type', 'application/json');
-    const fullEnv = { ...process.env, ...env };
-    const fail = (e) => {
-      res.statusCode = e.status || 500;
-      res.end(JSON.stringify({ error: e.message || 'error' }));
-    };
-    if (req.method === 'GET') {
-      const page = new URLSearchParams(req.url.split('?')[1] || '').get('page');
-      import('./api/_lib/guestbook.js')
-        .then(({ listComments }) => listComments(page, fullEnv))
-        .then((out) => res.end(JSON.stringify(out)))
-        .catch(fail);
-      return;
+  const mount = (server) => {
+    for (const k of ['DATABASE_URL', 'GOOGLE_CLIENT_ID', 'SESSION_SECRET']) {
+      if (env[k] && !process.env[k]) process.env[k] = env[k];
     }
-    if (req.method !== 'POST') {
-      res.statusCode = 405;
-      res.end('{"error":"GET or POST only"}');
-      return;
+    for (const [route, mod] of [
+      ['/api/auth', './api/auth.js'],
+      ['/api/comments', './api/comments.js'],
+      ['/api/like', './api/like.js'],
+    ]) {
+      server.middlewares.use(route, (req, res) =>
+        import(mod).then((m) => m.default(req, res))
+      );
     }
-    let raw = '';
-    req.on('data', (c) => (raw += c));
-    req.on('end', async () => {
-      try {
-        const { createComment } = await import('./api/_lib/guestbook.js');
-        const b = raw ? JSON.parse(raw) : {};
-        const out = await createComment(
-          { ...b, ip: req.socket?.remoteAddress },
-          fullEnv
-        );
-        res.end(JSON.stringify(out));
-      } catch (e) {
-        fail(e);
-      }
-    });
   };
-  return {
-    name: 'guestbook-dev',
-    configureServer(server) {
-      server.middlewares.use('/api/comments', handle);
-    },
-    configurePreviewServer(server) {
-      server.middlewares.use('/api/comments', handle);
-    },
-  };
+  return { name: 'guestbook-dev', configureServer: mount, configurePreviewServer: mount };
 }
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   return {
     plugins: [cleanUrls(), aiChatDev(env), guestbookDev(env)],
+    /* the Google client id is public by design; baked in at build time */
+    define: {
+      __GOOGLE_CLIENT_ID__: JSON.stringify(env.GOOGLE_CLIENT_ID || ''),
+    },
     build: {
       rollupOptions: {
         input: {

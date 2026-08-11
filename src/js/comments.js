@@ -1,13 +1,15 @@
 // ---------------------------------------------------------------------------
-// Guestbook: fetches and posts notes through /api/comments. One mount per
-// page; experience pages pass their pathname, the blog reader passes
-// /blog#<slug>. Styling lives in src/styles/comments.css.
+// Guestbook comments: Google sign in, one level of replies, likes.
+// Talks to /api/auth, /api/comments, /api/like. One mount per page;
+// experience pages pass their pathname, the blog reader passes /blog#<slug>.
+// Styling lives in src/styles/comments.css.
 // ---------------------------------------------------------------------------
 
-const ENT = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
-const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ENT[c]);
+/* injected by vite define; the Google client id is public by design */
+const CLIENT_ID = typeof __GOOGLE_CLIENT_ID__ !== 'undefined' ? __GOOGLE_CLIENT_ID__ : '';
 
-const NAME_KEY = 'vk-guestbook-name';
+const ENT = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ENT[c]);
 
 const fmtDate = (iso) => {
   const d = new Date(iso);
@@ -16,14 +18,74 @@ const fmtDate = (iso) => {
     : d.toLocaleDateString('en-MY', { day: 'numeric', month: 'short', year: 'numeric' });
 };
 
-function noteHtml(c) {
+const api = async (url, opts) => {
+  const r = await fetch(url, opts);
+  const out = await r.json().catch(() => ({}));
+  if (!r.ok) throw Object.assign(new Error(out.error || 'error'), { status: r.status });
+  return out;
+};
+
+const post = (url, body) =>
+  api(url, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+
+/* ---------- Google Identity Services ---------- */
+let gisLoad;
+let onCredential = null; // routed to the mount that is currently on screen
+
+function loadGis() {
+  gisLoad ||= new Promise((resolve, reject) => {
+    if (window.google?.accounts?.id) return resolve();
+    const s = document.createElement('script');
+    s.src = 'https://accounts.google.com/gsi/client';
+    s.async = true;
+    s.onload = resolve;
+    s.onerror = () => reject(new Error('gsi failed to load'));
+    document.head.appendChild(s);
+  }).then(() => {
+    window.google.accounts.id.initialize({
+      client_id: CLIENT_ID,
+      callback: (resp) => onCredential?.(resp.credential),
+    });
+  });
+  return gisLoad;
+}
+
+/* ---------- rendering ---------- */
+
+const avatar = (c) =>
+  c.picture
+    ? `<img class="gb-ava" src="${esc(c.picture)}" alt="" referrerpolicy="no-referrer" />`
+    : `<span class="gb-ava gb-ava--letter">${esc((c.name || '?')[0].toUpperCase())}</span>`;
+
+function likeBtn(c, signedIn) {
+  const n = c.likes > 0 ? ` <span class="gb-like-n">${c.likes}</span>` : '';
+  const title = signedIn ? (c.liked ? 'Unlike' : 'Like') : 'Sign in to like';
+  return `<button class="gb-like${c.liked ? ' is-on' : ''}" type="button" data-like="${c.id}"
+            ${signedIn ? '' : 'disabled'} title="${title}" aria-label="${title}">
+            <span class="gb-like-mark">${c.liked ? '♥' : '♡'}</span>${n}</button>`;
+}
+
+function noteHtml(c, signedIn, isReply = false) {
+  const replies = (c.replies || [])
+    .map((r) => noteHtml(r, signedIn, true))
+    .join('');
   return `
-    <li class="gb-note">
+    <li class="gb-note${isReply ? ' gb-note--reply' : ''}" data-note="${c.id}">
       <div class="gb-note-head">
-        <span class="gb-name">${esc(c.name)}</span>
+        <span class="gb-name">${avatar(c)}${esc(c.name)}</span>
         <span class="gb-date">${esc(fmtDate(c.created_at))}</span>
       </div>
       <p class="gb-body">${esc(c.body)}</p>
+      <div class="gb-note-foot">
+        ${likeBtn(c, signedIn)}
+        ${!isReply && signedIn ? `<button class="gb-reply-btn" type="button" data-reply="${c.id}">Reply</button>` : ''}
+      </div>
+      ${!isReply ? `<div class="gb-reply-slot"></div>` : ''}
+      ${replies ? `<ul class="gb-replies">${replies}</ul>` : ''}
     </li>`;
 }
 
@@ -35,117 +97,221 @@ function noteHtml(c) {
 export function mountComments(host, page, { title } = {}) {
   if (!host || host.dataset.gbMounted) return;
   host.dataset.gbMounted = '1';
-  const openedAt = performance.now();
+
+  let user; // undefined = loading, null = signed out, {} = signed in
+  let comments = [];
 
   host.innerHTML = `
     ${title ? `<h3 class="gb-title">${esc(title)}</h3>` : ''}
-    <p class="gb-intro">Sign the guestbook. Notes show up after Varakorn reads them.</p>
+    <p class="gb-intro">Sign in with Google to comment, reply, and like. Comments show up after Varakorn reads them.</p>
     <div class="gb-list-wrap">
       <p class="gb-count" hidden></p>
       <ul class="gb-list"></ul>
-      <p class="gb-empty" hidden>No notes yet. Be the first to sign.</p>
+      <p class="gb-empty" hidden>No comments yet. Be the first.</p>
     </div>
-    <form class="gb-form" novalidate>
-      <div class="gb-row">
-        <label class="gb-field gb-field--name">
-          <span class="gb-label">Name</span>
-          <input class="gb-input" name="name" type="text" maxlength="60" required
-                 autocomplete="name" placeholder="Your name" />
-        </label>
-      </div>
-      <label class="gb-field">
-        <span class="gb-label">Your note</span>
-        <textarea class="gb-input gb-area" name="body" maxlength="2000" rows="4" required
-                  placeholder="Leave a thought, a question, or just say hi"></textarea>
-      </label>
-      <div class="gb-trap" aria-hidden="true">
-        <label>Website<input name="website" type="text" tabindex="-1" autocomplete="off" /></label>
-      </div>
-      <div class="gb-actions">
-        <button class="btn gb-submit" type="submit">Leave a comment</button>
-        <p class="gb-status" role="status" aria-live="polite"></p>
-      </div>
-    </form>`;
+    <div class="gb-auth"></div>`;
 
   const el = {
     list: host.querySelector('.gb-list'),
     count: host.querySelector('.gb-count'),
     empty: host.querySelector('.gb-empty'),
-    form: host.querySelector('.gb-form'),
-    name: host.querySelector('[name="name"]'),
-    body: host.querySelector('[name="body"]'),
-    website: host.querySelector('[name="website"]'),
-    submit: host.querySelector('.gb-submit'),
-    status: host.querySelector('.gb-status'),
+    auth: host.querySelector('.gb-auth'),
+    intro: host.querySelector('.gb-intro'),
   };
 
-  el.name.value = localStorage.getItem(NAME_KEY) || '';
+  const countAll = (list) => list.reduce((n, c) => n + 1 + (c.replies?.length || 0), 0);
 
-  const say = (msg, tone = '') => {
-    el.status.textContent = msg;
-    el.status.dataset.tone = tone;
-  };
-
-  const goOffline = () => {
-    host.classList.add('gb-offline');
-    host.innerHTML = `<p class="gb-intro">The guestbook is not open yet. Check back soon.</p>`;
-  };
-
-  function renderList(comments) {
-    const n = comments.length;
+  function renderList() {
+    const n = countAll(comments);
     el.count.hidden = n === 0;
     el.empty.hidden = n > 0;
-    el.count.textContent = `${n} ${n === 1 ? 'note' : 'notes'}`;
-    el.list.innerHTML = comments.map(noteHtml).join('');
+    el.count.textContent = `${n} ${n === 1 ? 'comment' : 'comments'}`;
+    el.list.innerHTML = comments.map((c) => noteHtml(c, Boolean(user))).join('');
   }
 
-  fetch(`/api/comments?page=${encodeURIComponent(page)}`)
-    .then((r) => (r.ok ? r.json() : Promise.reject(new Error('bad response'))))
-    .then((out) => {
-      if (out.offline) return goOffline();
-      renderList(out.comments || []);
-    })
-    .catch(() => {
-      el.empty.hidden = false;
-    });
+  function replyFormHtml() {
+    return `
+      <form class="gb-form gb-form--reply" novalidate>
+        <textarea class="gb-input gb-area" name="body" maxlength="2000" rows="3" required
+                  placeholder="Write a reply"></textarea>
+        <div class="gb-actions">
+          <button class="btn gb-submit" type="submit">Reply</button>
+          <button class="gb-cancel" type="button">Cancel</button>
+          <p class="gb-status" role="status" aria-live="polite"></p>
+        </div>
+      </form>`;
+  }
 
-  el.form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const name = el.name.value.trim();
-    const body = el.body.value.trim();
-    if (!name || !body) {
-      say('A name and a note are both needed.', 'err');
+  function renderAuth() {
+    if (user === undefined) {
+      el.auth.innerHTML = '';
       return;
     }
-    el.submit.disabled = true;
-    say('Sending…');
-    try {
-      const r = await fetch('/api/comments', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({
-          page,
-          name,
-          body,
-          website: el.website.value,
-          elapsed: Math.round(performance.now() - openedAt),
-        }),
-      });
-      const out = await r.json().catch(() => ({}));
-      if (!r.ok) throw new Error(out.error || 'error');
-      if (out.offline) return goOffline();
-      localStorage.setItem(NAME_KEY, name);
-      el.body.value = '';
-      say('Thank you for the note. It shows up here once Varakorn approves it.', 'ok');
-    } catch (err) {
-      say(
-        err.message === 'too many notes, try again in a few minutes'
-          ? 'Slow down a little. Try again in a few minutes.'
-          : 'That did not go through. Try again in a moment.',
-        'err'
-      );
-    } finally {
-      el.submit.disabled = false;
+    if (user === null) {
+      if (!CLIENT_ID) {
+        el.auth.innerHTML = `<p class="gb-offline">Sign in is being set up. Check back soon.</p>`;
+        return;
+      }
+      el.auth.innerHTML = `<div class="gb-gsi"></div>`;
+      loadGis()
+        .then(() => {
+          const slot = el.auth.querySelector('.gb-gsi');
+          if (slot) window.google.accounts.id.renderButton(slot, { theme: 'outline', size: 'large' });
+        })
+        .catch(() => {
+          el.auth.innerHTML = `<p class="gb-offline">Sign in could not load. Try again later.</p>`;
+        });
+      return;
     }
+    el.auth.innerHTML = `
+      <div class="gb-me">
+        <span class="gb-name">${avatar(user)}${esc(user.name)}</span>
+        <button class="gb-signout" type="button">Sign out</button>
+      </div>
+      <form class="gb-form" novalidate>
+        <textarea class="gb-input gb-area" name="body" maxlength="2000" rows="4" required
+                  placeholder="Leave a thought, a question, or just say hi"></textarea>
+        <div class="gb-actions">
+          <button class="btn gb-submit" type="submit">Leave a comment</button>
+          <p class="gb-status" role="status" aria-live="polite"></p>
+        </div>
+      </form>`;
+  }
+
+  const say = (form, msg, tone = '') => {
+    const s = form.querySelector('.gb-status');
+    if (s) {
+      s.textContent = msg;
+      s.dataset.tone = tone;
+    }
+  };
+
+  async function submit(form, parent) {
+    const area = form.querySelector('[name="body"]');
+    const body = area.value.trim();
+    if (!body) return say(form, 'Write something first.', 'err');
+    const btn = form.querySelector('.gb-submit');
+    btn.disabled = true;
+    say(form, 'Sending…');
+    try {
+      await post('/api/comments', { page, body, parent });
+      area.value = '';
+      say(form, 'Thank you. It shows up here once Varakorn approves it.', 'ok');
+    } catch (e) {
+      if (e.status === 401) {
+        user = null;
+        renderAuth();
+      } else {
+        say(
+          form,
+          e.status === 429
+            ? 'Slow down a little. Try again in a few minutes.'
+            : 'That did not go through. Try again in a moment.',
+          'err'
+        );
+      }
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  async function refresh() {
+    try {
+      const out = await api(`/api/comments?page=${encodeURIComponent(page)}`);
+      if (out.offline) {
+        host.innerHTML = `<p class="gb-intro">Comments are not open yet. Check back soon.</p>`;
+        return false;
+      }
+      comments = out.comments || [];
+      renderList();
+    } catch {
+      el.empty.hidden = false;
+    }
+    return true;
+  }
+
+  /* ---------- events (delegated so rerenders stay cheap) ---------- */
+
+  host.addEventListener('click', async (e) => {
+    const like = e.target.closest('[data-like]');
+    if (like && user) {
+      like.disabled = true;
+      try {
+        const out = await post('/api/like', { comment: Number(like.dataset.like) });
+        const patch = (c) =>
+          String(c.id) === like.dataset.like ? { ...c, liked: out.liked, likes: out.likes } : c;
+        comments = comments.map((c) => ({ ...patch(c), replies: (c.replies || []).map(patch) }));
+        renderList();
+      } catch {
+        like.disabled = false;
+      }
+      return;
+    }
+
+    const replyBtn = e.target.closest('[data-reply]');
+    if (replyBtn && user) {
+      const note = replyBtn.closest('.gb-note');
+      const slot = note.querySelector('.gb-reply-slot');
+      if (slot.innerHTML) {
+        slot.innerHTML = '';
+      } else {
+        host.querySelectorAll('.gb-reply-slot').forEach((s) => (s.innerHTML = ''));
+        slot.innerHTML = replyFormHtml();
+        slot.querySelector('textarea').focus();
+      }
+      return;
+    }
+
+    if (e.target.closest('.gb-cancel')) {
+      e.target.closest('.gb-reply-slot').innerHTML = '';
+      return;
+    }
+
+    if (e.target.closest('.gb-signout')) {
+      await api('/api/auth', { method: 'DELETE' }).catch(() => {});
+      user = null;
+      renderAuth();
+      refresh();
+    }
+  });
+
+  host.addEventListener('submit', (e) => {
+    const form = e.target.closest('.gb-form');
+    if (!form) return;
+    e.preventDefault();
+    const parentNote = form.closest('.gb-note');
+    submit(form, parentNote ? Number(parentNote.dataset.note) : undefined);
+  });
+
+  /* ---------- boot ---------- */
+
+  onCredential = async (credential) => {
+    try {
+      const out = await post('/api/auth', { credential });
+      user = out.user;
+      renderAuth();
+      refresh();
+    } catch {
+      el.auth.insertAdjacentHTML(
+        'beforeend',
+        `<p class="gb-offline">Sign in did not work. Try again.</p>`
+      );
+    }
+  };
+
+  refresh().then(async (open) => {
+    if (!open) return;
+    try {
+      const out = await api('/api/auth');
+      if (out.offline) {
+        el.auth.innerHTML = `<p class="gb-offline">Sign in is being set up. Check back soon.</p>`;
+        return;
+      }
+      user = out.user;
+    } catch {
+      user = null;
+    }
+    renderAuth();
+    if (user) renderList(); // enable reply buttons + like states
   });
 }
