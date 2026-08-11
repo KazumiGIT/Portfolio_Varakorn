@@ -62,7 +62,7 @@ export function mountComments(host, page, { title } = {}) {
         <label>Website<input name="website" type="text" tabindex="-1" autocomplete="off" /></label>
       </div>
       <div class="gb-actions">
-        <button class="btn gb-submit" type="submit">Sign the guestbook</button>
+        <button class="btn gb-submit" type="submit">Leave a comment</button>
         <p class="gb-status" role="status" aria-live="polite"></p>
       </div>
     </form>`;
