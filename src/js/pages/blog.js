@@ -1,7 +1,9 @@
 import '../../styles/main.css';
 import '../../styles/expnav.css';
+import '../../styles/comments.css';
 import { initSite, revealIn, prefersReducedMotion } from '../ui.js';
 import { renderSocials } from '../render.js';
+import { mountComments } from '../comments.js';
 import { posts, postCategories } from '../data.js';
 
 renderSocials();
@@ -335,7 +337,11 @@ function openPost(slug, push = true) {
     ${post.coverAlt ? `<p class="a-caption">${esc(post.coverAlt)}</p>` : ''}
     <div class="article-body">${post.body}</div>
     <div class="a-end">thanks for reading</div>
+    <div class="guestbook guestbook--reader"></div>
   `;
+  mountComments(article.querySelector('.guestbook'), `/blog#${post.slug}`, {
+    title: 'Guestbook',
+  });
   reader.classList.add('is-open');
   document.body.classList.add('reader-locked');
   reader.scrollTop = 0;

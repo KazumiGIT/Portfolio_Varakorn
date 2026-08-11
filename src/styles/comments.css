@@ -1,0 +1,173 @@
+/* ===========================================================================
+   GUESTBOOK — printed-matter comment space on experience pages and the
+   blog reader. Rides the site tokens, so night mode is automatic.
+   =========================================================================== */
+
+.guestbook {
+  max-width: 760px;
+}
+
+.gb-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.4rem;
+  margin-bottom: 0.35rem;
+}
+
+.gb-intro {
+  color: var(--ink-2);
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
+}
+
+/* ---------- list ---------- */
+.gb-count {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 0.4rem;
+}
+
+.gb-list {
+  list-style: none;
+}
+
+.gb-note {
+  padding: 1.1rem 0 1.2rem;
+  border-top: 1px solid var(--line-soft);
+}
+
+.gb-list li:last-child {
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.gb-note-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.3rem;
+}
+
+.gb-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-weight: 700;
+}
+
+.gb-name::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  background: var(--red);
+  flex: none;
+}
+
+.gb-date {
+  font-size: 0.78rem;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+.gb-body {
+  color: var(--ink-2);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.gb-empty {
+  color: var(--ink-3);
+  font-style: italic;
+  padding: 1.1rem 0;
+  border-top: 1px solid var(--line-soft);
+  border-bottom: 1px solid var(--line-soft);
+}
+
+/* ---------- form ---------- */
+.gb-form {
+  margin-top: 2.2rem;
+  display: grid;
+  gap: 1.1rem;
+}
+
+.gb-field {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.gb-field--name {
+  max-width: 320px;
+}
+
+.gb-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.gb-input {
+  width: 100%;
+  font: inherit;
+  color: var(--ink);
+  background: var(--paper-2);
+  border: 1.5px solid var(--line);
+  padding: 0.7rem 0.9rem;
+  border-radius: 0;
+  transition: border-color 0.18s, box-shadow 0.18s var(--ease-out);
+}
+
+.gb-input::placeholder {
+  color: var(--ink-3);
+}
+
+.gb-input:focus {
+  outline: none;
+  border-color: var(--ink);
+  box-shadow: 3px 3px 0 var(--line);
+}
+
+.gb-area {
+  resize: vertical;
+  min-height: 110px;
+}
+
+/* honeypot: parked off canvas, never display:none so lazy bots still fill it */
+.gb-trap {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.gb-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+}
+
+.gb-status {
+  font-size: 0.88rem;
+  color: var(--ink-2);
+}
+
+.gb-status[data-tone='ok'] {
+  color: var(--green);
+}
+
+.gb-status[data-tone='err'] {
+  color: var(--red);
+}
+
+/* inside the blog reader the section chrome is smaller */
+.guestbook--reader {
+  margin-top: 3.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--line);
+}

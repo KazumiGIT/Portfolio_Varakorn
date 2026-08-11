@@ -76,10 +76,60 @@ function aiChatDev(env) {
   };
 }
 
+/** Dev twin of the Vercel function api/comments.js so the guestbook works
+    on localhost. Reads DATABASE_URL from .env via loadEnv. */
+function guestbookDev(env) {
+  const handle = (req, res) => {
+    res.setHeader('content-type', 'application/json');
+    const fullEnv = { ...process.env, ...env };
+    const fail = (e) => {
+      res.statusCode = e.status || 500;
+      res.end(JSON.stringify({ error: e.message || 'error' }));
+    };
+    if (req.method === 'GET') {
+      const page = new URLSearchParams(req.url.split('?')[1] || '').get('page');
+      import('./api/_lib/guestbook.js')
+        .then(({ listComments }) => listComments(page, fullEnv))
+        .then((out) => res.end(JSON.stringify(out)))
+        .catch(fail);
+      return;
+    }
+    if (req.method !== 'POST') {
+      res.statusCode = 405;
+      res.end('{"error":"GET or POST only"}');
+      return;
+    }
+    let raw = '';
+    req.on('data', (c) => (raw += c));
+    req.on('end', async () => {
+      try {
+        const { createComment } = await import('./api/_lib/guestbook.js');
+        const b = raw ? JSON.parse(raw) : {};
+        const out = await createComment(
+          { ...b, ip: req.socket?.remoteAddress },
+          fullEnv
+        );
+        res.end(JSON.stringify(out));
+      } catch (e) {
+        fail(e);
+      }
+    });
+  };
+  return {
+    name: 'guestbook-dev',
+    configureServer(server) {
+      server.middlewares.use('/api/comments', handle);
+    },
+    configurePreviewServer(server) {
+      server.middlewares.use('/api/comments', handle);
+    },
+  };
+}
+
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   return {
-    plugins: [cleanUrls(), aiChatDev(env)],
+    plugins: [cleanUrls(), aiChatDev(env), guestbookDev(env)],
     build: {
       rollupOptions: {
         input: {
