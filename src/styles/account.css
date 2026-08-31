@@ -381,3 +381,205 @@
 .acct-pass-wrap .acct-input {
   padding-right: 2.9rem;
 }
+
+/* ---------- editable profile head ---------- */
+
+.acct-ava-edit {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+}
+
+.acct-ava-btn {
+  position: absolute;
+  left: 50%;
+  bottom: -0.35rem;
+  translate: -50% 0;
+  padding: 0.12rem 0.5rem;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--ink-2);
+  font-family: var(--font-body);
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.18s, border-color 0.18s;
+}
+
+.acct-ava-btn:hover {
+  color: var(--red);
+  border-color: var(--red);
+}
+
+.acct-who {
+  min-width: 0;
+}
+
+.acct-edit {
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.45rem 0.9rem;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.acct-edit:hover {
+  color: var(--red);
+  border-color: var(--red);
+}
+
+.acct-edit-form {
+  flex-basis: 100%;
+  margin-top: 0.9rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.acct-edit-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+}
+
+.acct-cancel {
+  background: none;
+  border: none;
+  padding: 0.3rem 0;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.acct-cancel:hover {
+  color: var(--red);
+}
+
+/* ---------- sign in methods ---------- */
+
+.linked-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.linked {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--paper-2);
+}
+
+.linked--off {
+  background: none;
+  border-style: dashed;
+}
+
+.linked-mark {
+  flex: none;
+  width: 2.2rem;
+  height: 2.2rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--ink-2);
+}
+
+.linked-mark--google {
+  color: #fff6e6;
+  background: var(--red);
+  border-color: var(--red);
+}
+
+.linked-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.linked-body strong {
+  font-size: 0.95rem;
+}
+
+.linked-body span {
+  font-size: 0.8rem;
+  color: var(--ink-2);
+  overflow-wrap: anywhere;
+}
+
+.linked-state {
+  flex: none;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--green);
+}
+
+.linked--off .linked-state {
+  color: var(--ink-3);
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.76rem;
+}
+
+.linked-btn {
+  flex: none;
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.35rem 0.8rem;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: color 0.18s, border-color 0.18s;
+}
+
+.linked-btn:hover {
+  color: var(--red);
+  border-color: var(--red);
+}
+
+.linked-btn--add {
+  color: var(--ink);
+  border-color: var(--ink);
+  font-weight: 600;
+}
+
+.linked-loading {
+  font-size: 0.88rem;
+  color: var(--ink-3);
+}
+
+.linked-note {
+  min-height: 1.1em;
+  font-size: 0.84rem;
+  color: var(--ink-2);
+  list-style: none;
+}
+
+.linked-note[data-tone='err'] { color: var(--red); }
+.linked-note[data-tone='ok'] { color: var(--green); }

@@ -38,6 +38,13 @@ if (cmd === 'setup') {
   const url = process.env.SUPABASE_DB_DIRECT_URL || process.env.DATABASE_URL;
   const sql = postgres(url, { prepare: false, max: 1, ssl: 'require' });
   await ensureSchema(sql);
+  // avatar bucket + its per user write policies
+  try {
+    await sql.unsafe(readFileSync(resolve(root, 'db/storage.sql'), 'utf8'));
+    console.log('storage policies applied');
+  } catch (e) {
+    console.log('storage policies skipped:', e.message.split(/\r?\n/)[0]);
+  }
   await sql.end();
   console.log('schema applied');
 } else if (cmd === 'pending') {

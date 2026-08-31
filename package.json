@@ -13,7 +13,8 @@
     "check:seo": "node scripts/check-prerender.mjs",
     "shots": "node scripts/screenshot.mjs",
     "check:account": "node scripts/check-account.mjs",
-    "check:signin": "node scripts/check-signin-ui.mjs"
+    "check:signin": "node scripts/check-signin-ui.mjs",
+    "check:profile": "node scripts/check-profile.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.4",

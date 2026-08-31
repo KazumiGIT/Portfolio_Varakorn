@@ -1,7 +1,9 @@
 // ---------------------------------------------------------------------------
-// /account: the visitor's desk drawer. Hanko passport, reading ring, their
-// comments and vouches, password change, sign out, delete account.
-// Everything renders from /api/me; the page is noindex and personal.
+// /account: the visitor's desk drawer. Editable name and photo, the sign in
+// methods on the account, hanko passport, reading ring, their comments and
+// vouches, password change, sign out, delete account.
+// The profile itself lives on the Supabase auth user; /api/me mirrors it onto
+// profiles so existing comments pick up the new name and face.
 // ---------------------------------------------------------------------------
 import '../../styles/main.css';
 import '../../styles/expnav.css';
@@ -18,6 +20,12 @@ initSite();
 const root = document.querySelector('[data-acct]');
 const ENT = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ENT[c]);
+
+const PROVIDERS = {
+  google: { label: 'Google', note: 'Sign in with your Google account' },
+  email: { label: 'Email and password', note: 'Sign in with your email address' },
+};
+const providerLabel = (id) => PROVIDERS[id]?.label || id;
 
 const chapterByPage = Object.fromEntries(
   experience.filter((x) => x.page).map((x) => [x.page, x.org])
@@ -121,14 +129,34 @@ function render(me, user) {
     <h1 class="display" style="font-size: clamp(2.2rem, 6vw, 3.2rem)">Account</h1>
 
     <div class="acct-head">
-      ${avatarHtml(user, 'acct-head-ava')}
-      <div>
-        <h2>${esc(user.name)}</h2>
+      <span class="acct-ava-edit">
+        ${avatarHtml(user, 'acct-head-ava')}
+        <button class="acct-ava-btn" type="button" data-photo title="Change photo"
+                aria-label="Change your photo">Change</button>
+        <input type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden data-photo-input />
+      </span>
+      <div class="acct-who">
+        <h2 data-name-view>${esc(user.name)}</h2>
         <span class="mail">${esc(user.email || '')}</span>
       </div>
       <span class="gap"></span>
+      <button class="acct-edit" type="button" data-edit-profile>Edit profile</button>
       <button class="acct-signout" type="button">Sign out</button>
+      <form class="acct-edit-form" data-profile-form hidden novalidate>
+        <label class="ad-label" for="acct-name">Display name</label>
+        <input class="acct-input" id="acct-name" name="name" maxlength="60" required
+               value="${esc(user.name)}" placeholder="What should people call you?" />
+        <div class="acct-edit-actions">
+          <button class="btn" type="submit">Save</button>
+          <button class="acct-cancel" type="button" data-cancel-profile>Cancel</button>
+        </div>
+        <p class="acct-status" role="status" aria-live="polite" data-profile-status></p>
+      </form>
     </div>
+
+    <h3 class="acct-h">Sign in methods</h3>
+    <p class="acct-sub">Ways you can get back into this account. Adding one means you can use either.</p>
+    <ul class="linked-list" data-identities><li class="linked-loading">Checking…</li></ul>
 
     <h3 class="acct-h">Hanko passport</h3>
     <p class="acct-sub">One stamp per chapter read. ${me.stamps.length} of ${me.allStamps.length} collected${me.stamps.length === me.allStamps.length ? '. Full set, you actually read the whole desk.' : '.'}</p>
@@ -188,6 +216,67 @@ function render(me, user) {
     </div>`;
 }
 
+/* Which sign in methods hang off this account, and the buttons to add or
+   drop one. Supabase calls them identities; manual linking has to be enabled
+   in the dashboard before a second one can be attached. */
+async function renderIdentities() {
+  const host = root.querySelector('[data-identities]');
+  if (!host) return;
+  const { data, error } = await supa.auth.getUserIdentities();
+  const list = data?.identities || [];
+  if (error || !list.length) {
+    host.innerHTML = `<li class="linked-loading">Could not read your sign in methods.</li>`;
+    return;
+  }
+  const have = new Set(list.map((i) => i.provider));
+  const canUnlink = list.length > 1;
+
+  host.innerHTML =
+    list
+      .map((i) => {
+        const when = i.created_at
+          ? new Date(i.created_at).toLocaleDateString('en-MY', { month: 'short', year: 'numeric' })
+          : '';
+        return `
+        <li class="linked">
+          <span class="linked-mark linked-mark--${esc(i.provider)}" aria-hidden="true">${
+            i.provider === 'google' ? 'G' : '@'
+          }</span>
+          <span class="linked-body">
+            <strong>${esc(providerLabel(i.provider))}</strong>
+            <span>${esc(i.identity_data?.email || '')}${when ? ' · added ' + esc(when) : ''}</span>
+          </span>
+          <span class="linked-state">connected</span>
+          ${
+            canUnlink
+              ? `<button class="linked-btn" type="button" data-unlink="${esc(i.identity_id || i.id)}"
+                         data-unlink-provider="${esc(i.provider)}">Remove</button>`
+              : ''
+          }
+        </li>`;
+      })
+      .join('') +
+    Object.keys(PROVIDERS)
+      .filter((id) => !have.has(id))
+      .map(
+        (id) => `
+        <li class="linked linked--off">
+          <span class="linked-mark" aria-hidden="true">${id === 'google' ? 'G' : '@'}</span>
+          <span class="linked-body">
+            <strong>${esc(providerLabel(id))}</strong>
+            <span>${esc(PROVIDERS[id].note)}</span>
+          </span>
+          ${
+            id === 'google'
+              ? `<button class="linked-btn linked-btn--add" type="button" data-link="google">Connect</button>`
+              : `<span class="linked-state">use Forgot password to set one</span>`
+          }
+        </li>`
+      )
+      .join('') +
+    `<li class="linked-note" data-link-status role="status" aria-live="polite"></li>`;
+}
+
 async function load(user) {
   const status = () => root.querySelector('[data-acct-status]');
   root.innerHTML = skeletonHtml();
@@ -202,6 +291,7 @@ async function load(user) {
       return;
     }
     render(me, { ...user, email: me.user.email || user.email });
+    renderIdentities();
   } catch {
     root.innerHTML = `<p class="kicker">Your desk drawer</p>
       <h1 class="display" style="font-size: clamp(2.2rem, 6vw, 3.2rem)">Account</h1>
@@ -211,6 +301,18 @@ async function load(user) {
 }
 
 /* ---------- events ---------- */
+
+/* the auth user is the source of truth for name and photo; /api/me copies it
+   onto profiles so old comments show the new one */
+async function saveProfile(patch) {
+  const { error } = await supa.auth.updateUser({ data: patch });
+  if (error) throw new Error(error.message);
+  await authedFetch('/api/me', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ sync: true }),
+  });
+}
 
 root.addEventListener('click', async (e) => {
   const eye = e.target.closest('[data-eye]');
@@ -226,6 +328,67 @@ root.addEventListener('click', async (e) => {
   if (e.target.closest('[data-open-auth]')) return openAuthDialog();
   if (e.target.closest('.acct-signout')) {
     await signOut();
+    return;
+  }
+
+  // profile editing
+  if (e.target.closest('[data-edit-profile]')) {
+    root.querySelector('[data-profile-form]').hidden = false;
+    root.querySelector('[data-edit-profile]').hidden = true;
+    root.querySelector('[name="name"]').focus();
+    return;
+  }
+  if (e.target.closest('[data-cancel-profile]')) {
+    root.querySelector('[data-profile-form]').hidden = true;
+    root.querySelector('[data-edit-profile]').hidden = false;
+    return;
+  }
+  if (e.target.closest('[data-photo]')) {
+    root.querySelector('[data-photo-input]').click();
+    return;
+  }
+
+  // sign in methods
+  const link = e.target.closest('[data-link]');
+  if (link) {
+    const note = root.querySelector('[data-link-status]');
+    note.textContent = 'Opening ' + providerLabel(link.dataset.link) + '…';
+    const { error } = await supa.auth.linkIdentity({
+      provider: link.dataset.link,
+      options: { redirectTo: location.origin + '/account' },
+    });
+    if (error) {
+      note.textContent = /manual linking|not enabled/i.test(error.message)
+        ? 'Connecting a second method is switched off for this site right now.'
+        : 'Could not connect that: ' + error.message;
+      note.dataset.tone = 'err';
+    }
+    return;
+  }
+  const unlink = e.target.closest('[data-unlink]');
+  if (unlink) {
+    const name = providerLabel(unlink.dataset.unlinkProvider);
+    if (!confirm('Remove ' + name + ' from this account? You will need another way to sign in.')) return;
+    const note = root.querySelector('[data-link-status]');
+    note.textContent = 'Removing…';
+    note.dataset.tone = '';
+    const { data } = await supa.auth.getUserIdentities();
+    const target = (data?.identities || []).find(
+      (i) => String(i.identity_id || i.id) === unlink.dataset.unlink
+    );
+    const { error } = target
+      ? await supa.auth.unlinkIdentity(target)
+      : { error: new Error('not found') };
+    if (error) {
+      note.textContent = /manual linking|not enabled/i.test(error.message)
+        ? 'Removing a method is switched off for this site right now.'
+        : 'Could not remove that: ' + error.message;
+      note.dataset.tone = 'err';
+    } else {
+      note.textContent = name + ' removed.';
+      note.dataset.tone = 'ok';
+      renderIdentities();
+    }
     return;
   }
   const del = e.target.closest('[data-del-kind]');
@@ -262,7 +425,75 @@ root.addEventListener('click', async (e) => {
   }
 });
 
+root.addEventListener('change', async (e) => {
+  const input = e.target.closest('[data-photo-input]');
+  if (!input || !input.files?.length) return;
+  const file = input.files[0];
+  const status = root.querySelector('[data-profile-status]');
+  const say = (msg, tone = '') => {
+    if (status) {
+      status.textContent = msg;
+      status.dataset.tone = tone;
+    }
+  };
+  if (file.size > 2 * 1024 * 1024) return say('That photo is over 2MB. Try a smaller one.', 'err');
+  root.querySelector('[data-profile-form]').hidden = false;
+  root.querySelector('[data-edit-profile]').hidden = true;
+  say('Uploading…');
+  try {
+    const session = await supa.auth.getUser();
+    const uid = session.data?.user?.id;
+    const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().slice(0, 5);
+    const path = `${uid}/avatar-${Date.now()}.${ext}`;
+    const up = await supa.storage.from('avatars').upload(path, file, { upsert: true });
+    if (up.error) throw new Error(up.error.message);
+    const { data } = supa.storage.from('avatars').getPublicUrl(path);
+    await saveProfile({ avatar_url: data.publicUrl });
+    say('Photo updated.', 'ok');
+    const img = root.querySelector('.acct-head-ava');
+    if (img) {
+      const fresh = document.createElement('img');
+      fresh.className = 'acct-head-ava';
+      fresh.src = data.publicUrl;
+      fresh.alt = '';
+      img.replaceWith(fresh);
+    }
+  } catch (err) {
+    say('Could not upload that: ' + err.message, 'err');
+  } finally {
+    input.value = '';
+  }
+});
+
 root.addEventListener('submit', async (e) => {
+  const profileForm = e.target.closest('[data-profile-form]');
+  if (profileForm) {
+    e.preventDefault();
+    const status = profileForm.querySelector('[data-profile-status]');
+    const name = profileForm.querySelector('[name="name"]').value.trim();
+    if (!name) {
+      status.textContent = 'A name, please.';
+      status.dataset.tone = 'err';
+      return;
+    }
+    status.textContent = 'Saving…';
+    status.dataset.tone = '';
+    try {
+      await saveProfile({ full_name: name });
+      root.querySelector('[data-name-view]').textContent = name;
+      status.textContent = 'Saved.';
+      status.dataset.tone = 'ok';
+      setTimeout(() => {
+        profileForm.hidden = true;
+        root.querySelector('[data-edit-profile]').hidden = false;
+      }, 700);
+    } catch (err) {
+      status.textContent = 'Could not save: ' + err.message;
+      status.dataset.tone = 'err';
+    }
+    return;
+  }
+
   const form = e.target.closest('[data-pass]');
   if (!form) return;
   e.preventDefault();
@@ -283,12 +514,22 @@ root.addEventListener('submit', async (e) => {
 
 /* ---------- boot ---------- */
 
+/* Supabase fires an auth event for a metadata change too, and rebuilding the
+   whole page on one would wipe the very form that made the change. So a full
+   load happens when the person changes, not when their name does; the edit
+   handlers update the page in place. */
+let shownId = null;
 onAuth((session) => {
   const user = userOf(session);
+  const id = session?.user?.id || null;
   if (!user) {
+    shownId = null;
     root.innerHTML = gateHtml();
     if (cameFromRecovery) openAuthDialog();
-  } else {
+    return;
+  }
+  if (id !== shownId) {
+    shownId = id;
     load(user);
   }
 });
