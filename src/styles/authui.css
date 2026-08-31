@@ -99,7 +99,9 @@
 .authdlg {
   position: fixed;
   inset: 0;
-  z-index: 1400;
+  /* above the profile card (1450) and the compose dialog (1420): signing in
+     is always the thing that interrupts, never the thing interrupted */
+  z-index: 1460;
   display: grid;
   place-items: center;
   padding: 1.2rem;

@@ -3726,3 +3726,204 @@ body {
 .wcard-more:hover {
   color: var(--red-deep);
 }
+
+/* the invitation note at the end of the wall, and the compose dialog */
+.wcard--compose {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.5rem;
+  border-style: dashed;
+  background: var(--paper);
+  cursor: pointer;
+  font-family: var(--font-body);
+  color: var(--ink-2);
+  min-height: 11rem;
+}
+
+.wcard--compose:hover {
+  color: var(--red);
+  border-color: var(--red);
+}
+
+.wcard--compose .wcard-body {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: inherit;
+}
+
+.wcard--compose .wcard-body::before {
+  content: none;
+}
+
+.wcompose-pen {
+  font-size: 1.5rem;
+  color: var(--red);
+}
+
+.wcard-hintline {
+  font-size: 0.76rem;
+  color: var(--ink-3);
+}
+
+.wcompose {
+  position: fixed;
+  inset: 0;
+  z-index: 1420;
+  display: grid;
+  place-items: center;
+  padding: 1.2rem;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.22s var(--ease-out), visibility 0.22s;
+}
+
+.wcompose.is-open {
+  visibility: visible;
+  opacity: 1;
+}
+
+.wcompose-scrim {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--ink) 42%, transparent);
+}
+
+.wcompose-card {
+  position: relative;
+  width: min(26rem, 100%);
+  max-height: calc(100vh - 2.4rem);
+  overflow-y: auto;
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 16px;
+  box-shadow: 8px 10px 0 rgba(0, 0, 0, 0.2);
+  padding: 1.5rem 1.5rem 1.3rem;
+  transform: translateY(10px);
+  transition: transform 0.22s var(--ease-out);
+}
+
+.wcompose.is-open .wcompose-card {
+  transform: none;
+}
+
+.wcompose-close {
+  position: absolute;
+  top: 0.8rem;
+  right: 0.8rem;
+  width: 2.1rem;
+  height: 2.1rem;
+  display: grid;
+  place-items: center;
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.wcompose-close:hover {
+  color: var(--red);
+  border-color: var(--red);
+}
+
+.wcompose-title {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 0 0 0.8rem;
+}
+
+.wcompose-kinds {
+  display: inline-flex;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 0.7rem;
+}
+
+.wcompose-kind {
+  background: none;
+  border: none;
+  padding: 0.45rem 1.1rem;
+  font-family: var(--font-body);
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.wcompose-kind.is-on {
+  background: var(--red);
+  color: #fff6e6;
+}
+
+.wcompose-sub {
+  margin: 0 0 1rem;
+  font-size: 0.85rem;
+  color: var(--ink-2);
+}
+
+.wcompose-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.wcompose-select {
+  appearance: auto;
+  font: inherit;
+  font-size: 0.95rem;
+}
+
+.wcompose-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  margin-top: 0.4rem;
+}
+
+.wcompose-status {
+  min-height: 1.2em;
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--ink-2);
+  flex-basis: 100%;
+}
+
+.wcompose-status[data-tone='err'] { color: var(--red); }
+.wcompose-status[data-tone='ok'] { color: var(--green); }
+
+/* the compose dialog lives on the home page, where the account styles do
+   not load, so its fields carry their own clothes */
+.wcompose-form .acct-input {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--ink);
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.wcompose-form .acct-input:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 1px;
+}
+
+.wcompose-form .acct-area {
+  resize: vertical;
+  font: inherit;
+}
+
+.wcompose-form .ad-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  font-weight: 600;
+  margin-top: 0.3rem;
+}
