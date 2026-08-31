@@ -626,3 +626,141 @@
   color: var(--red);
   border-color: var(--red);
 }
+
+/* ---------------------------------------------------------------------------
+   Own-words controls: waiting badges, little Edit and Delete, and the styled
+   confirmation that asks before anything is posted or removed.
+   --------------------------------------------------------------------------- */
+
+.gb-note--pending {
+  border-left: 3px dashed var(--gold);
+  padding-left: 0.9rem;
+  opacity: 0.85;
+}
+
+.gb-wait {
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.gb-mini {
+  background: none;
+  border: none;
+  padding: 0.2rem 0.3rem;
+  font-family: var(--font-body);
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--ink-3);
+  cursor: pointer;
+}
+
+.gb-mini:hover {
+  color: var(--red);
+}
+
+.gb-mini--danger:hover {
+  color: var(--red-deep);
+}
+
+.gb-edit-slot {
+  margin: 0.4rem 0 0.6rem;
+}
+
+.vouch-own-actions {
+  margin-left: auto;
+  display: inline-flex;
+  gap: 0.2rem;
+}
+
+/* ---------- confirm ---------- */
+
+.vkconfirm {
+  position: fixed;
+  inset: 0;
+  z-index: 1500;
+  display: grid;
+  place-items: center;
+  padding: 1.2rem;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s var(--ease-out), visibility 0.2s;
+}
+
+.vkconfirm.is-open {
+  visibility: visible;
+  opacity: 1;
+}
+
+.vkc-scrim {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--ink) 42%, transparent);
+}
+
+.vkc-card {
+  position: relative;
+  width: min(22rem, 100%);
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 14px;
+  box-shadow: 7px 8px 0 rgba(0, 0, 0, 0.2);
+  padding: 1.4rem 1.4rem 1.2rem;
+  transform: translateY(8px);
+  transition: transform 0.2s var(--ease-out);
+}
+
+.vkconfirm.is-open .vkc-card {
+  transform: none;
+}
+
+.vkc-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+  text-wrap: balance;
+}
+
+.vkc-msg {
+  margin: 0 0 1.1rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+.vkc-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.vkc-yes.is-danger {
+  background: var(--red);
+  color: #fff6e6;
+  border-color: var(--red-deep);
+}
+
+.vkc-no {
+  background: none;
+  border: none;
+  padding: 0.3rem 0;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.vkc-no:hover {
+  color: var(--red);
+}
+
+@media (max-width: 640px) {
+  .vkc-actions .vkc-yes {
+    flex-basis: 100%;
+    justify-content: center;
+  }
+}

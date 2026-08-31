@@ -8,6 +8,8 @@
 import { authConfigured, userOf, onAuth, authedFetch, signOut } from './supa.js';
 import { openAuthDialog } from './authui.js';
 import { bindProfileClicks } from './profilecard.js';
+import { askConfirm } from './confirm.js';
+import { pageLabel } from './pagelabel.js';
 
 const ENT = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ENT[c]);
@@ -54,17 +56,21 @@ function noteHtml(c, signedIn, people, isReply = false) {
     .join('');
   const pid = 'c' + c.id;
   people.set(pid, { name: c.name, picture: c.picture, title: c.title, bio: c.bio, links: c.links });
+  const pending = c.mine && !c.approved;
   return `
-    <li class="gb-note${isReply ? ' gb-note--reply' : ''}" data-note="${c.id}">
+    <li class="gb-note${isReply ? ' gb-note--reply' : ''}${pending ? ' gb-note--pending' : ''}" data-note="${c.id}">
       <div class="gb-note-head">
         <button class="gb-name gb-name--btn" type="button" data-pc="${pid}"
                 title="View profile">${avatar(c)}${esc(c.name)}</button>
         <span class="gb-date">${esc(fmtDate(c.created_at))}</span>
+        ${pending ? '<span class="gb-wait">waiting for approval</span>' : ''}
       </div>
       <p class="gb-body">${esc(c.body)}</p>
       <div class="gb-note-foot">
         ${likeBtn(c, signedIn)}
         ${!isReply && signedIn ? `<button class="gb-reply-btn" type="button" data-reply="${c.id}">Reply</button>` : ''}
+        ${c.mine ? `<button class="gb-mini" type="button" data-edit="${c.id}">Edit</button>
+        <button class="gb-mini gb-mini--danger" type="button" data-del="${c.id}">Delete</button>` : ''}
       </div>
       ${!isReply ? `<div class="gb-reply-slot"></div>` : ''}
       ${replies ? `<ul class="gb-replies">${replies}</ul>` : ''}
@@ -167,13 +173,23 @@ export function mountComments(host, page, { title } = {}) {
     const area = form.querySelector('[name="body"]');
     const body = area.value.trim();
     if (!body) return say(form, 'Write something first.', 'err');
+    if (parent == null) {
+      const sure = await askConfirm({
+        title: `Leave this comment on ${pageLabel(page)}?`,
+        message:
+          'It shows here once Varakorn approves it. You can edit or delete it any time, and leave one on other chapters and notes too.',
+        yes: 'Yes, leave it',
+      });
+      if (!sure) return;
+    }
     const btn = form.querySelector('.gb-submit');
     btn.disabled = true;
     say(form, 'Sending…');
     try {
       await post('/api/comments', { page, body, parent });
       area.value = '';
-      say(form, 'Thank you. It shows up here once Varakorn approves it.', 'ok');
+      say(form, 'Thank you. It shows up for everyone once Varakorn approves it.', 'ok');
+      refresh();
     } catch (e) {
       if (e.status === 401) {
         say(form, 'Your session expired. Sign in again.', 'err');
@@ -242,7 +258,57 @@ export function mountComments(host, page, { title } = {}) {
     }
 
     if (e.target.closest('.gb-cancel')) {
-      e.target.closest('.gb-reply-slot').innerHTML = '';
+      const slot = e.target.closest('.gb-reply-slot, .gb-edit-slot');
+      if (slot && slot.classList.contains('gb-edit-slot')) {
+        const note = slot.closest('.gb-note');
+        note.querySelector('.gb-body').hidden = false;
+        slot.remove();
+      } else if (slot) {
+        slot.innerHTML = '';
+      }
+      return;
+    }
+
+    const editBtn = e.target.closest('[data-edit]');
+    if (editBtn && user) {
+      const note = editBtn.closest('.gb-note');
+      if (note.querySelector('.gb-edit-slot')) return;
+      const bodyEl = note.querySelector('.gb-body');
+      const slot = document.createElement('div');
+      slot.className = 'gb-edit-slot';
+      slot.innerHTML = `
+        <form class="gb-form gb-form--edit" novalidate>
+          <textarea class="gb-input gb-area" name="body" maxlength="2000" rows="3" required></textarea>
+          <div class="gb-actions">
+            <button class="btn gb-submit" type="submit" data-save-edit="${editBtn.dataset.edit}">Save</button>
+            <button class="gb-cancel" type="button">Cancel</button>
+            <p class="gb-status" role="status" aria-live="polite"></p>
+          </div>
+        </form>`;
+      slot.querySelector('textarea').value = bodyEl.textContent;
+      bodyEl.hidden = true;
+      bodyEl.after(slot);
+      slot.querySelector('textarea').focus();
+      return;
+    }
+
+    const delBtn = e.target.closest('[data-del]');
+    if (delBtn && user) {
+      const sure = await askConfirm({
+        title: 'Delete this comment?',
+        message: 'It goes for good, replies and likes with it. You can always write a new one.',
+        yes: 'Delete it',
+        no: 'Keep it',
+        danger: true,
+      });
+      if (!sure) return;
+      delBtn.disabled = true;
+      try {
+        await post('/api/me', { remove: { kind: 'comment', id: Number(delBtn.dataset.del) } });
+        refresh();
+      } catch {
+        delBtn.disabled = false;
+      }
       return;
     }
 
@@ -251,12 +317,33 @@ export function mountComments(host, page, { title } = {}) {
     }
   });
 
-  host.addEventListener('submit', (e) => {
+  host.addEventListener('submit', async (e) => {
     const form = e.target.closest('.gb-form');
     if (!form) return;
     e.preventDefault();
+
+    const saveEdit = form.querySelector('[data-save-edit]');
+    if (saveEdit) {
+      const body = form.querySelector('[name="body"]').value.trim();
+      if (!body) return say(form, 'Write something first.', 'err');
+      saveEdit.disabled = true;
+      say(form, 'Saving…');
+      try {
+        await api('/api/comments', {
+          method: 'PUT',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ id: Number(saveEdit.dataset.saveEdit), body }),
+        });
+        refresh();
+      } catch {
+        say(form, 'That did not save. Try again.', 'err');
+        saveEdit.disabled = false;
+      }
+      return;
+    }
+
     const parentNote = form.closest('.gb-note');
-    submit(form, parentNote ? Number(parentNote.dataset.note) : undefined);
+    submit(form, parentNote && !form.closest('.gb-edit-slot') ? Number(parentNote.dataset.note) : undefined);
   });
 
   /* ---------- boot: the shared session drives everything ---------- */

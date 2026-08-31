@@ -12,6 +12,7 @@ import { initSite } from '../ui.js';
 import { renderSocials } from '../render.js';
 import { supa, userOf, onAuth, authedFetch, signOut } from '../supa.js';
 import { openAuthDialog, avatarHtml } from '../authui.js';
+import { askConfirm } from '../confirm.js';
 import { experience, posts } from '../data.js';
 
 renderSocials();
@@ -109,14 +110,19 @@ function ringHtml(read, total) {
     </svg>`;
 }
 
+const mineReg = new Map();
+
 function mineHtml(kind, item) {
+  mineReg.set(kind + ':' + item.id, item);
   return `
-    <li class="mine-item">
+    <li class="mine-item" data-mine="${kind}:${item.id}">
       <div class="mine-body">
         <a class="mine-page link-u" href="${esc(pageHref(item.page))}">${esc(pageLabel(item.page))}</a>
-        <p>${esc(item.relation ? item.relation + ' · ' + item.body : item.body)}</p>
+        <p data-mine-text>${esc(item.relation ? item.relation + ' · ' + item.body : item.body)}</p>
+        <div class="mine-edit-slot"></div>
       </div>
       <span class="mine-state${item.approved ? ' is-live' : ''}">${item.approved ? 'live' : 'waiting'}</span>
+      <button class="gb-mini" type="button" data-mine-edit="${kind}:${item.id}">Edit</button>
       <button class="mine-del" type="button" data-del-kind="${kind}" data-del-id="${item.id}"
               aria-label="Delete">✕</button>
     </li>`;
@@ -414,10 +420,51 @@ root.addEventListener('click', async (e) => {
     }
     return;
   }
+  const editBtn = e.target.closest('[data-mine-edit]');
+  if (editBtn) {
+    const key = editBtn.dataset.mineEdit;
+    const item = mineReg.get(key);
+    const li = editBtn.closest('.mine-item');
+    const slot = li.querySelector('.mine-edit-slot');
+    if (!item || slot.innerHTML) {
+      slot.innerHTML = '';
+      li.querySelector('[data-mine-text]').hidden = false;
+      return;
+    }
+    const isVouch = key.startsWith('testimonial');
+    slot.innerHTML = `
+      <form class="mine-edit" data-mine-form="${esc(key)}" novalidate>
+        ${isVouch ? `<input class="acct-input" name="relation" maxlength="80" required
+                 value="${esc(item.relation || '')}" placeholder="How you know Varakorn" />` : ''}
+        <textarea class="acct-input acct-area" name="body" maxlength="2000" rows="3" required>${esc(item.body)}</textarea>
+        <div class="acct-edit-actions">
+          <button class="btn" type="submit">Save</button>
+          <button class="acct-cancel" type="button" data-mine-cancel>Cancel</button>
+        </div>
+        <p class="acct-status" role="status" aria-live="polite"></p>
+      </form>`;
+    li.querySelector('[data-mine-text]').hidden = true;
+    slot.querySelector('textarea').focus();
+    return;
+  }
+  if (e.target.closest('[data-mine-cancel]')) {
+    const li = e.target.closest('.mine-item');
+    li.querySelector('.mine-edit-slot').innerHTML = '';
+    li.querySelector('[data-mine-text]').hidden = false;
+    return;
+  }
+
   const del = e.target.closest('[data-del-kind]');
   if (del) {
     const kind = del.dataset.delKind;
-    if (!confirm(`Delete this ${kind === 'testimonial' ? 'vouch' : 'comment'}? There is no undo.`)) return;
+    const sure = await askConfirm({
+      title: `Delete this ${kind === 'testimonial' ? 'vouch' : 'comment'}?`,
+      message: 'It goes for good. You can always write a new one on that page.',
+      yes: 'Delete it',
+      no: 'Keep it',
+      danger: true,
+    });
+    if (!sure) return;
     del.disabled = true;
     try {
       const r = await authedFetch('/api/me', {
@@ -434,7 +481,14 @@ root.addEventListener('click', async (e) => {
   }
   if (e.target.closest('[data-del-account]')) {
     const s = root.querySelector('[data-danger-status]');
-    if (!confirm('Really delete your whole account? Everything goes with it, permanently.')) return;
+    const sure = await askConfirm({
+      title: 'Delete your whole account?',
+      message: 'Comments, vouches, stamps, reading marks and chat history all go with it, permanently. There is no undo.',
+      yes: 'Delete everything',
+      no: 'Keep my account',
+      danger: true,
+    });
+    if (!sure) return;
     s.textContent = 'Deleting…';
     try {
       const r = await authedFetch('/api/me', { method: 'DELETE' });
@@ -500,6 +554,52 @@ root.addEventListener('change', async (e) => {
 });
 
 root.addEventListener('submit', async (e) => {
+  const mineForm = e.target.closest('[data-mine-form]');
+  if (mineForm) {
+    e.preventDefault();
+    const key = mineForm.dataset.mineForm;
+    const item = mineReg.get(key);
+    const status = mineForm.querySelector('.acct-status');
+    const body = mineForm.querySelector('[name="body"]').value.trim();
+    const relation = mineForm.querySelector('[name="relation"]')?.value.trim();
+    if (!body || (key.startsWith('testimonial') && !relation)) {
+      status.textContent = 'Nothing empty, please.';
+      status.dataset.tone = 'err';
+      return;
+    }
+    status.textContent = 'Saving…';
+    status.dataset.tone = '';
+    try {
+      const r = key.startsWith('testimonial')
+        ? await authedFetch('/api/testimonials', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ page: item.page, relation, body }),
+          })
+        : await authedFetch('/api/comments', {
+            method: 'PUT',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ id: Number(item.id), body }),
+          });
+      if (!r.ok) throw new Error((await r.json()).error || 'error');
+      item.body = body;
+      if (relation) item.relation = relation;
+      item.approved = false;
+      const li = mineForm.closest('.mine-item');
+      const text = li.querySelector('[data-mine-text]');
+      text.textContent = relation ? relation + ' · ' + body : body;
+      text.hidden = false;
+      const state = li.querySelector('.mine-state');
+      state.textContent = 'waiting';
+      state.classList.remove('is-live');
+      li.querySelector('.mine-edit-slot').innerHTML = '';
+    } catch (err) {
+      status.textContent = 'Could not save: ' + err.message;
+      status.dataset.tone = 'err';
+    }
+    return;
+  }
+
   const profileForm = e.target.closest('[data-profile-form]');
   if (profileForm) {
     e.preventDefault();

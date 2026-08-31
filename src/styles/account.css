@@ -617,3 +617,11 @@
   font-size: 0.78rem;
   color: var(--ink-3);
 }
+
+/* inline editing of your own comments and vouches, right in the list */
+.mine-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+}

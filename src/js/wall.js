@@ -30,10 +30,11 @@ const avatar = (x) =>
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 function cardInner(item, pid) {
-  const clipped = item.body.length > 220 ? item.body.slice(0, 200).trimEnd() + '…' : item.body;
+  const long = item.body.length > 180;
   return `
     <span class="wcard-kind wcard-kind--${item.kind}">${item.kind}</span>
-    <p class="wcard-body">${esc(clipped)}</p>
+    <p class="wcard-body${long ? ' wcard-body--clamp' : ''}">${esc(item.body)}</p>
+    ${long ? '<button class="wcard-more" type="button" data-more>Read all</button>' : ''}
     <footer class="wcard-foot">
       <button class="gb-name gb-name--btn" type="button" data-pc="${pid}" title="View profile">
         ${avatar(item)}
@@ -54,6 +55,15 @@ export function mountWall(section) {
 
   const people = new Map();
   bindProfileClicks(wall, people);
+
+  // long notes unfold in place; the rotator leaves an open card alone
+  wall.addEventListener('click', (e) => {
+    const more = e.target.closest('[data-more]');
+    if (!more) return;
+    const card = more.closest('.wcard');
+    const open = card.classList.toggle('is-open');
+    more.textContent = open ? 'Show less' : 'Read all';
+  });
 
   fetch('/api/wall')
     .then((r) => (r.ok ? r.json() : { items: [] }))
@@ -93,6 +103,10 @@ export function mountWall(section) {
           if (r.bottom < 0 || r.top > innerHeight) return; // off screen, save the breath
           const card = wall.children[slot];
           if (!card) return;
+          if (card.classList.contains('is-open')) {
+            slot = (slot + 1) % SLOTS; // someone is reading this one
+            return;
+          }
           const item = items[nextItem % items.length];
           card.classList.add('is-swapping');
           setTimeout(() => {

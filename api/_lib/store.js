@@ -139,13 +139,14 @@ export async function listComments(page, viewerId, env = process.env) {
   if (!PAGE_RE.test(String(page || ''))) throw err(400, 'unknown page');
   const viewer = viewerId || '00000000-0000-0000-0000-000000000000';
   const rows = await withSchema(sql, () => sql`
-    select c.id, c.parent_id, c.body, c.created_at,
+    select c.id, c.parent_id, c.body, c.created_at, c.approved,
+      (c.user_id = ${viewer}) as mine,
       p.name, p.picture, p.title, p.bio, p.links,
       (select count(*)::int from likes l where l.comment_id = c.id) as likes,
       exists(select 1 from likes l where l.comment_id = c.id and l.user_id = ${viewer}) as liked
     from comments c
     join profiles p on p.id = c.user_id
-    where c.page = ${page} and c.approved
+    where c.page = ${page} and (c.approved or c.user_id = ${viewer})
     order by c.created_at asc
     limit 500`);
 
@@ -194,6 +195,20 @@ export async function createComment({ page, body, parent, user, ip }, env = proc
       values (${page}, ${user.id}, ${parentId}, ${cleanBody}, ${hashIp(ip)})`;
     return { ok: true };
   });
+}
+
+/** Rewrite your own comment. It re-queues for approval, like a vouch edit. */
+export async function updateOwnComment({ id, body, user }, env = process.env) {
+  const sql = need(env);
+  const cleanBody = clean(body, BODY_MAX);
+  if (!cleanBody || cleanBody.length > BODY_MAX)
+    throw err(400, 'comment must be 1 to 2000 characters');
+  const rows = await withSchema(sql, () => sql`
+    update comments set body = ${cleanBody}, approved = false
+    where id = ${Number(id)} and user_id = ${user.id}
+    returning id`);
+  if (!rows.length) throw err(404, 'not yours or already gone');
+  return { ok: true, pending: true };
 }
 
 /* ---------- likes ---------- */

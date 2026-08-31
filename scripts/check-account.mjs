@@ -79,13 +79,41 @@ const nonce = 'e2e ' + Date.now();
 await p.fill('.vouches [name="relation"]', 'JAAVIS teammate');
 await p.fill('.vouches [name="body"]', 'Great team lead. ' + nonce);
 await p.click('.vouches .gb-submit');
+await p.waitForTimeout(500);
+check(await p.locator('.vkconfirm.is-open').isVisible(), 'a confirmation asks before the vouch is left');
+check(/Gamuda AI Academy/.test(await p.locator('.vkc-title').textContent()), 'the confirmation names the chapter');
+await p.click('.vkc-yes');
 await p.waitForTimeout(2200);
 check((await p.locator('.vouch--pending').count()) >= 1, 'vouch lands as a visible pending card');
-check(/Edit my vouch/i.test(await p.locator('.vouch-open').textContent()), 'the button now offers editing');
+check((await p.locator('[data-v-edit]').count()) === 1 && (await p.locator('[data-v-del]').count()) === 1, 'own vouch card carries Edit and Delete');
 await p.fill('[data-guestbook] [name="body"]', 'Guestbook check. ' + nonce);
 await p.click('[data-guestbook] .gb-submit');
+await p.waitForTimeout(500);
+check(await p.locator('.vkconfirm.is-open').isVisible(), 'a confirmation asks before the comment is left');
+await p.click('.vkc-yes');
+await p.waitForTimeout(2200);
+check((await p.locator('.gb-note--pending').count()) >= 1, 'own comment shows immediately with a waiting badge');
+
+/* edit the comment in place, then delete it */
+await p.click('[data-guestbook] [data-edit]');
+await p.waitForTimeout(400);
+await p.fill('.gb-edit-slot [name="body"]', 'Edited guestbook check. ' + nonce);
+await p.click('.gb-edit-slot .gb-submit');
+await p.waitForTimeout(2000);
+check((await p.locator('.gb-note--pending .gb-body').first().innerText()).includes('Edited'), 'editing your own comment works in place');
+const beforeDel = await p.locator('.gb-note').count();
+await p.click('[data-guestbook] [data-del]');
+await p.waitForTimeout(500);
+check(await p.locator('.vkconfirm.is-open').isVisible(), 'deleting asks first');
+await p.click('.vkc-yes');
+await p.waitForTimeout(2000);
+check((await p.locator('.gb-note').count()) === beforeDel - 1, 'own comment deletes from the page it lives on');
+/* leave a fresh one so the account page checks below still see a comment */
+await p.fill('[data-guestbook] [name="body"]', 'Guestbook check. ' + nonce);
+await p.click('[data-guestbook] .gb-submit');
+await p.waitForTimeout(500);
+await p.click('.vkc-yes');
 await p.waitForTimeout(1800);
-check(/approves/i.test(await p.locator('[data-guestbook] .gb-status').textContent()), 'comment lands as pending');
 
 /* 5. earn a stamp + a reading mark directly (the UI waits 20s by design) */
 const marks = await p.evaluate(async () => {
@@ -109,6 +137,13 @@ check((await p.locator('.pp-stamp.is-got').count()) >= 1, 'passport shows the ea
 check(/1 \/ 18|1 of 18/.test(await p.locator('.rr-svg').getAttribute('aria-label') + (await p.locator('.rr-num').textContent())), 'reading ring says 1 of 18');
 check((await p.locator('.mine-item').count()) >= 2, 'own comment and vouch are listed');
 check((await p.locator('.mine-state:not(.is-live)').count()) >= 2, 'both marked waiting for approval');
+check((await p.locator('[data-mine-edit]').count()) >= 2, 'both carry an Edit button on the profile page');
+await p.locator('[data-mine-edit]').first().click();
+await p.waitForTimeout(400);
+await p.fill('.mine-edit [name="body"]', 'Edited from my profile page.');
+await p.click('.mine-edit button[type="submit"]');
+await p.waitForTimeout(2000);
+check((await p.locator('.mine-item').first().locator('[data-mine-text]').innerText()).includes('Edited from my profile page'), 'editing from the profile page saves in place');
 await p.screenshot({ path: '.shots/account/account-page.png', fullPage: true });
 
 /* 7. the terminal is account only: an anonymous request gates immediately */

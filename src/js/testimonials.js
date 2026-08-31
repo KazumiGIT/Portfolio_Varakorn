@@ -7,6 +7,9 @@
 import { authConfigured, userOf, onAuth, authedFetch } from './supa.js';
 import { openAuthDialog } from './authui.js';
 import { bindProfileClicks } from './profilecard.js';
+import { askConfirm } from './confirm.js';
+import { pageLabel } from './pagelabel.js';
+import { authedFetch as apost } from './supa.js';
 
 const ENT = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ENT[c]);
@@ -33,6 +36,10 @@ function cardHtml(t, people) {
         <button class="gb-name gb-name--btn" type="button" data-pc="${pid}"
                 title="View profile">${avatar(t)}${esc(t.name)}</button>
         <span class="vouch-rel">${esc(t.relation)} · ${esc(fmtDate(t.created_at))}</span>
+        ${t.mine ? `<span class="vouch-own-actions">
+          <button class="gb-mini" type="button" data-v-edit="${t.id}">Edit</button>
+          <button class="gb-mini gb-mini--danger" type="button" data-v-del="${t.id}">Delete</button>
+        </span>` : ''}
       </div>
       ${t.approved ? '' : '<span class="vouch-wait">Waiting for Varakorn to approve</span>'}
     </li>`;
@@ -162,6 +169,39 @@ export function mountTestimonials(host, page) {
 
   bindProfileClicks(host, people);
 
+  host.addEventListener('click', async (e) => {
+    if (e.target.closest('[data-v-edit]')) {
+      formOpen = true;
+      renderCta();
+      cta.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      return;
+    }
+    const del = e.target.closest('[data-v-del]');
+    if (del) {
+      const sure = await askConfirm({
+        title: 'Delete your vouch?',
+        message: 'It goes for good. You can always write a new one later.',
+        yes: 'Delete it',
+        no: 'Keep it',
+        danger: true,
+      });
+      if (!sure) return;
+      del.disabled = true;
+      try {
+        await apost('/api/me', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ remove: { kind: 'testimonial', id: Number(del.dataset.vDel) } }),
+        });
+        mine = null;
+        formOpen = false;
+        refresh();
+      } catch {
+        del.disabled = false;
+      }
+    }
+  });
+
   host.addEventListener('submit', async (e) => {
     const form = e.target.closest('.gb-form');
     if (!form) return;
@@ -174,6 +214,14 @@ export function mountTestimonials(host, page) {
       status.dataset.tone = 'err';
       return;
     }
+    const sure = await askConfirm({
+      title: (mine ? 'Update your vouch on ' : 'Leave your vouch on ') + pageLabel(page) + '?',
+      message: mine
+        ? 'The new version replaces the old one and waits for approval again. You can edit or delete it any time.'
+        : 'It shows here once Varakorn approves it. You can leave one on every chapter you shared with him, and edit or delete this one any time.',
+      yes: mine ? 'Yes, update it' : 'Yes, leave it',
+    });
+    if (!sure) return;
     const btn = form.querySelector('.gb-submit');
     btn.disabled = true;
     status.textContent = 'Sending…';
