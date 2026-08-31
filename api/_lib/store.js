@@ -285,20 +285,20 @@ export async function markRead(user, slug, env = process.env) {
 export async function accountSummary(user, env = process.env) {
   const sql = db(env);
   if (!sql) return { offline: true };
-  await ensureProfile(user, env);
   return withSchema(sql, async () => {
-    const stamps = await sql`
-      select stamp, created_at from stamps where user_id = ${user.id}`;
-    const reading = await sql`
-      select slug, created_at from reading where user_id = ${user.id}`;
-    const comments = await sql`
-      select id, page, body, approved, created_at
-      from comments where user_id = ${user.id}
-      order by created_at desc limit 100`;
-    const testimonials = await sql`
-      select id, page, relation, body, approved, created_at
-      from testimonials where user_id = ${user.id}
-      order by created_at desc`;
+    // one round trip instead of five: the profile upsert and all four reads
+    // fly together, which matters when the function is an ocean from the db
+    const [, stamps, reading, comments, testimonials] = await Promise.all([
+      ensureProfile(user, env),
+      sql`select stamp, created_at from stamps where user_id = ${user.id}`,
+      sql`select slug, created_at from reading where user_id = ${user.id}`,
+      sql`select id, page, body, approved, created_at
+          from comments where user_id = ${user.id}
+          order by created_at desc limit 100`,
+      sql`select id, page, relation, body, approved, created_at
+          from testimonials where user_id = ${user.id}
+          order by created_at desc`,
+    ]);
     return {
       user: { name: user.name, email: user.email, picture: user.picture },
       stamps: stamps.map((s) => s.stamp),

@@ -1,9 +1,24 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
+  "regions": [
+    "sin1"
+  ],
   "redirects": [
-    { "source": "/", "destination": "/home", "permanent": false },
-    { "source": "/index", "destination": "/home", "permanent": true },
-    { "source": "/index.html", "destination": "/home", "permanent": true }
+    {
+      "source": "/",
+      "destination": "/home",
+      "permanent": false
+    },
+    {
+      "source": "/index",
+      "destination": "/home",
+      "permanent": true
+    },
+    {
+      "source": "/index.html",
+      "destination": "/home",
+      "permanent": true
+    }
   ]
 }

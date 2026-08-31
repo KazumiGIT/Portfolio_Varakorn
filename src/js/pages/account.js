@@ -34,6 +34,35 @@ const pageHref = (page) => (page.startsWith('/blog#') ? page : page);
 /* the supabase recovery link lands here with type=recovery in the hash */
 const cameFromRecovery = /type=recovery/.test(location.hash);
 
+function skeletonHtml() {
+  const stamp = `
+    <span class="pp-stamp">
+      <span class="pp-seal sk"></span>
+      <span class="pp-name sk sk-line" style="width:70%">&nbsp;</span>
+    </span>`;
+  return `
+    <p class="kicker">Your desk drawer</p>
+    <h1 class="display" style="font-size: clamp(2.2rem, 6vw, 3.2rem)">Account</h1>
+    <div class="acct-head">
+      <span class="sk sk-ava"></span>
+      <div style="flex:1; max-width:14rem; display:flex; flex-direction:column; gap:.5rem">
+        <span class="sk sk-line" style="width:60%">&nbsp;</span>
+        <span class="sk sk-line" style="width:90%; height:.8em">&nbsp;</span>
+      </div>
+    </div>
+    <h3 class="acct-h">Hanko passport</h3>
+    <p class="acct-sub sk sk-line" style="max-width:16rem">&nbsp;</p>
+    <div class="passport">${stamp.repeat(6)}</div>
+    <h3 class="acct-h">Reading progress</h3>
+    <div class="readring">
+      <span class="sk sk-ring"></span>
+      <div style="flex:1; max-width:18rem; display:flex; flex-direction:column; gap:.5rem">
+        <span class="sk sk-line" style="width:80%">&nbsp;</span>
+        <span class="sk sk-line" style="width:60%">&nbsp;</span>
+      </div>
+    </div>`;
+}
+
 function gateHtml() {
   return `
     <p class="kicker">Your desk drawer</p>
@@ -151,6 +180,7 @@ function render(me, user) {
 
 async function load(user) {
   const status = () => root.querySelector('[data-acct-status]');
+  root.innerHTML = skeletonHtml();
   try {
     const r = await authedFetch('/api/me');
     const me = await r.json();
@@ -163,7 +193,10 @@ async function load(user) {
     }
     render(me, { ...user, email: me.user.email || user.email });
   } catch {
-    if (status()) status().textContent = 'Could not load your account. Refresh to try again.';
+    root.innerHTML = `<p class="kicker">Your desk drawer</p>
+      <h1 class="display" style="font-size: clamp(2.2rem, 6vw, 3.2rem)">Account</h1>
+      <p class="note-dim" data-acct-status>Could not load your account. Refresh to try again.</p>`;
+    void status;
   }
 }
 

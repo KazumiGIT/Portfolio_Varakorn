@@ -1,7 +1,8 @@
 // ---------------------------------------------------------------------------
 // One Postgres client for the whole store, pointed at Supabase's transaction
 // pooler (port 6543). prepare:false because transaction mode cannot hold
-// prepared statements; max:1 because each serverless invocation is one lane.
+// prepared statements; a few lanes so the account summary's parallel reads
+// actually run in parallel instead of queueing on one connection.
 // ---------------------------------------------------------------------------
 import postgres from 'postgres';
 
@@ -14,7 +15,7 @@ export function db(env = process.env) {
   if (!client || clientUrl !== url) {
     client = postgres(url, {
       prepare: false,
-      max: 1,
+      max: 4,
       idle_timeout: 20,
       connect_timeout: 10,
       ssl: 'require',
