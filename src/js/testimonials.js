@@ -26,7 +26,7 @@ const avatar = (t) =>
     ? `<img class="gb-ava" src="${esc(t.picture)}" alt="" referrerpolicy="no-referrer" />`
     : `<span class="gb-ava gb-ava--letter">${esc((t.name || '?')[0].toUpperCase())}</span>`;
 
-function cardHtml(t, people) {
+function cardHtml(t, people, admin = false) {
   const pid = 't' + t.id;
   people.set(pid, { name: t.name, picture: t.picture, title: t.title, bio: t.bio, links: t.links });
   return `
@@ -36,12 +36,21 @@ function cardHtml(t, people) {
         <button class="gb-name gb-name--btn" type="button" data-pc="${pid}"
                 title="View profile">${avatar(t)}${esc(t.name)}</button>
         <span class="vouch-rel">${esc(t.relation)} · ${esc(fmtDate(t.created_at))}</span>
-        ${t.mine ? `<span class="vouch-own-actions">
-          <button class="gb-mini" type="button" data-v-edit="${t.id}">Edit</button>
+        ${
+          t.mine || admin
+            ? `<span class="vouch-own-actions">
+          ${t.mine ? `<button class="gb-mini" type="button" data-v-edit="${t.id}">Edit</button>` : ''}
+          ${
+            admin && !t.mine
+              ? `<button class="gb-mini" type="button" data-v-mod="${t.id}" data-show="${t.approved ? '0' : '1'}">${t.approved ? 'Hide' : 'Show'}</button>`
+              : ''
+          }
           <button class="gb-mini gb-mini--danger" type="button" data-v-del="${t.id}">Delete</button>
-        </span>` : ''}
+        </span>`
+            : ''
+        }
       </div>
-      ${t.approved ? '' : '<span class="vouch-wait">Only you can see this</span>'}
+      ${t.approved ? '' : `<span class="vouch-wait">${t.mine ? 'Only you can see this' : 'Hidden from the site'}</span>`}
     </li>`;
 }
 
@@ -72,6 +81,7 @@ export function mountTestimonials(host, page) {
 
   let user = null;
   let mine = null;
+  let admin = false; // the owner moderates from inside the page
   const people = new Map();
 
   host.innerHTML = `
@@ -158,9 +168,10 @@ export function mountTestimonials(host, page) {
         return;
       }
       const items = out.testimonials || [];
+      admin = Boolean(out.admin);
       mine = items.find((t) => t.mine) || null;
       people.clear();
-      list.innerHTML = items.map((t) => cardHtml(t, people)).join('');
+      list.innerHTML = items.map((t) => cardHtml(t, people, admin)).join('');
       empty.hidden = items.length > 0;
       const approvedCount = items.filter((t) => t.approved).length;
       count.hidden = approvedCount === 0;
@@ -183,11 +194,32 @@ export function mountTestimonials(host, page) {
       cta.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       return;
     }
+    const mod = e.target.closest('[data-v-mod]');
+    if (mod && admin) {
+      mod.disabled = true;
+      try {
+        await apost('/api/me', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            moderate: { kind: 'testimonial', id: Number(mod.dataset.vMod), show: mod.dataset.show === '1' },
+          }),
+        });
+        refresh();
+      } catch {
+        mod.disabled = false;
+      }
+      return;
+    }
+
     const del = e.target.closest('[data-v-del]');
     if (del) {
+      const own = Boolean(mine && String(mine.id) === del.dataset.vDel);
       const sure = await askConfirm({
-        title: 'Delete your vouch?',
-        message: 'It goes for good. You can always write a new one later.',
+        title: own ? 'Delete your vouch?' : 'Delete someone else\u2019s vouch?',
+        message: own
+          ? 'It goes for good. You can always write a new one later.'
+          : 'It goes for good. Hide it instead if you only want it off the page.',
         yes: 'Delete it',
         no: 'Keep it',
         danger: true,

@@ -4,15 +4,17 @@
 //   POST   /api/me { read }                -> mark a blog note finished
 //   POST   /api/me { sync: true }          -> re-mirror name/photo into profiles
 //   POST   /api/me { remove: {kind, id} }  -> delete own comment or testimonial
+//   POST   /api/me { moderate: {kind, id, show} } -> owner only: hide or restore
 //   DELETE /api/me                         -> delete the whole account, cascade
 import {
   accountSummary,
   addStamp,
   markRead,
   deleteOwn,
+  setVisibility,
   ensureProfile,
 } from './_lib/store.js';
-import { requireUser, deleteAuthUser } from './_lib/supauth.js';
+import { requireUser, deleteAuthUser, isAdmin } from './_lib/supauth.js';
 import { readBody, sendJson } from './_lib/http.js';
 
 export default async function handler(req, res) {
@@ -20,7 +22,7 @@ export default async function handler(req, res) {
     const user = await requireUser(req);
 
     if (req.method === 'GET') {
-      return sendJson(res, 200, await accountSummary(user));
+      return sendJson(res, 200, { ...(await accountSummary(user)), admin: isAdmin(user) });
     }
     if (req.method === 'POST') {
       const b = await readBody(req);
@@ -33,7 +35,19 @@ export default async function handler(req, res) {
       if (b.stamp) return sendJson(res, 200, await addStamp(user, b.stamp));
       if (b.read) return sendJson(res, 200, await markRead(user, b.read));
       if (b.remove)
-        return sendJson(res, 200, await deleteOwn(b.remove.kind, b.remove.id, user));
+        return sendJson(
+          res,
+          200,
+          await deleteOwn(b.remove.kind, b.remove.id, user, { admin: isAdmin(user) })
+        );
+      if (b.moderate) {
+        if (!isAdmin(user)) return sendJson(res, 403, { error: 'not yours to moderate' });
+        return sendJson(
+          res,
+          200,
+          await setVisibility(b.moderate.kind, b.moderate.id, b.moderate.show)
+        );
+      }
       return sendJson(res, 400, { error: 'nothing to do' });
     }
     if (req.method === 'DELETE') {

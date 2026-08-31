@@ -1,18 +1,19 @@
 // Vercel serverless function: vouches from people who worked with Varakorn.
-//   GET  /api/testimonials?page=/experience/... -> { testimonials }
-//        (approved ones for everyone, plus the caller's own in any state)
-//   POST /api/testimonials { page, relation, body } -> { ok, pending }
-// One vouch per person per page; rewriting replaces it and re-moderates.
+//   GET  /api/testimonials?page=/experience/... -> { testimonials, admin }
+//        (everything showing, plus the caller's own, plus all of it for the owner)
+//   POST /api/testimonials { page, relation, body } -> { ok }
+// One vouch per person per page; rewriting replaces the words in place.
 import { listTestimonials, saveTestimonial } from './_lib/store.js';
-import { userFromRequest, requireUser } from './_lib/supauth.js';
+import { userFromRequest, requireUser, isAdmin } from './_lib/supauth.js';
 import { readBody, getQuery, sendJson } from './_lib/http.js';
 
 export default async function handler(req, res) {
   try {
     if (req.method === 'GET') {
       const user = await userFromRequest(req).catch(() => null);
-      const out = await listTestimonials(getQuery(req).page, user?.id);
-      return sendJson(res, 200, out);
+      const admin = isAdmin(user);
+      const out = await listTestimonials(getQuery(req).page, user?.id, { admin });
+      return sendJson(res, 200, { ...out, admin });
     }
     if (req.method === 'POST') {
       const user = await requireUser(req);
@@ -22,6 +23,7 @@ export default async function handler(req, res) {
         relation: b.relation,
         body: b.body,
         user,
+        admin: isAdmin(user),
       });
       return sendJson(res, 200, out);
     }

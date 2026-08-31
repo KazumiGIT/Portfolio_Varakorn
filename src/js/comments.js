@@ -50,27 +50,32 @@ function likeBtn(c, signedIn) {
             <span class="gb-like-mark">${c.liked ? '♥' : '♡'}</span>${n}</button>`;
 }
 
-function noteHtml(c, signedIn, people, isReply = false) {
+function noteHtml(c, signedIn, people, isReply = false, admin = false) {
   const replies = (c.replies || [])
-    .map((r) => noteHtml(r, signedIn, people, true))
+    .map((r) => noteHtml(r, signedIn, people, true, admin))
     .join('');
   const pid = 'c' + c.id;
   people.set(pid, { name: c.name, picture: c.picture, title: c.title, bio: c.bio, links: c.links });
-  const hidden = c.mine && !c.approved;
+  const hidden = !c.approved && (c.mine || admin);
   return `
     <li class="gb-note${isReply ? ' gb-note--reply' : ''}${hidden ? ' gb-note--pending' : ''}" data-note="${c.id}">
       <div class="gb-note-head">
         <button class="gb-name gb-name--btn" type="button" data-pc="${pid}"
                 title="View profile">${avatar(c)}${esc(c.name)}</button>
         <span class="gb-date">${esc(fmtDate(c.created_at))}</span>
-        ${hidden ? '<span class="gb-wait">only you can see this</span>' : ''}
+        ${hidden ? `<span class="gb-wait">${c.mine && !admin ? 'only you can see this' : 'hidden from the site'}</span>` : ''}
       </div>
       <p class="gb-body">${esc(c.body)}</p>
       <div class="gb-note-foot">
         ${likeBtn(c, signedIn)}
         ${!isReply && signedIn ? `<button class="gb-reply-btn" type="button" data-reply="${c.id}">Reply</button>` : ''}
-        ${c.mine ? `<button class="gb-mini" type="button" data-edit="${c.id}">Edit</button>
-        <button class="gb-mini gb-mini--danger" type="button" data-del="${c.id}">Delete</button>` : ''}
+        ${c.mine ? `<button class="gb-mini" type="button" data-edit="${c.id}">Edit</button>` : ''}
+        ${
+          admin && !c.mine
+            ? `<button class="gb-mini" type="button" data-mod="${c.id}" data-show="${c.approved ? '0' : '1'}">${c.approved ? 'Hide' : 'Show'}</button>`
+            : ''
+        }
+        ${c.mine || admin ? `<button class="gb-mini gb-mini--danger" type="button" data-del="${c.id}">Delete</button>` : ''}
       </div>
       ${!isReply ? `<div class="gb-reply-slot"></div>` : ''}
       ${replies ? `<ul class="gb-replies">${replies}</ul>` : ''}
@@ -87,6 +92,7 @@ export function mountComments(host, page, { title } = {}) {
   host.dataset.gbMounted = '1';
 
   let user; // undefined = loading, null = signed out, {} = signed in
+  let admin = false; // the owner moderates from inside the page
   let comments = [];
   const people = new Map(); // data-pc id -> profile card payload
 
@@ -116,7 +122,9 @@ export function mountComments(host, page, { title } = {}) {
     el.empty.hidden = n > 0;
     el.count.textContent = `${n} ${n === 1 ? 'comment' : 'comments'}`;
     people.clear();
-    el.list.innerHTML = comments.map((c) => noteHtml(c, Boolean(user), people)).join('');
+    el.list.innerHTML = comments
+      .map((c) => noteHtml(c, Boolean(user), people, false, admin))
+      .join('');
   }
 
   function replyFormHtml() {
@@ -221,6 +229,7 @@ export function mountComments(host, page, { title } = {}) {
         return false;
       }
       comments = out.comments || [];
+      admin = Boolean(out.admin);
       renderList();
     } catch {
       el.empty.hidden = false;
@@ -297,11 +306,28 @@ export function mountComments(host, page, { title } = {}) {
       return;
     }
 
+    const modBtn = e.target.closest('[data-mod]');
+    if (modBtn && admin) {
+      modBtn.disabled = true;
+      try {
+        await post('/api/me', {
+          moderate: { kind: 'comment', id: Number(modBtn.dataset.mod), show: modBtn.dataset.show === '1' },
+        });
+        refresh();
+      } catch {
+        modBtn.disabled = false;
+      }
+      return;
+    }
+
     const delBtn = e.target.closest('[data-del]');
     if (delBtn && user) {
+      const own = delBtn.closest('.gb-note')?.querySelector('[data-edit]');
       const sure = await askConfirm({
-        title: 'Delete this comment?',
-        message: 'It goes for good, replies and likes with it. You can always write a new one.',
+        title: own ? 'Delete this comment?' : 'Delete someone else\u2019s comment?',
+        message: own
+          ? 'It goes for good, replies and likes with it. You can always write a new one.'
+          : 'It goes for good, replies and likes with it. Hide it instead if you only want it off the page.',
         yes: 'Delete it',
         no: 'Keep it',
         danger: true,

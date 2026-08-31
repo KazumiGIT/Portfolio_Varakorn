@@ -7,6 +7,20 @@
 
 const err = (status, message) => Object.assign(new Error(message), { status });
 
+/* The site owner moderates from inside the pages. Pinned to his Supabase user
+   id, not his email: an id cannot be claimed by signing up with an address.
+   ADMIN_USER_IDS (comma separated) overrides it if the account ever changes. */
+const OWNER_ID = 'e2328a8b-7861-42f9-acdf-c17734a152f8'; // varakornm0403@gmail.com
+
+export function isAdmin(user, env = process.env) {
+  if (!user?.id) return false;
+  const ids = String(env.ADMIN_USER_IDS || OWNER_ID)
+    .split(',')
+    .map((x) => x.trim())
+    .filter(Boolean);
+  return ids.includes(user.id);
+}
+
 export const authConfigured = (env = process.env) =>
   Boolean(env.SUPABASE_URL && env.SUPABASE_PUBLISHABLE_KEY);
 

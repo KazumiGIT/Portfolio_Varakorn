@@ -137,11 +137,12 @@ export async function ensureProfile(user, env = process.env) {
 
 /* ---------- comments ---------- */
 
-export async function listComments(page, viewerId, env = process.env) {
+export async function listComments(page, viewerId, opts = {}, env = process.env) {
   const sql = db(env);
   if (!sql) return { offline: true };
   if (!PAGE_RE.test(String(page || ''))) throw err(400, 'unknown page');
   const viewer = viewerId || '00000000-0000-0000-0000-000000000000';
+  const admin = Boolean(opts.admin);
   const rows = await withSchema(sql, () => sql`
     select c.id, c.parent_id, c.body, c.created_at, c.approved,
       (c.user_id = ${viewer}) as mine,
@@ -150,7 +151,7 @@ export async function listComments(page, viewerId, env = process.env) {
       exists(select 1 from likes l where l.comment_id = c.id and l.user_id = ${viewer}) as liked
     from comments c
     join profiles p on p.id = c.user_id
-    where c.page = ${page} and (c.approved or c.user_id = ${viewer})
+    where c.page = ${page} and (c.approved or c.user_id = ${viewer} or ${admin})
     order by c.created_at asc
     limit 500`);
 
@@ -171,7 +172,8 @@ export async function listComments(page, viewerId, env = process.env) {
 
 /** Comments and vouches share one budget: five in an hour, per person. It is
     there to stop a flood, not to slow anybody down. */
-async function guardRate(sql, userId) {
+async function guardRate(sql, userId, admin) {
+  if (admin) return;
   const [{ n }] = await sql`
     select (
       (select count(*) from comments
@@ -183,7 +185,7 @@ async function guardRate(sql, userId) {
     throw err(429, `You have left ${RATE_MAX} in the last hour, the limit. Come back a little later.`);
 }
 
-export async function createComment({ page, body, parent, user, ip }, env = process.env) {
+export async function createComment({ page, body, parent, user, ip, admin }, env = process.env) {
   const sql = db(env);
   if (!sql) return { offline: true };
   if (!PAGE_RE.test(String(page || ''))) throw err(400, 'unknown page');
@@ -203,7 +205,7 @@ export async function createComment({ page, body, parent, user, ip }, env = proc
       parentId = rows[0].id;
     }
 
-    await guardRate(sql, user.id);
+    await guardRate(sql, user.id, admin);
 
     await sql`
       insert into comments (page, user_id, parent_id, body, ip_hash)
@@ -252,25 +254,26 @@ export async function toggleLike(commentId, user, env = process.env) {
 /* ---------- testimonials ---------- */
 
 /** Approved vouches for one experience page, plus the viewer's own (any state). */
-export async function listTestimonials(page, viewerId, env = process.env) {
+export async function listTestimonials(page, viewerId, opts = {}, env = process.env) {
   const sql = db(env);
   if (!sql) return { offline: true };
   if (!EXP_PAGE_RE.test(String(page || ''))) throw err(400, 'unknown page');
   const viewer = viewerId || '00000000-0000-0000-0000-000000000000';
+  const admin = Boolean(opts.admin);
   const rows = await withSchema(sql, () => sql`
     select t.id, t.relation, t.body, t.approved, t.created_at,
            p.name, p.picture, p.title, p.bio, p.links,
            (t.user_id = ${viewer}) as mine
     from testimonials t
     join profiles p on p.id = t.user_id
-    where t.page = ${page} and (t.approved or t.user_id = ${viewer})
+    where t.page = ${page} and (t.approved or t.user_id = ${viewer} or ${admin})
     order by t.created_at desc
     limit 100`);
   return { testimonials: rows };
 }
 
 /** One vouch per person per page. Writing again replaces the words in place. */
-export async function saveTestimonial({ page, relation, body, user }, env = process.env) {
+export async function saveTestimonial({ page, relation, body, user, admin }, env = process.env) {
   const sql = db(env);
   if (!sql) return { offline: true };
   if (!EXP_PAGE_RE.test(String(page || ''))) throw err(400, 'unknown page');
@@ -284,7 +287,7 @@ export async function saveTestimonial({ page, relation, body, user }, env = proc
 
   await ensureProfile(user, env);
   return withSchema(sql, async () => {
-    await guardRate(sql, user.id);
+    await guardRate(sql, user.id, admin);
     await sql`
       insert into testimonials (user_id, page, relation, body)
       values (${user.id}, ${page}, ${cleanRelation}, ${cleanBody})
@@ -357,14 +360,29 @@ export async function accountSummary(user, env = process.env) {
 }
 
 /** A user deleting their own comment or testimonial from the account page. */
-export async function deleteOwn(kind, id, user, env = process.env) {
+export async function deleteOwn(kind, id, user, opts = {}, env = process.env) {
   const sql = need(env);
   const table = kind === 'testimonial' ? 'testimonials' : 'comments';
+  const cid = Number(id);
   const rows = await withSchema(sql, () =>
-    sql`delete from ${sql(table)} where id = ${Number(id)} and user_id = ${user.id} returning id`
+    opts.admin
+      ? sql`delete from ${sql(table)} where id = ${cid} returning id`
+      : sql`delete from ${sql(table)} where id = ${cid} and user_id = ${user.id} returning id`
   );
   if (!rows.length) throw err(404, 'not yours or already gone');
   return { ok: true };
+}
+
+/** Take something off the site, or put it back. Owner only, checked upstream. */
+export async function setVisibility(kind, id, showing, env = process.env) {
+  const sql = need(env);
+  const table = kind === 'testimonial' ? 'testimonials' : 'comments';
+  const rows = await withSchema(sql, () =>
+    sql`update ${sql(table)} set approved = ${Boolean(showing)}
+        where id = ${Number(id)} returning id, approved`
+  );
+  if (!rows.length) throw err(404, 'already gone');
+  return { ok: true, showing: rows[0].approved };
 }
 
 /* ---------- desk terminal history + gate ---------- */
