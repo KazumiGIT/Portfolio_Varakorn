@@ -37,6 +37,12 @@ export async function userFromRequest(req, env = process.env) {
   if (!u?.id) throw err(401, 'session expired, sign in again');
 
   const md = u.user_metadata || {};
+  // the voluntary public profile: a title, a short bio, and up to five links,
+  // validated here so garbage never reaches the database or other visitors
+  const links = (Array.isArray(md.links) ? md.links : [])
+    .map((l) => String(l).trim())
+    .filter((l) => /^https:[/][/][^\s]+[.][^\s]+/.test(l) && l.length <= 200)
+    .slice(0, 5);
   return {
     id: u.id,
     email: u.email || null,
@@ -44,6 +50,9 @@ export async function userFromRequest(req, env = process.env) {
       String(md.full_name || md.name || '').trim() ||
       (u.email ? u.email.split('@')[0] : 'Guest'),
     picture: md.avatar_url || md.picture || null,
+    title: String(md.title || '').trim().slice(0, 80) || null,
+    bio: String(md.bio || '').trim().slice(0, 280) || null,
+    links,
   };
 }
 

@@ -137,6 +137,7 @@ function render(me, user) {
       </span>
       <div class="acct-who">
         <h2 data-name-view>${esc(user.name)}</h2>
+        <span class="acct-title-view" data-title-view ${user.title ? '' : 'hidden'}>${esc(user.title || '')}</span>
         <span class="mail">${esc(user.email || '')}</span>
       </div>
       <span class="gap"></span>
@@ -146,10 +147,32 @@ function render(me, user) {
         <label class="ad-label" for="acct-name">Display name</label>
         <input class="acct-input" id="acct-name" name="name" maxlength="60" required
                value="${esc(user.name)}" placeholder="What should people call you?" />
+
+        <label class="ad-label" for="acct-title">Title</label>
+        <input class="acct-input" id="acct-title" name="title" maxlength="80"
+               value="${esc(user.title || '')}"
+               placeholder="How do you know Varakorn? Or what you do these days" />
+
+        <label class="ad-label" for="acct-bio">About you</label>
+        <textarea class="acct-input acct-area" id="acct-bio" name="bio" maxlength="280" rows="3"
+                  placeholder="A couple of lines, if you feel like it">${esc(user.bio || '')}</textarea>
+
+        <label class="ad-label">Links <span class="ad-label-soft">Instagram, LinkedIn, TikTok, your site, up to 5</span></label>
+        <div class="acct-links" data-links>
+          ${[...(user.links || []), '']
+            .slice(0, 5)
+            .map(
+              (l) => `<input class="acct-input" name="link" maxlength="200" inputmode="url"
+                             value="${esc(l)}" placeholder="instagram.com/you" />`
+            )
+            .join('')}
+        </div>
+
         <div class="acct-edit-actions">
           <button class="btn" type="submit">Save</button>
           <button class="acct-cancel" type="button" data-cancel-profile>Cancel</button>
         </div>
+        <p class="acct-hint">Your name, title, bio and links show on the little profile card when someone taps your name in the guestbook.</p>
         <p class="acct-status" role="status" aria-live="polite" data-profile-status></p>
       </form>
     </div>
@@ -425,6 +448,17 @@ root.addEventListener('click', async (e) => {
   }
 });
 
+root.addEventListener('input', (e) => {
+  if (!e.target.matches('[data-links] [name="link"]')) return;
+  const wrap = root.querySelector('[data-links]');
+  const rows = [...wrap.querySelectorAll('[name="link"]')];
+  if (rows.length < 5 && rows[rows.length - 1].value.trim()) {
+    const fresh = rows[rows.length - 1].cloneNode();
+    fresh.value = '';
+    wrap.appendChild(fresh);
+  }
+});
+
 root.addEventListener('change', async (e) => {
   const input = e.target.closest('[data-photo-input]');
   if (!input || !input.files?.length) return;
@@ -476,11 +510,22 @@ root.addEventListener('submit', async (e) => {
       status.dataset.tone = 'err';
       return;
     }
+    const title = profileForm.querySelector('[name="title"]').value.trim().slice(0, 80);
+    const bio = profileForm.querySelector('[name="bio"]').value.trim().slice(0, 280);
+    const links = [...profileForm.querySelectorAll('[name="link"]')]
+      .map((i) => i.value.trim())
+      .filter(Boolean)
+      .map((l) => (/^https?:[/][/]/i.test(l) ? l.replace(/^http:/i, 'https:') : 'https://' + l))
+      .filter((l) => /^https:[/][/][^\s]+[.][^\s]+/.test(l))
+      .slice(0, 5);
     status.textContent = 'Saving…';
     status.dataset.tone = '';
     try {
-      await saveProfile({ full_name: name });
+      await saveProfile({ full_name: name, title, bio, links });
       root.querySelector('[data-name-view]').textContent = name;
+      const tv = root.querySelector('[data-title-view]');
+      tv.textContent = title;
+      tv.hidden = !title;
       status.textContent = 'Saved.';
       status.dataset.tone = 'ok';
       setTimeout(() => {

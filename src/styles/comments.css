@@ -448,3 +448,181 @@
     justify-content: center;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Profile card — click a name in the guestbook, meet the person. Chat app
+   energy in paper and ink.
+   --------------------------------------------------------------------------- */
+
+.gb-name--btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.gb-name--btn:hover,
+.gb-name--btn:focus-visible {
+  color: var(--red);
+  outline: none;
+}
+
+.gb-name--btn:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 2px;
+}
+
+.pcard {
+  position: fixed;
+  inset: 0;
+  z-index: 1450;
+  display: grid;
+  place-items: center;
+  padding: 1.2rem;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.22s var(--ease-out), visibility 0.22s;
+}
+
+.pcard.is-open {
+  visibility: visible;
+  opacity: 1;
+}
+
+.pcard-scrim {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--ink) 40%, transparent);
+}
+
+.pcard-box {
+  position: relative;
+  width: min(21rem, 100%);
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 16px;
+  box-shadow: 8px 10px 0 rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  transform: translateY(10px) scale(0.98);
+  transition: transform 0.22s var(--ease-out);
+}
+
+.pcard.is-open .pcard-box {
+  transform: none;
+}
+
+/* the banner band behind the avatar, like the chat apps do it */
+.pcard-band {
+  height: 4.4rem;
+  background: var(--paper-3);
+  background-image: radial-gradient(circle at 20% 120%, var(--paper-deep), transparent 60%),
+    radial-gradient(circle at 85% -30%, color-mix(in srgb, var(--gold) 35%, transparent), transparent 55%);
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.pcard-close {
+  position: absolute;
+  top: 0.7rem;
+  right: 0.7rem;
+  width: 2rem;
+  height: 2rem;
+  display: grid;
+  place-items: center;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--ink-2);
+  cursor: pointer;
+  z-index: 2;
+}
+
+.pcard-close:hover {
+  color: var(--red);
+  border-color: var(--red);
+}
+
+.pcard-ava-wrap {
+  margin: -2.4rem 0 0 1.3rem;
+  position: relative;
+  z-index: 1;
+  width: 4.6rem;
+  height: 4.6rem;
+}
+
+.pcard-ava {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 3px solid var(--paper);
+  outline: 2px solid var(--ink);
+  object-fit: cover;
+  display: grid;
+  place-items: center;
+  background: var(--paper-2);
+}
+
+.pcard-ava--letter {
+  background: var(--red);
+  color: #fff6e6;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.9rem;
+}
+
+.pcard-body {
+  padding: 0.8rem 1.4rem 1.3rem;
+}
+
+.pcard-name {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.pcard-title {
+  margin: 0.15rem 0 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gold);
+}
+
+.pcard-bio {
+  margin: 0.65rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--ink-2);
+  overflow-wrap: anywhere;
+}
+
+.pcard-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.9rem;
+  padding-top: 0.9rem;
+  border-top: 1px dashed var(--line);
+}
+
+.pcard-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.75rem;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  background: var(--paper-2);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ink);
+  transition: transform 0.14s var(--ease-out), color 0.14s, border-color 0.14s;
+}
+
+.pcard-link:hover {
+  transform: translateY(-1px);
+  color: var(--red);
+  border-color: var(--red);
+}

@@ -583,3 +583,37 @@
 
 .linked-note[data-tone='err'] { color: var(--red); }
 .linked-note[data-tone='ok'] { color: var(--green); }
+
+/* ---------- the fuller profile editor ---------- */
+
+.acct-title-view {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gold);
+  margin: 0.1rem 0;
+}
+
+.acct-area {
+  resize: vertical;
+  font: inherit;
+}
+
+.acct-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.ad-label-soft {
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 400;
+  color: var(--ink-3);
+}
+
+.acct-hint {
+  margin: 0.4rem 0 0;
+  font-size: 0.78rem;
+  color: var(--ink-3);
+}

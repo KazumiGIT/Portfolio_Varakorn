@@ -46,6 +46,9 @@ const DDL = [
     id uuid primary key references auth.users(id) on delete cascade,
     name text not null, picture text,
     created_at timestamptz not null default now())`,
+  `alter table profiles add column if not exists title text`,
+  `alter table profiles add column if not exists bio text`,
+  `alter table profiles add column if not exists links jsonb not null default '[]'::jsonb`,
   `alter table profiles enable row level security`,
   `create table if not exists comments (
     id bigint generated always as identity primary key,
@@ -120,10 +123,12 @@ function need(env) {
 export async function ensureProfile(user, env = process.env) {
   const sql = need(env);
   await withSchema(sql, () => sql`
-    insert into profiles (id, name, picture)
-    values (${user.id}, ${user.name}, ${user.picture})
+    insert into profiles (id, name, picture, title, bio, links)
+    values (${user.id}, ${user.name}, ${user.picture},
+            ${user.title}, ${user.bio}, ${sql.json(user.links || [])})
     on conflict (id) do update
-      set name = excluded.name, picture = excluded.picture`);
+      set name = excluded.name, picture = excluded.picture,
+          title = excluded.title, bio = excluded.bio, links = excluded.links`);
 }
 
 /* ---------- comments ---------- */
@@ -134,7 +139,8 @@ export async function listComments(page, viewerId, env = process.env) {
   if (!PAGE_RE.test(String(page || ''))) throw err(400, 'unknown page');
   const viewer = viewerId || '00000000-0000-0000-0000-000000000000';
   const rows = await withSchema(sql, () => sql`
-    select c.id, c.parent_id, c.body, c.created_at, p.name, p.picture,
+    select c.id, c.parent_id, c.body, c.created_at,
+      p.name, p.picture, p.title, p.bio, p.links,
       (select count(*)::int from likes l where l.comment_id = c.id) as likes,
       exists(select 1 from likes l where l.comment_id = c.id and l.user_id = ${viewer}) as liked
     from comments c
@@ -222,7 +228,8 @@ export async function listTestimonials(page, viewerId, env = process.env) {
   if (!EXP_PAGE_RE.test(String(page || ''))) throw err(400, 'unknown page');
   const viewer = viewerId || '00000000-0000-0000-0000-000000000000';
   const rows = await withSchema(sql, () => sql`
-    select t.id, t.relation, t.body, t.approved, t.created_at, p.name, p.picture,
+    select t.id, t.relation, t.body, t.approved, t.created_at,
+           p.name, p.picture, p.title, p.bio, p.links,
            (t.user_id = ${viewer}) as mine
     from testimonials t
     join profiles p on p.id = t.user_id
@@ -299,7 +306,14 @@ export async function accountSummary(user, env = process.env) {
           order by created_at desc`,
     ]);
     return {
-      user: { name: user.name, email: user.email, picture: user.picture },
+      user: {
+        name: user.name,
+        email: user.email,
+        picture: user.picture,
+        title: user.title,
+        bio: user.bio,
+        links: user.links || [],
+      },
       stamps: stamps.map((s) => s.stamp),
       allStamps: [...STAMPS],
       read: reading.map((r) => r.slug),

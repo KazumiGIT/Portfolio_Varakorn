@@ -7,6 +7,7 @@
 // ---------------------------------------------------------------------------
 import { authConfigured, userOf, onAuth, authedFetch, signOut } from './supa.js';
 import { openAuthDialog } from './authui.js';
+import { bindProfileClicks } from './profilecard.js';
 
 const ENT = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ENT[c]);
@@ -47,14 +48,17 @@ function likeBtn(c, signedIn) {
             <span class="gb-like-mark">${c.liked ? '♥' : '♡'}</span>${n}</button>`;
 }
 
-function noteHtml(c, signedIn, isReply = false) {
+function noteHtml(c, signedIn, people, isReply = false) {
   const replies = (c.replies || [])
-    .map((r) => noteHtml(r, signedIn, true))
+    .map((r) => noteHtml(r, signedIn, people, true))
     .join('');
+  const pid = 'c' + c.id;
+  people.set(pid, { name: c.name, picture: c.picture, title: c.title, bio: c.bio, links: c.links });
   return `
     <li class="gb-note${isReply ? ' gb-note--reply' : ''}" data-note="${c.id}">
       <div class="gb-note-head">
-        <span class="gb-name">${avatar(c)}${esc(c.name)}</span>
+        <button class="gb-name gb-name--btn" type="button" data-pc="${pid}"
+                title="View profile">${avatar(c)}${esc(c.name)}</button>
         <span class="gb-date">${esc(fmtDate(c.created_at))}</span>
       </div>
       <p class="gb-body">${esc(c.body)}</p>
@@ -78,6 +82,7 @@ export function mountComments(host, page, { title } = {}) {
 
   let user; // undefined = loading, null = signed out, {} = signed in
   let comments = [];
+  const people = new Map(); // data-pc id -> profile card payload
 
   host.innerHTML = `
     ${title ? `<h3 class="gb-title">${esc(title)}</h3>` : ''}
@@ -104,7 +109,8 @@ export function mountComments(host, page, { title } = {}) {
     el.count.hidden = n === 0;
     el.empty.hidden = n > 0;
     el.count.textContent = `${n} ${n === 1 ? 'comment' : 'comments'}`;
-    el.list.innerHTML = comments.map((c) => noteHtml(c, Boolean(user))).join('');
+    people.clear();
+    el.list.innerHTML = comments.map((c) => noteHtml(c, Boolean(user), people)).join('');
   }
 
   function replyFormHtml() {
@@ -202,6 +208,8 @@ export function mountComments(host, page, { title } = {}) {
   }
 
   /* ---------- events (delegated so rerenders stay cheap) ---------- */
+
+  bindProfileClicks(host, people);
 
   host.addEventListener('click', async (e) => {
     const like = e.target.closest('[data-like]');

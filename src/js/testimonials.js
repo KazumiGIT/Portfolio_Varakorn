@@ -6,6 +6,7 @@
 // ---------------------------------------------------------------------------
 import { authConfigured, userOf, onAuth, authedFetch } from './supa.js';
 import { openAuthDialog } from './authui.js';
+import { bindProfileClicks } from './profilecard.js';
 
 const ENT = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ENT[c]);
@@ -22,12 +23,15 @@ const avatar = (t) =>
     ? `<img class="gb-ava" src="${esc(t.picture)}" alt="" referrerpolicy="no-referrer" />`
     : `<span class="gb-ava gb-ava--letter">${esc((t.name || '?')[0].toUpperCase())}</span>`;
 
-function cardHtml(t) {
+function cardHtml(t, people) {
+  const pid = 't' + t.id;
+  people.set(pid, { name: t.name, picture: t.picture, title: t.title, bio: t.bio, links: t.links });
   return `
     <li class="vouch${t.approved ? '' : ' vouch--pending'}">
       <p class="vouch-body">${esc(t.body)}</p>
       <div class="vouch-foot">
-        <span class="gb-name">${avatar(t)}${esc(t.name)}</span>
+        <button class="gb-name gb-name--btn" type="button" data-pc="${pid}"
+                title="View profile">${avatar(t)}${esc(t.name)}</button>
         <span class="vouch-rel">${esc(t.relation)} · ${esc(fmtDate(t.created_at))}</span>
       </div>
       ${t.approved ? '' : '<span class="vouch-wait">Waiting for Varakorn to approve</span>'}
@@ -61,6 +65,7 @@ export function mountTestimonials(host, page) {
 
   let user = null;
   let mine = null;
+  const people = new Map();
 
   host.innerHTML = `
     <div class="vpanel">
@@ -140,7 +145,8 @@ export function mountTestimonials(host, page) {
       }
       const items = out.testimonials || [];
       mine = items.find((t) => t.mine) || null;
-      list.innerHTML = items.map(cardHtml).join('');
+      people.clear();
+      list.innerHTML = items.map((t) => cardHtml(t, people)).join('');
       empty.hidden = items.length > 0;
       const approvedCount = items.filter((t) => t.approved).length;
       count.hidden = approvedCount === 0;
@@ -153,6 +159,8 @@ export function mountTestimonials(host, page) {
       host.hidden = true;
     }
   }
+
+  bindProfileClicks(host, people);
 
   host.addEventListener('submit', async (e) => {
     const form = e.target.closest('.gb-form');
