@@ -2,11 +2,15 @@
 // Reads DATABASE_URL (and SUPABASE_DB_DIRECT_URL for setup) from .env.
 //
 //   node scripts/comments-db.mjs setup                 apply db/schema.sql (idempotent)
-//   node scripts/comments-db.mjs pending               list everything waiting for approval
-//   node scripts/comments-db.mjs approve <id..>        publish comments
-//   node scripts/comments-db.mjs delete <id..>         remove comments
-//   node scripts/comments-db.mjs approve-t <id..>      publish testimonials
-//   node scripts/comments-db.mjs delete-t <id..>       remove testimonials
+//   node scripts/comments-db.mjs recent [n]            newest words on the site (default 20)
+//   node scripts/comments-db.mjs pending               anything currently hidden
+//   node scripts/comments-db.mjs hide <id..>           take comments off the site, keep the row
+//   node scripts/comments-db.mjs delete <id..>         remove comments for good
+//   node scripts/comments-db.mjs approve <id..>        put hidden comments back up
+//   node scripts/comments-db.mjs hide-t / delete-t / approve-t <id..>   the same, for vouches
+//
+// Nothing waits for approval: words publish as they are written, so this is
+// the tool for taking something down after the fact.
 import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -27,7 +31,7 @@ if (!process.env.DATABASE_URL) {
 }
 
 const [cmd, ...args] = process.argv.slice(2);
-const { listPending, moderate, ensureSchema } = await import('../api/_lib/store.js');
+const { listPending, listRecent, moderate, ensureSchema } = await import('../api/_lib/store.js');
 
 const bar = (s) => s.replace(/\n/g, '\n  ');
 
@@ -47,38 +51,44 @@ if (cmd === 'setup') {
   }
   await sql.end();
   console.log('schema applied');
-} else if (cmd === 'pending') {
-  const { comments, testimonials } = await listPending();
+} else if (cmd === 'pending' || cmd === 'recent') {
+  const { comments, testimonials } =
+    cmd === 'recent' ? await listRecent(args[0]) : await listPending();
   if (!comments.length && !testimonials.length) {
-    console.log('nothing pending');
+    console.log(cmd === 'recent' ? 'nothing written yet' : 'nothing hidden');
   } else {
+    const state = (r) => (r.approved === false ? '  [hidden]' : '');
     for (const r of comments) {
       const kind = r.parent_id ? `reply to #${r.parent_id}` : 'comment';
-      console.log(`#${r.id}  ${kind}  ${r.page}  ${new Date(r.created_at).toLocaleString()}`);
+      console.log(`#${r.id}  ${kind}  ${r.page}  ${new Date(r.created_at).toLocaleString()}${state(r)}`);
       console.log(`  ${r.name}: ${bar(r.body)}\n`);
     }
     for (const r of testimonials) {
-      console.log(`T#${r.id}  testimonial  ${r.page}  ${new Date(r.created_at).toLocaleString()}`);
+      console.log(`T#${r.id}  vouch  ${r.page}  ${new Date(r.created_at).toLocaleString()}${state(r)}`);
       console.log(`  ${r.name} (${r.relation}): ${bar(r.body)}\n`);
     }
     console.log(
-      `${comments.length} comments, ${testimonials.length} testimonials pending.\n` +
-        'approve <id> / delete <id> for comments, approve-t <id> / delete-t <id> for testimonials'
+      `${comments.length} comments, ${testimonials.length} vouches.\n` +
+        'hide <id> / delete <id> for comments, hide-t <id> / delete-t <id> for vouches'
     );
   }
-} else if (['approve', 'delete', 'approve-t', 'delete-t'].includes(cmd)) {
+} else if (['approve', 'delete', 'hide', 'approve-t', 'delete-t', 'hide-t'].includes(cmd)) {
   if (!args.length) {
     console.error(`usage: node scripts/comments-db.mjs ${cmd} <id> [id...]`);
     process.exit(1);
   }
   const kind = cmd.endsWith('-t') ? 'testimonial' : 'comment';
-  const action = cmd.startsWith('approve') ? 'approve' : 'delete';
+  const action = cmd.startsWith('approve') ? 'approve' : cmd.startsWith('hide') ? 'hide' : 'delete';
   for (const id of args) {
     const ok = await moderate(kind, action, Number(id));
-    console.log(`${kind === 'testimonial' ? 'T#' : '#'}${id} ${ok ? action + 'd' : 'not found'}`);
+    const done = action === 'hide' ? 'hidden' : action + 'd';
+    console.log(`${kind === 'testimonial' ? 'T#' : '#'}${id} ${ok ? done : 'not found'}`);
   }
 } else {
-  console.log('commands: setup | pending | approve <id..> | delete <id..> | approve-t <id..> | delete-t <id..>');
+  console.log(
+    'commands: setup | recent [n] | pending | hide <id..> | delete <id..> | approve <id..>' +
+      ' | hide-t <id..> | delete-t <id..> | approve-t <id..>'
+  );
 }
 
 process.exit(0);

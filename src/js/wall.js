@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// The guestbook wall on the home page: approved vouches and comments from
+// The guestbook wall on the home page: the vouches and comments from
 // across the site, drifting gently like notes pinned to a corkboard. Tapping
 // a name opens the profile card. When there are more notes than slots, the
 // wall quietly swaps one out for another with a fade, so everyone gets seen.
@@ -185,8 +185,8 @@ function buildCompose() {
     const sure = await askConfirm({
       title: `Leave this ${state.kind} on ${label}?`,
       message:
-        (many ? `The same words go on all ${pages.length} of them. Each one shows` : 'It shows') +
-        ' once Varakorn approves it, and you can edit or delete any of them later from your account page.',
+        (many ? `The same words go on all ${pages.length} of them. Each one goes up` : 'It goes up') +
+        ' straight away, and you can edit or delete any of them later from your account page.',
       yes: 'Yes, leave it',
     });
     if (!sure) return;
@@ -223,7 +223,7 @@ function buildCompose() {
     if (!sent.length) return say(trouble || 'That did not go through.', 'err');
     composeEl.querySelector('[name="body"]').value = '';
     say(
-      `Thank you. It shows on ${listNames(sent)} once Varakorn approves it.` +
+      `Thank you. It is up on ${listNames(sent)}.` +
         (trouble ? ' The rest did not go through, try them again.' : ''),
       trouble ? 'err' : 'ok'
     );

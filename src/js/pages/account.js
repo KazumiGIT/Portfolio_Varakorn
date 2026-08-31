@@ -98,7 +98,7 @@ function mineHtml(kind, item) {
         <p data-mine-text>${esc(item.relation ? item.relation + ' · ' + item.body : item.body)}</p>
         <div class="mine-edit-slot"></div>
       </div>
-      <span class="mine-state${item.approved ? ' is-live' : ''}">${item.approved ? 'live' : 'waiting'}</span>
+      <span class="mine-state${item.approved ? ' is-live' : ''}">${item.approved ? 'live' : 'hidden'}</span>
       <button class="gb-mini" type="button" data-mine-edit="${kind}:${item.id}">Edit</button>
       <button class="mine-del" type="button" data-del-kind="${kind}" data-del-id="${item.id}"
               aria-label="Delete">✕</button>
@@ -551,14 +551,10 @@ root.addEventListener('submit', async (e) => {
       if (!r.ok) throw new Error((await r.json()).error || 'error');
       item.body = body;
       if (relation) item.relation = relation;
-      item.approved = false;
       const li = mineForm.closest('.mine-item');
       const text = li.querySelector('[data-mine-text]');
       text.textContent = relation ? relation + ' · ' + body : body;
       text.hidden = false;
-      const state = li.querySelector('.mine-state');
-      state.textContent = 'waiting';
-      state.classList.remove('is-live');
       li.querySelector('.mine-edit-slot').innerHTML = '';
     } catch (err) {
       status.textContent = 'Could not save: ' + err.message;

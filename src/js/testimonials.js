@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------
 // Vouches on experience detail pages: people who actually worked with
-// Varakorn sign in and leave one, moderated before it shows. Approved ones
-// also feed a Review JSON-LD block so answer engines can quote them.
+// Varakorn sign in and leave one, and it goes up as they write it. They also
+// feed a Review JSON-LD block so answer engines can quote them.
 // Mounted by expDetail.js above the guestbook; styling in comments.css.
 // ---------------------------------------------------------------------------
 import { authConfigured, userOf, onAuth, authedFetch } from './supa.js';
@@ -41,11 +41,11 @@ function cardHtml(t, people) {
           <button class="gb-mini gb-mini--danger" type="button" data-v-del="${t.id}">Delete</button>
         </span>` : ''}
       </div>
-      ${t.approved ? '' : '<span class="vouch-wait">Waiting for Varakorn to approve</span>'}
+      ${t.approved ? '' : '<span class="vouch-wait">Only you can see this</span>'}
     </li>`;
 }
 
-/** Approved vouches become quotable Review schema, injected at runtime. */
+/** Vouches that are showing become quotable Review schema, at runtime. */
 function injectReviewLd(approved) {
   if (!approved.length) return;
   document.getElementById('vouch-ld')?.remove();
@@ -108,14 +108,14 @@ export function mountTestimonials(host, page) {
         <div class="gb-field">
           <label class="ad-label" for="v-body">Your vouch</label>
           <textarea class="gb-input gb-area" id="v-body" name="body" maxlength="2000" rows="4" required
-                    placeholder="What was he like to work with?">${esc(mine && !mine.approved ? mine.body : '')}</textarea>
+                    placeholder="What was he like to work with?">${esc(mine?.body || '')}</textarea>
         </div>
         <div class="gb-actions">
           <button class="btn gb-submit" type="submit">${mine ? 'Update my vouch' : 'Leave a vouch'}</button>
           <button class="gb-cancel" type="button" data-v-cancel>Cancel</button>
           <p class="gb-status" role="status" aria-live="polite"></p>
         </div>
-        <p class="vouch-note">Vouches show once Varakorn approves them.</p>
+        <p class="vouch-note">It goes up straight away, and you can change or remove it later.</p>
       </form>`;
   }
 
@@ -224,8 +224,8 @@ export function mountTestimonials(host, page) {
     const sure = await askConfirm({
       title: (mine ? 'Update your vouch on ' : 'Leave your vouch on ') + pageLabel(page) + '?',
       message: mine
-        ? 'The new version replaces the old one and waits for approval again. You can edit or delete it any time.'
-        : 'It shows here once Varakorn approves it. You can leave one on every chapter you shared with him, and edit or delete this one any time.',
+        ? 'The new version replaces the old one right away. You can edit or delete it any time.'
+        : 'It goes up straight away, under your name. You can leave one on every chapter you shared with him, and edit or delete this one any time.',
       yes: mine ? 'Yes, update it' : 'Yes, leave it',
     });
     if (!sure) return;

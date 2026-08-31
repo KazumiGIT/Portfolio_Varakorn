@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// Guestbook comments: one level of replies, likes, moderated before showing.
+// Guestbook comments: one level of replies, likes, published as written.
 // Identity is the site wide Supabase session (Google or email, via authui).
 // Talks to /api/comments and /api/like with a Bearer token. One mount per
 // page; experience pages pass their pathname, the blog reader /blog#<slug>.
@@ -56,14 +56,14 @@ function noteHtml(c, signedIn, people, isReply = false) {
     .join('');
   const pid = 'c' + c.id;
   people.set(pid, { name: c.name, picture: c.picture, title: c.title, bio: c.bio, links: c.links });
-  const pending = c.mine && !c.approved;
+  const hidden = c.mine && !c.approved;
   return `
-    <li class="gb-note${isReply ? ' gb-note--reply' : ''}${pending ? ' gb-note--pending' : ''}" data-note="${c.id}">
+    <li class="gb-note${isReply ? ' gb-note--reply' : ''}${hidden ? ' gb-note--pending' : ''}" data-note="${c.id}">
       <div class="gb-note-head">
         <button class="gb-name gb-name--btn" type="button" data-pc="${pid}"
                 title="View profile">${avatar(c)}${esc(c.name)}</button>
         <span class="gb-date">${esc(fmtDate(c.created_at))}</span>
-        ${pending ? '<span class="gb-wait">waiting for approval</span>' : ''}
+        ${hidden ? '<span class="gb-wait">only you can see this</span>' : ''}
       </div>
       <p class="gb-body">${esc(c.body)}</p>
       <div class="gb-note-foot">
@@ -92,7 +92,7 @@ export function mountComments(host, page, { title } = {}) {
 
   host.innerHTML = `
     ${title ? `<h3 class="gb-title">${esc(title)}</h3>` : ''}
-    <p class="gb-intro">Say hi, ask something, leave a thought. Comments show once Varakorn approves them.</p>
+    <p class="gb-intro">Say hi, ask something, leave a thought. It shows up the moment you leave it.</p>
     <div class="gb-list-wrap">
       <p class="gb-count" hidden></p>
       <ul class="gb-list"></ul>
@@ -182,7 +182,7 @@ export function mountComments(host, page, { title } = {}) {
       const sure = await askConfirm({
         title: `Leave this comment on ${pageLabel(page)}?`,
         message:
-          'It shows here once Varakorn approves it. You can edit or delete it any time, and leave one on other chapters and notes too.',
+          'It goes up straight away, under your name. You can edit or delete it any time, and leave one on other chapters and notes too.',
         yes: 'Yes, leave it',
       });
       if (!sure) return;
@@ -193,7 +193,7 @@ export function mountComments(host, page, { title } = {}) {
     try {
       await post('/api/comments', { page, body, parent });
       area.value = '';
-      say(form, 'Thank you. It shows up for everyone once Varakorn approves it.', 'ok');
+      say(form, 'Thank you. It is up.', 'ok');
       refresh();
     } catch (e) {
       if (e.status === 401) {
@@ -203,7 +203,7 @@ export function mountComments(host, page, { title } = {}) {
         say(
           form,
           e.status === 429
-            ? 'Slow down a little. Try again in a few minutes.'
+            ? 'That is five in an hour, the limit. Come back a little later.'
             : 'That did not go through. Try again in a moment.',
           'err'
         );

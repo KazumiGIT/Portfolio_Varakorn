@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// The account era store: profiles, moderated comments with one reply level,
+// The account era store: profiles, comments with one reply level,
 // likes, testimonials, hanko passport stamps, blog reading marks, and desk
 // terminal chat history. Talks to Supabase Postgres (Singapore) through the
 // transaction pooler; identity comes from api/_lib/supauth.js as a uuid.
@@ -12,8 +12,8 @@ import { experience, posts } from '../../src/js/data.js';
 
 const BODY_MAX = 2000;
 const RELATION_MAX = 80;
-const RATE_WINDOW = '10 minutes';
-const RATE_MAX = 5; // comments per user per window
+const RATE_WINDOW = '1 hour';
+const RATE_MAX = 5; // comments + vouches per person per window
 const CHAT_KEEP = 60; // stored turns per user
 
 /* Only pages that actually mount the guestbook. */
@@ -55,7 +55,7 @@ const DDL = [
     page text not null,
     user_id uuid not null references profiles(id) on delete cascade,
     parent_id bigint references comments(id) on delete cascade,
-    body text not null, approved boolean not null default false,
+    body text not null, approved boolean not null default true,
     ip_hash text, created_at timestamptz not null default now())`,
   `alter table comments enable row level security`,
   `create index if not exists comments_page_idx on comments (page, approved, created_at desc)`,
@@ -70,11 +70,15 @@ const DDL = [
     id bigint generated always as identity primary key,
     user_id uuid not null references profiles(id) on delete cascade,
     page text not null, relation text not null, body text not null,
-    approved boolean not null default false,
+    approved boolean not null default true,
     created_at timestamptz not null default now(),
     unique (user_id, page))`,
   `alter table testimonials enable row level security`,
   `create index if not exists testimonials_page_idx on testimonials (page, approved, created_at desc)`,
+  /* 1 Sep 2026: words publish the moment they are written. `approved` stays
+     as the switch that takes something down again, it just starts on. */
+  `alter table comments alter column approved set default true`,
+  `alter table testimonials alter column approved set default true`,
   `create table if not exists stamps (
     user_id uuid not null references profiles(id) on delete cascade,
     stamp text not null, created_at timestamptz not null default now(),
@@ -165,6 +169,20 @@ export async function listComments(page, viewerId, env = process.env) {
   return { comments: tops };
 }
 
+/** Comments and vouches share one budget: five in an hour, per person. It is
+    there to stop a flood, not to slow anybody down. */
+async function guardRate(sql, userId) {
+  const [{ n }] = await sql`
+    select (
+      (select count(*) from comments
+        where user_id = ${userId} and created_at > now() - ${RATE_WINDOW}::interval) +
+      (select count(*) from testimonials
+        where user_id = ${userId} and created_at > now() - ${RATE_WINDOW}::interval)
+    )::int as n`;
+  if (n >= RATE_MAX)
+    throw err(429, `You have left ${RATE_MAX} in the last hour, the limit. Come back a little later.`);
+}
+
 export async function createComment({ page, body, parent, user, ip }, env = process.env) {
   const sql = db(env);
   if (!sql) return { offline: true };
@@ -185,10 +203,7 @@ export async function createComment({ page, body, parent, user, ip }, env = proc
       parentId = rows[0].id;
     }
 
-    const [{ n }] = await sql`
-      select count(*)::int as n from comments
-      where user_id = ${user.id} and created_at > now() - ${RATE_WINDOW}::interval`;
-    if (n >= RATE_MAX) throw err(429, 'too many comments, try again in a few minutes');
+    await guardRate(sql, user.id);
 
     await sql`
       insert into comments (page, user_id, parent_id, body, ip_hash)
@@ -197,18 +212,18 @@ export async function createComment({ page, body, parent, user, ip }, env = proc
   });
 }
 
-/** Rewrite your own comment. It re-queues for approval, like a vouch edit. */
+/** Rewrite your own comment. It stays up while you edit it. */
 export async function updateOwnComment({ id, body, user }, env = process.env) {
   const sql = need(env);
   const cleanBody = clean(body, BODY_MAX);
   if (!cleanBody || cleanBody.length > BODY_MAX)
     throw err(400, 'comment must be 1 to 2000 characters');
   const rows = await withSchema(sql, () => sql`
-    update comments set body = ${cleanBody}, approved = false
+    update comments set body = ${cleanBody}
     where id = ${Number(id)} and user_id = ${user.id}
     returning id`);
   if (!rows.length) throw err(404, 'not yours or already gone');
-  return { ok: true, pending: true };
+  return { ok: true };
 }
 
 /* ---------- likes ---------- */
@@ -254,7 +269,7 @@ export async function listTestimonials(page, viewerId, env = process.env) {
   return { testimonials: rows };
 }
 
-/** One vouch per person per page. Writing again replaces it and re-moderates. */
+/** One vouch per person per page. Writing again replaces the words in place. */
 export async function saveTestimonial({ page, relation, body, user }, env = process.env) {
   const sql = db(env);
   if (!sql) return { offline: true };
@@ -268,13 +283,15 @@ export async function saveTestimonial({ page, relation, body, user }, env = proc
     throw err(400, 'the vouch must be 1 to 2000 characters');
 
   await ensureProfile(user, env);
-  await withSchema(sql, () => sql`
-    insert into testimonials (user_id, page, relation, body)
-    values (${user.id}, ${page}, ${cleanRelation}, ${cleanBody})
-    on conflict (user_id, page) do update
-      set relation = excluded.relation, body = excluded.body,
-          approved = false, created_at = now()`);
-  return { ok: true, pending: true };
+  return withSchema(sql, async () => {
+    await guardRate(sql, user.id);
+    await sql`
+      insert into testimonials (user_id, page, relation, body)
+      values (${user.id}, ${page}, ${cleanRelation}, ${cleanBody})
+      on conflict (user_id, page) do update
+        set relation = excluded.relation, body = excluded.body`;
+    return { ok: true };
+  });
 }
 
 /* ---------- passport stamps + reading ---------- */
@@ -408,7 +425,27 @@ export async function wallItems(env = process.env) {
   });
 }
 
-/* ---------- moderation (CLI only, never exposed over HTTP) ---------- */
+/* ---------- moderation (CLI only, never exposed over HTTP) ----------
+   Nothing waits for approval any more, so moderation is after the fact:
+   `recent` to see what people wrote, then `hide` or `delete`. */
+
+/** The newest words on the site, whatever their state. */
+export async function listRecent(limit = 20, env = process.env) {
+  const sql = need(env);
+  const n = Math.min(Math.max(Number(limit) || 20, 1), 200);
+  return withSchema(sql, async () => {
+    const comments = await sql`
+      select c.id, c.page, c.parent_id, c.body, c.created_at, c.approved, p.name
+      from comments c join profiles p on p.id = c.user_id
+      order by c.created_at desc limit ${n}`;
+    const testimonials = await sql`
+      select t.id, t.page, t.relation, t.body, t.created_at, t.approved, p.name
+      from testimonials t join profiles p on p.id = t.user_id
+      order by t.created_at desc limit ${n}`;
+    return { comments, testimonials };
+  });
+}
+
 
 export async function listPending(env = process.env) {
   const sql = need(env);
@@ -431,6 +468,8 @@ export async function moderate(kind, action, id, env = process.env) {
   const rows =
     action === 'approve'
       ? await sql`update ${sql(table)} set approved = true where id = ${Number(id)} returning id`
-      : await sql`delete from ${sql(table)} where id = ${Number(id)} returning id`;
+      : action === 'hide'
+        ? await sql`update ${sql(table)} set approved = false where id = ${Number(id)} returning id`
+        : await sql`delete from ${sql(table)} where id = ${Number(id)} returning id`;
   return rows.length > 0;
 }

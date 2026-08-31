@@ -87,7 +87,8 @@ check(await p.locator('.vkconfirm.is-open').isVisible(), 'a confirmation asks be
 check(/Gamuda AI Academy/.test(await p.locator('.vkc-title').textContent()), 'the confirmation names the chapter');
 await p.click('.vkc-yes');
 await p.waitForTimeout(2200);
-check((await p.locator('.vouch--pending').count()) >= 1, 'vouch lands as a visible pending card');
+check((await p.locator('.vouch').count()) >= 1 && (await p.locator('.vouch--pending').count()) === 0,
+  'vouch is on the page straight away, nothing waiting');
 check((await p.locator('[data-v-edit]').count()) === 1 && (await p.locator('[data-v-del]').count()) === 1, 'own vouch card carries Edit and Delete');
 await p.fill('[data-guestbook] [name="body"]', 'Guestbook check. ' + nonce);
 await p.click('[data-guestbook] .gb-submit');
@@ -95,7 +96,8 @@ await p.waitForTimeout(500);
 check(await p.locator('.vkconfirm.is-open').isVisible(), 'a confirmation asks before the comment is left');
 await p.click('.vkc-yes');
 await p.waitForTimeout(2200);
-check((await p.locator('.gb-note--pending').count()) >= 1, 'own comment shows immediately with a waiting badge');
+check((await p.locator('.gb-note').count()) >= 1 && (await p.locator('.gb-note--pending').count()) === 0,
+  'comment is on the page straight away, nothing waiting');
 
 /* edit the comment in place, then delete it */
 await p.click('[data-guestbook] [data-edit]');
@@ -103,7 +105,7 @@ await p.waitForTimeout(400);
 await p.fill('.gb-edit-slot [name="body"]', 'Edited guestbook check. ' + nonce);
 await p.click('.gb-edit-slot .gb-submit');
 await p.waitForTimeout(2000);
-check((await p.locator('.gb-note--pending .gb-body').first().innerText()).includes('Edited'), 'editing your own comment works in place');
+check((await p.locator('.gb-note .gb-body').first().innerText()).includes('Edited'), 'editing your own comment works in place');
 const beforeDel = await p.locator('.gb-note').count();
 await p.click('[data-guestbook] [data-del]');
 await p.waitForTimeout(500);
@@ -139,7 +141,7 @@ check((await p.locator('.acct-head h2').textContent())?.includes('Test Tanuki'),
 check((await p.locator('.pp-stamp.is-got').count()) >= 1, 'passport shows the earned stamp');
 check((await p.locator('.readring, .rr-svg').count()) === 0, 'no reading ring on the account page');
 check((await p.locator('.mine-item').count()) >= 2, 'own comment and vouch are listed');
-check((await p.locator('.mine-state:not(.is-live)').count()) >= 2, 'both marked waiting for approval');
+check((await p.locator('.mine-state.is-live').count()) >= 2, 'both marked live on the profile page');
 check((await p.locator('[data-mine-edit]').count()) >= 2, 'both carry an Edit button on the profile page');
 await p.locator('[data-mine-edit]').first().click();
 await p.waitForTimeout(400);

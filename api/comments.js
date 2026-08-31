@@ -3,7 +3,7 @@
 //   POST /api/comments { page, body, parent? } -> { ok } (signed in only)
 //   PUT  /api/comments { id, body } -> { ok } (edit your own, re-moderated)
 // Identity is a Supabase Auth access token in the Authorization header.
-// Comments land unapproved; moderation happens through scripts/comments-db.mjs.
+// Comments go up as written; taking one down happens through scripts/comments-db.mjs.
 import { listComments, createComment, updateOwnComment } from './_lib/store.js';
 import { userFromRequest, requireUser } from './_lib/supauth.js';
 import { readBody, getQuery, sendJson, clientIp } from './_lib/http.js';

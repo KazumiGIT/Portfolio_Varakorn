@@ -24,7 +24,7 @@ create table if not exists comments (
   user_id    uuid        not null references profiles(id) on delete cascade,
   parent_id  bigint      references comments(id) on delete cascade,
   body       text        not null,
-  approved   boolean     not null default false,
+  approved   boolean     not null default true,  -- on when written; off takes it down
   ip_hash    text,
   created_at timestamptz not null default now()
 );
@@ -44,14 +44,14 @@ create table if not exists likes (
 );
 alter table likes enable row level security;
 
--- One vouch per person per experience page, moderated like comments.
+-- One vouch per person per experience page, published like comments.
 create table if not exists testimonials (
   id         bigint generated always as identity primary key,
   user_id    uuid        not null references profiles(id) on delete cascade,
   page       text        not null,
   relation   text        not null,
   body       text        not null,
-  approved   boolean     not null default false,
+  approved   boolean     not null default true,  -- on when written; off takes it down
   created_at timestamptz not null default now(),
   unique (user_id, page)
 );
@@ -59,6 +59,11 @@ alter table testimonials enable row level security;
 
 create index if not exists testimonials_page_idx
   on testimonials (page, approved, created_at desc);
+
+-- 1 Sep 2026: approval before publishing was dropped. Existing installs get
+-- the new default, and anything that was still waiting goes up.
+alter table comments     alter column approved set default true;
+alter table testimonials alter column approved set default true;
 
 -- Hanko passport: one stamp per chapter read.
 create table if not exists stamps (
