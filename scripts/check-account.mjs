@@ -134,7 +134,7 @@ await p.goto(`${B}/account`, { waitUntil: 'networkidle' });
 await p.waitForTimeout(3000);
 check((await p.locator('.acct-head h2').textContent())?.includes('Test Tanuki'), 'account page greets by name');
 check((await p.locator('.pp-stamp.is-got').count()) >= 1, 'passport shows the earned stamp');
-check(/1 \/ 18|1 of 18/.test(await p.locator('.rr-svg').getAttribute('aria-label') + (await p.locator('.rr-num').textContent())), 'reading ring says 1 of 18');
+check((await p.locator('.readring, .rr-svg').count()) === 0, 'no reading ring on the account page');
 check((await p.locator('.mine-item').count()) >= 2, 'own comment and vouch are listed');
 check((await p.locator('.mine-state:not(.is-live)').count()) >= 2, 'both marked waiting for approval');
 check((await p.locator('[data-mine-edit]').count()) >= 2, 'both carry an Edit button on the profile page');

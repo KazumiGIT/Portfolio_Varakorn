@@ -3871,10 +3871,72 @@ body {
   gap: 0.5rem;
 }
 
-.wcompose-select {
-  appearance: auto;
-  font: inherit;
-  font-size: 0.95rem;
+/* where it goes: chips, because a note often belongs on more than one page */
+.wcompose-places {
+  max-height: 11rem;
+  overflow-y: auto;
+  padding: 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--paper-2);
+  -webkit-overflow-scrolling: touch;
+}
+
+.wcompose-group {
+  margin: 0.2rem 0 0.5rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  font-weight: 600;
+}
+
+.wcompose-group:not(:first-child) {
+  margin-top: 0.9rem;
+}
+
+.wcompose-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.wcompose-chip {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  line-height: 1.2;
+  color: var(--ink-2);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.38rem 0.7rem;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s var(--ease-out), color 0.15s var(--ease-out),
+    border-color 0.15s var(--ease-out);
+}
+
+.wcompose-chip:hover {
+  border-color: var(--ink-3);
+  color: var(--ink);
+}
+
+.wcompose-chip.is-on {
+  background: var(--red);
+  border-color: var(--red);
+  color: var(--paper);
+}
+
+.wcompose-chip.is-on::before {
+  content: '✓ ';
+}
+
+.wcompose-hint {
+  margin-left: 0.45rem;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  font-weight: 400;
+  color: var(--ink-3);
 }
 
 .wcompose-actions {

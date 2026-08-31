@@ -1,6 +1,6 @@
 // ---------------------------------------------------------------------------
 // /account: the visitor's desk drawer. Editable name and photo, the sign in
-// methods on the account, hanko passport, reading ring, their comments and
+// methods on the account, hanko passport, their comments and
 // vouches, password change, sign out, delete account.
 // The profile itself lives on the Supabase auth user; /api/me mirrors it onto
 // profiles so existing comments pick up the new name and face.
@@ -61,15 +61,7 @@ function skeletonHtml() {
     </div>
     <h3 class="acct-h">Hanko passport</h3>
     <p class="acct-sub sk sk-line" style="max-width:16rem">&nbsp;</p>
-    <div class="passport">${stamp.repeat(6)}</div>
-    <h3 class="acct-h">Reading progress</h3>
-    <div class="readring">
-      <span class="sk sk-ring"></span>
-      <div style="flex:1; max-width:18rem; display:flex; flex-direction:column; gap:.5rem">
-        <span class="sk sk-line" style="width:80%">&nbsp;</span>
-        <span class="sk sk-line" style="width:60%">&nbsp;</span>
-      </div>
-    </div>`;
+    <div class="passport">${stamp.repeat(6)}</div>`;
 }
 
 function gateHtml() {
@@ -77,7 +69,7 @@ function gateHtml() {
     <p class="kicker">Your desk drawer</p>
     <h1 class="display" style="font-size: clamp(2.2rem, 6vw, 3.2rem)">Account</h1>
     <div class="acct-gate" data-reveal>
-      <p>Sign in to collect passport stamps, keep your reading progress, and let the desk terminal remember you. New here? Creating an account takes a minute.</p>
+      <p>Sign in to collect passport stamps, leave comments and vouches, and let the desk terminal remember you. New here? Creating an account takes a minute.</p>
       <button class="btn btn--solid" type="button" data-open-auth>Sign in / Create account</button>
     </div>
     <p class="note-dim" style="margin-top:2rem">
@@ -93,21 +85,6 @@ function stampHtml(page, got) {
       <span class="pp-seal" aria-hidden="true">${got ? 'V' : '?'}</span>
       <span class="pp-name">${esc(name)}</span>
     </a>`;
-}
-
-function ringHtml(read, total) {
-  const R = 44;
-  const C = 2 * Math.PI * R;
-  const off = C * (1 - (total ? read / total : 0));
-  return `
-    <svg class="rr-svg" viewBox="0 0 108 108" role="img"
-         aria-label="${read} of ${total} notes read">
-      <circle class="rr-track" cx="54" cy="54" r="${R}" fill="none" stroke-width="8" />
-      <circle class="rr-bar" cx="54" cy="54" r="${R}" fill="none" stroke-width="8"
-              stroke-linecap="round" stroke-dasharray="${C.toFixed(1)}"
-              stroke-dashoffset="${off.toFixed(1)}" transform="rotate(-90 54 54)" />
-      <text class="rr-num" x="54" y="59" text-anchor="middle">${read} / ${total}</text>
-    </svg>`;
 }
 
 const mineReg = new Map();
@@ -129,7 +106,6 @@ function mineHtml(kind, item) {
 }
 
 function render(me, user) {
-  const nextUnread = posts.find((p) => !me.read.includes(p.slug));
   root.innerHTML = `
     <p class="kicker">Your desk drawer</p>
     <h1 class="display" style="font-size: clamp(2.2rem, 6vw, 3.2rem)">Account</h1>
@@ -193,15 +169,6 @@ function render(me, user) {
       ${me.allStamps.map((s) => stampHtml(s, me.stamps.includes(s))).join('')}
     </div>
 
-    <h3 class="acct-h">Reading progress</h3>
-    <div class="readring">
-      ${ringHtml(me.read.length, me.totalNotes)}
-      <div class="rr-copy">
-        <p>${me.read.length ? `${me.read.length} of ${me.totalNotes} field notes finished.` : 'No field notes finished yet.'}</p>
-        ${nextUnread ? `<p>Next up: <a class="link-u" href="/blog#${esc(nextUnread.slug)}">${esc(nextUnread.title)}</a></p>` : '<p>That is all of them. New notes land on the <a class="link-u" href="/blog">blog</a>.</p>'}
-      </div>
-    </div>
-
     <h3 class="acct-h">Your comments</h3>
     ${
       me.comments.length
@@ -239,7 +206,7 @@ function render(me, user) {
 
     <div class="acct-danger">
       <h3 class="acct-h" style="margin-top:0">Leave for good</h3>
-      <p class="acct-sub" style="margin-bottom:0">Deleting your account removes your comments, vouches, stamps, reading marks and chat history. There is no undo.</p>
+      <p class="acct-sub" style="margin-bottom:0">Deleting your account removes your comments, vouches, stamps and chat history. There is no undo.</p>
       <button class="acct-delete" type="button" data-del-account>Delete my account</button>
       <p class="acct-status" role="status" aria-live="polite" data-danger-status></p>
     </div>`;
@@ -483,7 +450,7 @@ root.addEventListener('click', async (e) => {
     const s = root.querySelector('[data-danger-status]');
     const sure = await askConfirm({
       title: 'Delete your whole account?',
-      message: 'Comments, vouches, stamps, reading marks and chat history all go with it, permanently. There is no undo.',
+      message: 'Comments, vouches, stamps and chat history all go with it, permanently. There is no undo.',
       yes: 'Delete everything',
       no: 'Keep my account',
       danger: true,
