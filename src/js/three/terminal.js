@@ -73,17 +73,30 @@ export function createTerminal() {
   field.autocomplete = 'off';
   field.maxLength = 160;
   field.setAttribute('aria-label', 'Ask the terminal about Varakorn');
-  Object.assign(field.style, {
+  // phone keyboards: no auto-capitals, no autocorrect mangling, a send key,
+  // and 16px so iOS does not pinch-zoom the page onto the field
+  field.autocapitalize = 'off';
+  field.setAttribute('autocorrect', 'off');
+  field.spellcheck = false;
+  field.enterKeyHint = 'send';
+  const FIELD_BASE = {
     position: 'fixed',
-    bottom: '8px',
-    left: '50%',
-    width: '2px',
-    height: '2px',
-    opacity: '0',
     border: 'none',
     padding: '0',
-    zIndex: '-1',
-  });
+    margin: '0',
+    opacity: '0',
+    background: 'transparent',
+    color: 'transparent',
+    caretColor: 'transparent',
+    outline: 'none',
+    fontSize: '16px',
+  };
+  /* parked: a 2px speck nothing can hit */
+  const FIELD_HIDDEN = { ...FIELD_BASE, left: '50%', right: 'auto', bottom: '8px', width: '2px', height: '2px', zIndex: '-1', pointerEvents: 'none' };
+  /* active: an invisible sheet over the lower screen, so a phone tap lands on
+     a real input and iOS opens the keyboard natively */
+  const FIELD_ACTIVE = { ...FIELD_BASE, left: '0', right: '0', bottom: '0', width: '100%', height: '42%', zIndex: '6', pointerEvents: 'auto' };
+  Object.assign(field.style, FIELD_HIDDEN);
   document.body.appendChild(field);
 
   const onType = { cb: null }; // set by the scene to animate 3D keys
@@ -254,10 +267,13 @@ export function createTerminal() {
       if (!state.lines.length) GREETING.forEach((l) => push(l.text, l.color));
       field.value = '';
       state.input = '';
+      // the tap sheet is for fingers; a mouse must keep wheeling on the canvas
+      if (matchMedia('(pointer: coarse)').matches) Object.assign(field.style, FIELD_ACTIVE);
       field.focus({ preventScroll: true });
       draw();
     } else {
       field.blur();
+      Object.assign(field.style, FIELD_HIDDEN);
     }
   }
 

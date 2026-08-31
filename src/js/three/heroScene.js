@@ -733,6 +733,28 @@ export function mountHeroScene(canvas, tipEl, pinsEl) {
   canvas.addEventListener('pointerup', endTouch);
   canvas.addEventListener('pointercancel', endTouch);
 
+  // Safari on iOS keeps two finger gestures for page zoom unless told not
+  // to; its proprietary gesture events are the reliable pinch path there.
+  let gestureBase = 0;
+  canvas.addEventListener('gesturestart', (e) => {
+    e.preventDefault();
+    if (flight || termT > 0) return;
+    gestureBase = zoomT;
+  });
+  canvas.addEventListener('gesturechange', (e) => {
+    e.preventDefault();
+    if (flight || termT > 0) return;
+    zoomT = THREE.MathUtils.clamp(gestureBase + (e.scale - 1) * 0.9, 0, 1);
+  });
+  canvas.addEventListener('gestureend', (e) => e.preventDefault());
+  canvas.addEventListener(
+    'touchmove',
+    (e) => {
+      if (e.touches.length === 2) e.preventDefault(); // pinches are ours
+    },
+    { passive: false }
+  );
+
   // double click / double tap an empty spot toggles the close-up
   canvas.addEventListener('dblclick', (e) => {
     if (flight || termT > 0) return;
@@ -917,6 +939,11 @@ export function mountHeroScene(canvas, tipEl, pinsEl) {
   });
   canvas.addEventListener('pointerdown', (e) => {
     downPos = { x: e.clientX, y: e.clientY };
+  });
+  // iOS only reliably opens the keyboard for a focus() inside a click
+  // handler, so the pointerup path above gets this echo
+  canvas.addEventListener('click', () => {
+    if (termT > 0) term.field.focus({ preventScroll: true });
   });
   canvas.addEventListener('pointerup', (e) => {
     if (flight) return;
