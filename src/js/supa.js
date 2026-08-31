@@ -11,7 +11,20 @@ const KEY = typeof __SUPABASE_PUBLISHABLE_KEY__ !== 'undefined' ? __SUPABASE_PUB
 
 export const authConfigured = Boolean(URL && KEY);
 
-export const supa = authConfigured ? createClient(URL, KEY) : null;
+/* Sessions must survive everything short of a deliberate sign out: the tab
+   closing, the browser restarting, a week away. persistSession keeps the
+   refresh token in localStorage, autoRefreshToken renews the hourly access
+   token, and Supabase refresh tokens themselves do not expire. These are the
+   defaults, pinned here so nobody "cleans them up" later. */
+export const supa = authConfigured
+  ? createClient(URL, KEY, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+      },
+    })
+  : null;
 
 /** The live session, or null. */
 export async function getSession() {
