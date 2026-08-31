@@ -28,6 +28,14 @@ Standing rules from the owner (Varakorn). These outlive any chat session; follow
 - Gamuda AI Academy: Cohort 5, KL Campus, Jan–Mar 2026, 9am–12pm classes + 1pm–5pm capstone; Full Stack Dev + AI Engineer fundamentals (AI Engineer ≠ ML Engineer). Team = **JAAVIS** (Jason, Alan, Adam, Varakorn, Irfan, Shasha), owner was youngest + team lead. Only 2 of 7 teams presented to YB Datuk Chang Lih Kang (MOSTI); Team 2 won 1st for the FINAL DAY capstone demo presentation (not the MOSTI one). Second YB he spoke with (first: YB Syed Saddiq, during HYGR). Key mentors quoted on site: Meng (ex HYGR boss) and Mr Johan Nasir.
 - "Figma Weavy" is one product name (not Figma + Weavy). Astro is "soon to be used" at P10X, not in use yet.
 
+## Machine readability (do not regress this)
+
+- `/home`, `/journey`, `/experience` and `/blog` paint themselves from `src/js/data.js` after the bundle loads. A crawler that does not run JavaScript would see empty shells, so the `prerenderForCrawlers()` plugin in `vite.config.js` bakes the same words into the HTML at build time and adds the matching JSON-LD. The page scripts overwrite those containers on hydrate, so a human visitor sees no difference.
+- The plugin finds its targets by the empty `<div data-cards></div>` style containers. **If you rename or pre fill one of those containers, the plugin warns in the build log and that page silently goes back to being invisible to AI.** Run `npm run check:seo` (dev server up) after touching them.
+- Blog articles live at `/blog#slug` and their full text ships in the HTML. That is deliberate: it is what an answer engine can quote.
+- `public/llms.txt` is the hand written summary for AI crawlers. Update it when a role, a page, or a headline fact changes.
+- `/contact` is `noindex` on purpose (it carries a phone number and an email) and is deliberately left out of `sitemap.xml`. Keep those two facts in step.
+
 ## Adding a page (checklist)
 
 1. Create the `.html` (copy the nav + mobile menu markup from an existing page — it is duplicated per page, including the Experience dropdown).

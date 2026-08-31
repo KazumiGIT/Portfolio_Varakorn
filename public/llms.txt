@@ -1,0 +1,27 @@
+# Varakorn
+
+> Varakorn is a Full Stack AI Engineer and AI Digital Marketing specialist based in Subang Jaya, Selangor, Malaysia. He works as an AI Specialist at P10X Media in Sunway, Subang Jaya, founded the automation studio Orion Automation, and spent two years as a content creator at HYGR where his videos passed 38 million views. He builds AI workflows, agentic AI systems, retrieval pipelines and AI video editing pipelines, mostly in Python, FastAPI, Langchain and React.
+
+Contact: varakornm0403@gmail.com · WhatsApp +60 11 1126 7609 · https://www.linkedin.com/in/varakorn-meunukdomn
+
+## Pages
+
+- [Home](https://www.varakorn.me/home): who he is, the services he offers, selected projects including Tendervise AI, and the six chapters of his career in short form.
+- [Journey](https://www.varakorn.me/journey): the full story in six chapters, from an IT certificate in Pasir Salak to AI Specialist at P10X Media.
+- [Experience and goals](https://www.varakorn.me/experience): every role as a card, plus the skill groups and the goals he is working toward.
+- [Blog](https://www.varakorn.me/blog): field notes on content, code and automation. Each article lives at /blog#slug.
+
+## Experience, newest first
+
+- [AI Specialist at P10X Media](https://www.varakorn.me/experience/ai-specialist-p10x-media): the marketing department of P10X in Sunway, Subang Jaya. AI workflows, agentic AI, AI marketing workflows and AI video editing.
+- [Gamuda AI Academy](https://www.varakorn.me/experience/gamuda-ai-academy): Cohort 5, KL Campus, January to March 2026, fully sponsored by Yayasan Gamuda. Team lead of JAAVIS on the Tendervise AI capstone. One of two teams out of seven chosen to present to YB Datuk Chang Lih Kang, Minister of Science, Technology and Innovation.
+- [JomHack Free Python Bootcamp](https://www.varakorn.me/experience/jomhack-python-bootcamp): the December 2025 cohort, found through Mr Inbaraj's TikTok lives. The pivot that led to Gamuda AI Academy one month later.
+- [Founder of Orion Automation](https://www.varakorn.me/experience/orion-automation-founder): an SSM registered automation studio started in November 2025. Zero revenue to date, and he says so plainly.
+- [Content Creator at HYGR](https://www.varakorn.me/experience/hygr-content-creator): joined as a video editor intern in January 2024, full time from June 2024, left in August 2025. 38 million plus views across the Natural Deodorant and Tinted Lip Balm lines, nationwide booth pop ups, and a caravan CSR trip to the Orang Asli in Pahang.
+- [Cert in IT, College Community Pasir Salak](https://www.varakorn.me/experience/college-community-pasir-salak): web development with HTML, CSS and PHP, game development in Unity and Unreal Engine, mobile apps and IoT.
+
+## Optional
+
+- [Contact](https://www.varakorn.me/contact): every way to reach him. Not indexed, because it carries a phone number and an email.
+- [Resume](https://www.varakorn.me/Varakorn_Resume_2026.pdf): the 2026 PDF.
+- [Sitemap](https://www.varakorn.me/sitemap.xml)

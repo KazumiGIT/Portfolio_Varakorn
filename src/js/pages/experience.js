@@ -47,19 +47,22 @@ if (cardsEl) {
             <div class="tc-shine" aria-hidden="true"></div>
           </div>
           <div class="tface tface-back">
-            <div class="tb-role">${x.role}</div>
-            <div class="tb-meta">${x.period} · ${x.place}</div>
-            <ul>${x.points.map((p) => `<li>${p}</li>`).join('')}</ul>
-            ${
-              x.page
-                ? `<p class="tb-link"><a class="link-u" href="${x.page}">Full story: ${x.org} →</a></p>`
-                : ''
-            }
-            ${
-              x.link
-                ? `<p class="tb-link"><a class="link-u" href="${x.link}" target="_blank" rel="noopener noreferrer">Visit ${x.org} ↗</a></p>`
-                : ''
-            }
+            <div class="tb-scroll">
+              <div class="tb-role">${x.role}</div>
+              <div class="tb-meta">${x.period} · ${x.place}</div>
+              <ul>${x.points.map((p) => `<li>${p}</li>`).join('')}</ul>
+              ${
+                x.page
+                  ? `<p class="tb-link"><a class="link-u" href="${x.page}">Full story: ${x.org} →</a></p>`
+                  : ''
+              }
+              ${
+                x.link
+                  ? `<p class="tb-link"><a class="link-u" href="${x.link}" target="_blank" rel="noopener noreferrer">Visit ${x.org} ↗</a></p>`
+                  : ''
+              }
+            </div>
+            <div class="tb-fade" aria-hidden="true"></div>
             <div class="tb-flip">flip back</div>
             <div class="tc-shine" aria-hidden="true"></div>
           </div>
@@ -89,14 +92,41 @@ if (cardsEl) {
       });
     }
 
-    // flip
+    /* the back can be taller than the card (long roles, two links), so it
+       scrolls. Track how far the pointer travelled: a drag scrolls, only a
+       real tap flips, otherwise reading the back would keep closing it. */
+    const scroller = card.querySelector('.tb-scroll');
+    const markScroll = () => {
+      if (!scroller) return;
+      const more = scroller.scrollHeight - scroller.clientHeight - scroller.scrollTop;
+      card.classList.toggle('has-more', more > 6);
+    };
+    if (scroller) {
+      scroller.addEventListener('scroll', markScroll, { passive: true });
+      addEventListener('resize', markScroll, { passive: true });
+      requestAnimationFrame(markScroll);
+    }
+
+    let down = null;
+    card.addEventListener('pointerdown', (e) => {
+      down = { x: e.clientX, y: e.clientY };
+    });
+
     const flip = () => {
       card.classList.add('is-flipping');
       card.classList.toggle('is-flipped');
-      setTimeout(() => card.classList.remove('is-flipping'), 700);
+      setTimeout(() => {
+        card.classList.remove('is-flipping');
+        markScroll();
+      }, 700);
     };
     card.addEventListener('click', (e) => {
       if (e.target.closest('a')) return;
+      if (down) {
+        const moved = Math.hypot(e.clientX - down.x, e.clientY - down.y);
+        down = null;
+        if (moved > 10) return; // that was a scroll, not a tap
+      }
       flip();
     });
     card.addEventListener('keydown', (e) => {

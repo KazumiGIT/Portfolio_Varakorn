@@ -8,7 +8,10 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "comments": "node scripts/comments-db.mjs"
+    "comments": "node scripts/comments-db.mjs",
+    "check:mobile": "node scripts/check-mobile-nav.mjs",
+    "check:seo": "node scripts/check-prerender.mjs",
+    "shots": "node scripts/screenshot.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",

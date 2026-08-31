@@ -25,7 +25,10 @@ export async function askVarakornAI(messages, env = process.env) {
     throw Object.assign(new Error('bad request'), { status: 400 });
   }
 
-  const model = env.GEMINI_MODEL || 'gemini-2.5-flash';
+  // A bad GEMINI_MODEL (a pasted key, a stray quote) makes every call 400 with
+  // "unexpected model name format", so only trust values that look like a model.
+  const configured = (env.GEMINI_MODEL || '').trim();
+  const model = /^gemini[a-z0-9.\-]*$/i.test(configured) ? configured : 'gemini-2.5-flash';
   const generationConfig = { temperature: 0.6, maxOutputTokens: 500 };
   // 2.5 models spend "thinking" tokens out of the same budget — turn it off,
   // this is a 60 word chat reply, not a proof

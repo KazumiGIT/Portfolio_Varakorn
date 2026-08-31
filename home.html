@@ -139,9 +139,14 @@
       <ul class="menu-links">
         <li><a class="menu-link" href="/home"><span class="idx">01</span>Home</a></li>
         <li><a class="menu-link" href="/journey"><span class="idx">02</span>Journey</a></li>
-        <li>
-          <a class="menu-link" href="/experience"><span class="idx">03</span>Experience</a>
-          <ul class="menu-sub" aria-label="Experience pages">
+        <li class="menu-drop">
+          <div class="menu-row">
+            <a class="menu-link" href="/experience"><span class="idx">03</span>Experience</a>
+            <button class="menu-sub-toggle" type="button" aria-expanded="false" aria-controls="menu-sub-exp" aria-label="Show the experience pages">
+              <span aria-hidden="true">&#9662;</span>
+            </button>
+          </div>
+          <ul class="menu-sub" id="menu-sub-exp" aria-label="Experience pages">
             <li><a href="/experience/ai-specialist-p10x-media">AI Specialist · P10X Media</a></li>
             <li><a href="/experience/gamuda-ai-academy">Engineer · Gamuda AI Academy</a></li>
             <li><a href="/experience/jomhack-python-bootcamp">The Pivot · Python Bootcamp</a></li>
@@ -158,6 +163,8 @@
         <span>Subang Jaya · Malaysia</span>
       </div>
     </div>
+
+    <main id="content">
 
     <!-- ============ HERO ============ -->
     <section class="hero">
@@ -307,6 +314,8 @@
     </section>
 
     <!-- ============ FOOTER ============ -->
+    </main>
+
     <footer class="footer">
       <div class="container footer-grid">
         <div class="fbrand">
