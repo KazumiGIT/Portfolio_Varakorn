@@ -81,7 +81,7 @@ export function mountComments(host, page, { title } = {}) {
 
   host.innerHTML = `
     ${title ? `<h3 class="gb-title">${esc(title)}</h3>` : ''}
-    <p class="gb-intro">Sign in to comment, reply, and like. Comments show up after Varakorn reads them.</p>
+    <p class="gb-intro">Say hi, ask something, leave a thought. Comments show once Varakorn approves them.</p>
     <div class="gb-list-wrap">
       <p class="gb-count" hidden></p>
       <ul class="gb-list"></ul>

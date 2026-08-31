@@ -63,20 +63,24 @@ export function mountTestimonials(host, page) {
   let mine = null;
 
   host.innerHTML = `
-    <div class="section-head" data-reveal>
-      <div>
-        <p class="kicker">Vouches</p>
-        <h2 class="display title">Worked with him here?</h2>
+    <div class="vpanel">
+      <div class="vpanel-head">
+        <span class="vpanel-seal" aria-hidden="true">✦</span>
+        <div class="vpanel-headings">
+          <h3 class="vpanel-title">Vouches <span class="vpanel-count" data-v-count hidden></span></h3>
+          <p class="vpanel-sub">Short words from people who worked with Varakorn in this chapter. Not comments, endorsements.</p>
+        </div>
       </div>
-    </div>
-    <p class="gb-intro">A short word from people who shared this chapter. Vouches show after Varakorn approves them.</p>
-    <ul class="vouch-list"></ul>
-    <p class="gb-empty" data-v-empty hidden>No vouches on this chapter yet.</p>
-    <div class="vouch-cta"></div>`;
+      <ul class="vouch-list"></ul>
+      <p class="vouch-empty" data-v-empty hidden>None here yet. Shared this chapter with him? Yours can be the first.</p>
+      <div class="vouch-cta"></div>
+    </div>`;
 
   const list = host.querySelector('.vouch-list');
   const empty = host.querySelector('[data-v-empty]');
   const cta = host.querySelector('.vouch-cta');
+  const count = host.querySelector('[data-v-count]');
+  let formOpen = false;
 
   function formHtml() {
     return `
@@ -89,8 +93,10 @@ export function mountTestimonials(host, page) {
                   placeholder="What was he like to work with?">${esc(mine && !mine.approved ? mine.body : '')}</textarea>
         <div class="gb-actions">
           <button class="btn gb-submit" type="submit">${mine ? 'Update my vouch' : 'Leave a vouch'}</button>
+          <button class="gb-cancel" type="button" data-v-cancel>Cancel</button>
           <p class="gb-status" role="status" aria-live="polite"></p>
         </div>
+        <p class="vouch-note">Vouches show once Varakorn approves them.</p>
       </form>`;
   }
 
@@ -99,12 +105,29 @@ export function mountTestimonials(host, page) {
       cta.innerHTML = '';
       return;
     }
-    if (!user) {
-      cta.innerHTML = `<button class="btn gb-signin" type="button">Sign in to leave a vouch</button>`;
-      cta.querySelector('button').addEventListener('click', () => openAuthDialog());
+    if (user && formOpen) {
+      cta.innerHTML = formHtml();
+      cta.querySelector('[data-v-cancel]')?.addEventListener('click', () => {
+        formOpen = false;
+        renderCta();
+      });
+      cta.querySelector('[name="relation"]')?.focus();
       return;
     }
-    cta.innerHTML = formHtml();
+    // one quiet, contextual invitation; the form only unfolds on purpose
+    const label = !user
+      ? 'Worked with him? Sign in to vouch'
+      : mine
+        ? 'Edit my vouch'
+        : 'Worked with him? Leave a vouch';
+    cta.innerHTML = `<button class="vouch-open" type="button">
+        <span aria-hidden="true">✎</span> ${label}
+      </button>`;
+    cta.querySelector('.vouch-open').addEventListener('click', () => {
+      if (!user) return openAuthDialog();
+      formOpen = true;
+      renderCta();
+    });
   }
 
   async function refresh({ keepForm = false } = {}) {
@@ -119,6 +142,9 @@ export function mountTestimonials(host, page) {
       mine = items.find((t) => t.mine) || null;
       list.innerHTML = items.map(cardHtml).join('');
       empty.hidden = items.length > 0;
+      const approvedCount = items.filter((t) => t.approved).length;
+      count.hidden = approvedCount === 0;
+      count.textContent = String(approvedCount);
       injectReviewLd(items.filter((t) => t.approved));
       // right after a submit the form stays put, or the thank you note
       // would be wiped by its own success
@@ -152,10 +178,9 @@ export function mountTestimonials(host, page) {
       });
       const out = await r.json();
       if (!r.ok) throw new Error(out.error || 'error');
-      await refresh({ keepForm: true });
-      status.textContent = 'Thank you. It shows here once Varakorn approves it.';
-      status.dataset.tone = 'ok';
-      form.querySelector('.gb-submit').textContent = 'Update my vouch';
+      formOpen = false;
+      await refresh();
+      empty.hidden = true;
     } catch (err) {
       status.textContent = String(err.message || 'That did not go through.');
       status.dataset.tone = 'err';
