@@ -795,6 +795,12 @@ export function mountHeroScene(canvas, tipEl, pinsEl) {
 
   // responsive framing — sits low enough to leave sky for the headline above
   let frameY = 0.04;
+  // the two close-ups (desk zoom, terminal dive) need horizontal room, and a
+  // tall phone has almost none: the narrower the viewport, the further back
+  // both dollies sit. 1 on landscape, up to ~2.3 on a phone held upright.
+  let zoomDolly = 3.2;
+  let zoomLift = 0.5;
+  let termDolly = 1.74;
   stage.onResize((aspect) => {
     let s = 0.92;
     let y = 0.04;
@@ -821,6 +827,10 @@ export function mountHeroScene(canvas, tipEl, pinsEl) {
     camera.fov = fov;
     camera.updateProjectionMatrix();
     placeCards(aspect);
+    const need = Math.min(Math.max(1.05 / aspect, 1), 2.3);
+    zoomDolly = 3.2 * need;
+    zoomLift = 0.5 + Math.max(0, 1 - aspect) * 0.5;
+    termDolly = 1.74 * need;
   });
 
   // --- interaction -----------------------------------------------------------
@@ -959,14 +969,14 @@ export function mountHeroScene(canvas, tipEl, pinsEl) {
       const zk = zoomK * zoomK * (3 - 2 * zoomK);
       const s = world.scale.x;
       lookZoom.set(deskFocus.x + panC, deskFocus.y, deskFocus.z).multiplyScalar(s).add(world.position);
-      camZoom.set(lookZoom.x, lookZoom.y + 0.5 * s, lookZoom.z + 3.2 * s);
+      camZoom.set(lookZoom.x, lookZoom.y + zoomLift * s, lookZoom.z + zoomDolly * s);
       camera.position.lerpVectors(camBase, camZoom, zk);
       lookCur.lerpVectors(baseLook, lookZoom, zk);
       if (termK > 0.001) {
         // monitor screen center, framed straight on with the keyboard below
         const tk = termK * termK * (3 - 2 * termK);
         termLook.set(-0.62, 1.36, -0.95).multiplyScalar(s).add(world.position);
-        termCam.set(termLook.x, termLook.y + 0.2 * s, termLook.z + 1.74 * s);
+        termCam.set(termLook.x, termLook.y + 0.2 * s, termLook.z + termDolly * s);
         camera.position.lerp(termCam, tk);
         lookCur.lerp(termLook, tk);
       }
