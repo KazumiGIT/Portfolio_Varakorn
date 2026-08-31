@@ -192,6 +192,55 @@
   margin-top: 0.8rem;
 }
 
+/* ---------- the writing sheet ----------
+   A comment and a vouch are both written on a sheet laid on the page: paper,
+   a printed edge, and a line at the top naming where the words will land. It
+   keeps the fields from sprawling across the whole column. */
+.gb-sheet {
+  gap: 0.75rem;
+  padding: 1rem 1.1rem 1.05rem;
+  background: var(--paper);
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  box-shadow: var(--shadow-press);
+}
+
+.gb-sheet-head {
+  margin: 0;
+  padding-bottom: 0.7rem;
+  border-bottom: 1px dashed var(--line);
+}
+
+.gb-sheet-for {
+  font-size: 0.82rem;
+  color: var(--ink-2);
+}
+
+.gb-sheet-for strong {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.gb-sheet .gb-me {
+  margin-bottom: 0;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.gb-field {
+  display: grid;
+  gap: 0.3rem;
+}
+
+/* a short answer deserves a short box */
+.gb-input--short {
+  max-width: 22rem;
+}
+
+.gb-sheet .gb-area {
+  min-height: 104px;
+}
+
 .gb-input {
   width: 100%;
   font: inherit;
@@ -255,8 +304,10 @@
    above the guestbook on experience pages.
    --------------------------------------------------------------------------- */
 
+/* the panel keeps the same column as the comments under it */
 .vouches {
   margin-bottom: 3.6rem;
+  max-width: 760px;
 }
 
 .vpanel {
@@ -413,6 +464,12 @@
   border-color: var(--red);
 }
 
+/* the vouch sheet wears the same gold edge as the card it becomes */
+.vouch-cta .gb-sheet {
+  border-left: 4px solid var(--gold);
+  border-radius: 4px 11px 11px 4px;
+}
+
 .vouch-cta .ad-label {
   display: block;
   font-size: 0.68rem;
@@ -420,7 +477,7 @@
   text-transform: uppercase;
   color: var(--ink-2);
   font-weight: 600;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0;
 }
 
 .vouch-note {

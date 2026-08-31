@@ -96,13 +96,20 @@ export function mountTestimonials(host, page) {
 
   function formHtml() {
     return `
-      <form class="gb-form" novalidate>
-        <label class="ad-label" for="v-rel">How you know Varakorn</label>
-        <input class="gb-input" id="v-rel" name="relation" maxlength="80" required
-               placeholder="Teammate at JAAVIS, client, classmate…" value="${esc(mine?.relation || '')}" />
-        <label class="ad-label" for="v-body" style="margin-top:.5rem">Your vouch</label>
-        <textarea class="gb-input gb-area" id="v-body" name="body" maxlength="2000" rows="4" required
-                  placeholder="What was he like to work with?">${esc(mine && !mine.approved ? mine.body : '')}</textarea>
+      <form class="gb-form gb-sheet" novalidate>
+        <p class="gb-sheet-head">
+          <span class="gb-sheet-for">Your vouch on <strong>${esc(pageLabel(page))}</strong></span>
+        </p>
+        <div class="gb-field">
+          <label class="ad-label" for="v-rel">How you know Varakorn</label>
+          <input class="gb-input gb-input--short" id="v-rel" name="relation" maxlength="80" required
+                 placeholder="Teammate at JAAVIS, client, classmate…" value="${esc(mine?.relation || '')}" />
+        </div>
+        <div class="gb-field">
+          <label class="ad-label" for="v-body">Your vouch</label>
+          <textarea class="gb-input gb-area" id="v-body" name="body" maxlength="2000" rows="4" required
+                    placeholder="What was he like to work with?">${esc(mine && !mine.approved ? mine.body : '')}</textarea>
+        </div>
         <div class="gb-actions">
           <button class="btn gb-submit" type="submit">${mine ? 'Update my vouch' : 'Leave a vouch'}</button>
           <button class="gb-cancel" type="button" data-v-cancel>Cancel</button>

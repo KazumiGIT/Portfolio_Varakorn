@@ -147,13 +147,18 @@ export function mountComments(host, page, { title } = {}) {
       return;
     }
     el.auth.innerHTML = `
-      <div class="gb-me">
-        <span class="gb-name">${avatar(user)}${esc(user.name)}</span>
-        <button class="gb-signout" type="button">Sign out</button>
-      </div>
-      <form class="gb-form" novalidate>
-        <textarea class="gb-input gb-area" name="body" maxlength="2000" rows="4" required
-                  placeholder="Leave a thought, a question, or just say hi"></textarea>
+      <form class="gb-form gb-sheet" novalidate>
+        <div class="gb-me">
+          <span class="gb-name">${avatar(user)}${esc(user.name)}</span>
+          <button class="gb-signout" type="button">Sign out</button>
+        </div>
+        <p class="gb-sheet-head">
+          <span class="gb-sheet-for">Your comment on <strong>${esc(pageLabel(page))}</strong></span>
+        </p>
+        <div class="gb-field">
+          <textarea class="gb-input gb-area" name="body" maxlength="2000" rows="4" required
+                    placeholder="Leave a thought, a question, or just say hi"></textarea>
+        </div>
         <div class="gb-actions">
           <button class="btn gb-submit" type="submit">Leave a comment</button>
           <p class="gb-status" role="status" aria-live="polite"></p>

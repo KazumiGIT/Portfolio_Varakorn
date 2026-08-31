@@ -75,6 +75,9 @@ await p.click('.vouch-open');
 await p.waitForTimeout(400);
 check((await p.locator('.vouches .gb-form').count()) === 1, 'the vouch form unfolds on request');
 check((await p.locator('[data-guestbook] .gb-form').count()) === 1, 'comment form renders too');
+/* both sheets name the chapter you are standing on, no dropdown, no default */
+check(/Gamuda AI Academy/.test(await p.locator('.vouches .gb-sheet-for').textContent()), 'the vouch sheet names this chapter');
+check(/Gamuda AI Academy/.test(await p.locator('[data-guestbook] .gb-sheet-for').textContent()), 'the comment sheet names this chapter');
 const nonce = 'e2e ' + Date.now();
 await p.fill('.vouches [name="relation"]', 'JAAVIS teammate');
 await p.fill('.vouches [name="body"]', 'Great team lead. ' + nonce);

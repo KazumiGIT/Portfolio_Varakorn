@@ -137,6 +137,15 @@ function buildCompose() {
   };
   applyKind('comment');
 
+  // opened while standing on a chapter or a note? that page is already picked
+  const here = location.pathname.replace(/[.]html$/, '');
+  const note = '/blog#' + location.hash.slice(1);
+  const current = labelOf.has(here) ? here : labelOf.has(note) ? note : '';
+  if (current) {
+    state.picked.add(current);
+    paintPicks();
+  }
+
   composeEl.addEventListener('click', (e) => {
     if (e.target.closest('[data-wc-close]')) composeEl.classList.remove('is-open');
     const kindBtn = e.target.closest('.wcompose-kind');
