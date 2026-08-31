@@ -248,3 +248,78 @@
   padding-top: 2rem;
   border-top: 1px solid var(--line);
 }
+
+/* ---------------------------------------------------------------------------
+   Vouches (testimonials) — mounted above the guestbook on experience pages.
+   --------------------------------------------------------------------------- */
+
+.vouches {
+  margin-bottom: 3.2rem;
+}
+
+.vouch-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.4rem;
+  display: grid;
+  gap: 0.9rem;
+}
+
+.vouch {
+  position: relative;
+  padding: 1.1rem 1.2rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper-2);
+}
+
+.vouch--pending {
+  border-style: dashed;
+  opacity: 0.75;
+}
+
+.vouch-body {
+  margin: 0 0 0.7rem;
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.vouch-body::before {
+  content: '\201C';
+  color: var(--red);
+  font-family: var(--font-display);
+  font-weight: 700;
+  margin-right: 0.15rem;
+}
+
+.vouch-foot {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+}
+
+.vouch-rel {
+  font-size: 0.78rem;
+  color: var(--ink-2);
+}
+
+.vouch-wait {
+  position: absolute;
+  top: 0.7rem;
+  right: 0.9rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.vouch-cta .ad-label {
+  display: block;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}

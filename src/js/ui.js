@@ -307,6 +307,8 @@ export function initSite() {
   initCounters();
   initMisc();
   initDecor();
+  // account chrome loads lazily so the auth bundle never blocks first paint
+  import('./authui.js').then((m) => m.initAuthUI()).catch(() => {});
 }
 
 export const prefersReducedMotion = reduced;

@@ -38,6 +38,16 @@ Standing rules from the owner (Varakorn). These outlive any chat session; follow
 - `public/llms.txt` is the hand written summary for AI crawlers. Update it when a role, a page, or a headline fact changes.
 - `/contact` is `noindex` on purpose (it carries a phone number and an email) and is deliberately left out of `sitemap.xml`. Keep those two facts in step.
 
+## Accounts (Supabase)
+
+- Identity is **Supabase Auth** (project ref `pwiztuhqaluihtrtzydj`, Singapore): email + password and Google, via the site wide dialog in `src/js/authui.js`. The old hand rolled Google one tap + HMAC cookie (`api/auth.js`, `api/_lib/auth.js`, `api/_lib/guestbook.js`) is deleted; do not resurrect it.
+- Data flows through five Vercel functions only: `api/comments.js`, `api/like.js`, `api/testimonials.js`, `api/me.js`, `api/chat.js` (Vercel hobby caps at 12). All use `api/_lib/store.js` (Postgres over the transaction pooler) + `api/_lib/supauth.js` (Bearer token verified against Supabase). Tables have RLS on with **no policies on purpose**: PostgREST is a locked door, the functions are the only way in.
+- The desk terminal gives **3 free questions**, then asks to sign in; signed in visitors get stored chat history. Comments and vouches are moderated: `npm run comments pending` then `approve <id>` / `approve-t <id>`.
+- Passport stamps come from `experience[].page` and reading marks from `posts[].slug` in data.js, validated server side. A new chapter or note is automatically collectable.
+- `/account` is noindex and stays out of the sitemap.
+- `npm run check:account` is the end to end test (self provisions a confirmed `e2e-tester@example.com` user via the admin API; delete it after big test sessions so the public site never shows Test Tanuki).
+- Supabase email confirmation: the free tier built in mailer is heavily rate limited. Owner was advised to turn OFF "Confirm email" (Authentication -> Sign In / Up) until real SMTP exists.
+
 ## Adding a page (checklist)
 
 1. Create the `.html` (copy the nav + mobile menu markup from an existing page — it is duplicated per page, including the Experience dropdown).

@@ -4,6 +4,7 @@ import '../../styles/comments.css';
 import { initSite, revealIn, prefersReducedMotion } from '../ui.js';
 import { renderSocials } from '../render.js';
 import { mountComments } from '../comments.js';
+import { getSession, authedFetch } from '../supa.js';
 import { posts, postCategories } from '../data.js';
 
 renderSocials();
@@ -347,9 +348,27 @@ function openPost(slug, push = true) {
   reader.scrollTop = 0;
   if (push) history.replaceState(null, '', urlFor(slug));
   reader.querySelector('.reader-close')?.focus();
+  armReadingMark(slug);
+}
+
+/* reading progress: a note counts as finished when its reader stayed open
+   for twenty seconds while signed in. Closing early disarms it. */
+let readTimer = null;
+function armReadingMark(slug) {
+  clearTimeout(readTimer);
+  readTimer = setTimeout(async () => {
+    if (!reader?.classList.contains('is-open')) return;
+    if (!(await getSession())) return;
+    authedFetch('/api/me', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ read: slug }),
+    }).catch(() => {});
+  }, 20000);
 }
 
 function closeReader() {
+  clearTimeout(readTimer);
   reader?.classList.remove('is-open');
   document.body.classList.remove('reader-locked');
   syncUrl();

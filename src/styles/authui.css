@@ -1,0 +1,305 @@
+/* ---------------------------------------------------------------------------
+   Account chrome: the nav button, the mobile menu button, and the sign in
+   dialog. Rides the paper/ink tokens from main.css.
+   --------------------------------------------------------------------------- */
+
+/* ---------- nav ---------- */
+
+.acct-slot {
+  display: flex;
+  align-items: center;
+}
+
+.acct-signin {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--ink-2);
+  padding: 0.4rem 0.9rem;
+  transition: color 0.2s;
+}
+
+.acct-signin:hover {
+  color: var(--red);
+}
+
+.acct-ava {
+  display: grid;
+  place-items: center;
+  margin-right: 0.6rem;
+}
+
+.acct-ava-img {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 2px solid var(--ink);
+  object-fit: cover;
+  display: grid;
+  place-items: center;
+  transition: transform 0.18s var(--ease-out), border-color 0.18s;
+}
+
+.acct-ava-img.is-letter {
+  background: var(--red);
+  color: #fff6e6;
+  font-weight: 700;
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.acct-ava:hover .acct-ava-img {
+  transform: translateY(-1px);
+  border-color: var(--red);
+}
+
+@media (max-width: 900px) {
+  .acct-slot {
+    display: none; /* phones use the drawer button */
+  }
+}
+
+/* ---------- mobile menu ---------- */
+
+.acct-mslot {
+  flex-basis: 100%;
+}
+
+.acct-mbtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  justify-content: center;
+  width: 100%;
+}
+
+.acct-mava {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1.5px solid var(--ink);
+  object-fit: cover;
+  display: inline-grid;
+  place-items: center;
+}
+
+.acct-mava.is-letter {
+  background: var(--red);
+  color: #fff6e6;
+  font-weight: 700;
+  font-size: 0.7rem;
+  line-height: 1;
+}
+
+/* ---------- dialog ---------- */
+
+.authdlg {
+  position: fixed;
+  inset: 0;
+  z-index: 1400;
+  display: grid;
+  place-items: center;
+  padding: 1.2rem;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.25s var(--ease-out), visibility 0.25s;
+}
+
+.authdlg.is-open {
+  visibility: visible;
+  opacity: 1;
+}
+
+.ad-scrim {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--ink) 42%, transparent);
+}
+
+.ad-card {
+  position: relative;
+  width: min(24rem, 100%);
+  max-height: calc(100vh - 2.4rem);
+  overflow-y: auto;
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 16px;
+  box-shadow: 8px 10px 0 rgba(0, 0, 0, 0.18);
+  padding: 1.7rem 1.6rem 1.4rem;
+  transform: translateY(10px);
+  transition: transform 0.25s var(--ease-out);
+}
+
+.authdlg.is-open .ad-card {
+  transform: none;
+}
+
+.ad-close {
+  position: absolute;
+  top: 0.8rem;
+  right: 0.8rem;
+  width: 2.1rem;
+  height: 2.1rem;
+  display: grid;
+  place-items: center;
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.ad-close:hover {
+  color: var(--red);
+  border-color: var(--red);
+}
+
+.ad-hanko {
+  display: inline-grid;
+  place-items: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 8px;
+  background: var(--red);
+  color: #fff6e6;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.ad-title {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0.8rem 0 0.15rem;
+}
+
+.ad-sub {
+  font-size: 0.86rem;
+  color: var(--ink-2);
+  margin: 0 0 1.1rem;
+  line-height: 1.5;
+}
+
+.ad-google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.65rem;
+  background: var(--paper-2);
+  border: 2px solid var(--ink);
+  border-radius: 9px;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+  transition: transform 0.15s var(--ease-out);
+}
+
+.ad-google:hover {
+  transform: translateY(-1px);
+}
+
+.ad-or {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin: 1rem 0 0.9rem;
+  color: var(--ink-3);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.ad-or::before,
+.ad-or::after {
+  content: '';
+  flex: 1;
+  border-top: 1px solid var(--line-soft);
+}
+
+.ad-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.ad-pass-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.ad-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  font-weight: 600;
+}
+
+.ad-input {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--ink);
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.ad-input:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 1px;
+}
+
+.ad-submit {
+  margin-top: 0.5rem;
+  justify-content: center;
+}
+
+.ad-status {
+  min-height: 1.2em;
+  margin: 0.2rem 0 0;
+  font-size: 0.84rem;
+  color: var(--ink-2);
+}
+
+.ad-status[data-tone='err'] {
+  color: var(--red);
+}
+
+.ad-status[data-tone='ok'] {
+  color: var(--green);
+}
+
+.ad-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1.1rem;
+  margin-top: 0.9rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--line-soft);
+}
+
+.ad-switch button {
+  background: none;
+  border: none;
+  padding: 0.2rem 0;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--ink-2);
+}
+
+.ad-switch button:hover,
+.ad-switch button.is-on {
+  color: var(--red);
+}

@@ -5,6 +5,7 @@
 // side) and reveal with a typewriter effect. BBC Micro energy on purpose.
 // ---------------------------------------------------------------------------
 import * as THREE from 'three';
+import { authedFetch, onAuth, userOf } from '../supa.js';
 
 const W = 832;
 const H = 512;
@@ -101,6 +102,28 @@ export function createTerminal() {
     if (state.lines.length > 60) state.lines.splice(0, state.lines.length - 60);
   }
 
+  /* signed in? the terminal remembers the last conversation */
+  async function loadHistory() {
+    state.historyLoaded = true;
+    onAuth(async (session) => {
+      const user = userOf(session);
+      if (!user || state.historyPrinted) return;
+      try {
+        const r = await authedFetch('/api/chat');
+        if (!r.ok) return;
+        const { history } = await r.json();
+        if (!history?.length) return;
+        state.historyPrinted = true;
+        state.history = history.slice(-10);
+        push('Welcome back, ' + user.name + '. Where we left off:', DIM);
+        for (const m of history.slice(-6)) {
+          push(m.role === 'user' ? '> ' + m.text : m.text, m.role === 'user' ? AMBER : GREEN);
+        }
+        draw();
+      } catch {}
+    });
+  }
+
   async function submit() {
     const q = state.input.trim();
     if (!q || state.busy) return;
@@ -112,7 +135,7 @@ export function createTerminal() {
     state.busy = true;
     draw();
     try {
-      const r = await fetch('/api/chat', {
+      const r = await authedFetch('/api/chat', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ messages: state.history }),
@@ -127,7 +150,11 @@ export function createTerminal() {
         reply = data.reply;
       }
       state.history.push({ role: 'model', text: reply });
-      state.reveal = { text: reply, color: GREEN, shown: 0 };
+      state.reveal = { text: reply, color: data.gate ? AMBER : GREEN, shown: 0 };
+      if (data.gate) {
+        // the free questions ran out: point at the Sign in button up top
+        state.gated = true;
+      }
     } catch {
       state.reveal = { text: 'Signal lost. Give it a second and ask again.', color: GREEN, shown: 0 };
     }
@@ -202,6 +229,7 @@ export function createTerminal() {
   function setActive(on) {
     if (state.active === on) return;
     state.active = on;
+    if (on && !state.historyLoaded) loadHistory();
     if (on) {
       if (!state.lines.length) GREETING.forEach((l) => push(l.text, l.color));
       field.value = '';

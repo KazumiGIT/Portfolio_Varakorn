@@ -1,12 +1,12 @@
 // ---------------------------------------------------------------------------
-// Guestbook comments: Google sign in, one level of replies, likes.
-// Talks to /api/auth, /api/comments, /api/like. One mount per page;
-// experience pages pass their pathname, the blog reader passes /blog#<slug>.
+// Guestbook comments: one level of replies, likes, moderated before showing.
+// Identity is the site wide Supabase session (Google or email, via authui).
+// Talks to /api/comments and /api/like with a Bearer token. One mount per
+// page; experience pages pass their pathname, the blog reader /blog#<slug>.
 // Styling lives in src/styles/comments.css.
 // ---------------------------------------------------------------------------
-
-/* injected by vite define; the Google client id is public by design */
-const CLIENT_ID = typeof __GOOGLE_CLIENT_ID__ !== 'undefined' ? __GOOGLE_CLIENT_ID__ : '';
+import { authConfigured, userOf, onAuth, authedFetch, signOut } from './supa.js';
+import { openAuthDialog } from './authui.js';
 
 const ENT = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ENT[c]);
@@ -19,7 +19,7 @@ const fmtDate = (iso) => {
 };
 
 const api = async (url, opts) => {
-  const r = await fetch(url, opts);
+  const r = await authedFetch(url, opts);
   const out = await r.json().catch(() => ({}));
   if (!r.ok) throw Object.assign(new Error(out.error || 'error'), { status: r.status });
   return out;
@@ -31,28 +31,6 @@ const post = (url, body) =>
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify(body),
   });
-
-/* ---------- Google Identity Services ---------- */
-let gisLoad;
-let onCredential = null; // routed to the mount that is currently on screen
-
-function loadGis() {
-  gisLoad ||= new Promise((resolve, reject) => {
-    if (window.google?.accounts?.id) return resolve();
-    const s = document.createElement('script');
-    s.src = 'https://accounts.google.com/gsi/client';
-    s.async = true;
-    s.onload = resolve;
-    s.onerror = () => reject(new Error('gsi failed to load'));
-    document.head.appendChild(s);
-  }).then(() => {
-    window.google.accounts.id.initialize({
-      client_id: CLIENT_ID,
-      callback: (resp) => onCredential?.(resp.credential),
-    });
-  });
-  return gisLoad;
-}
 
 /* ---------- rendering ---------- */
 
@@ -103,7 +81,7 @@ export function mountComments(host, page, { title } = {}) {
 
   host.innerHTML = `
     ${title ? `<h3 class="gb-title">${esc(title)}</h3>` : ''}
-    <p class="gb-intro">Sign in with Google to comment, reply, and like. Comments show up after Varakorn reads them.</p>
+    <p class="gb-intro">Sign in to comment, reply, and like. Comments show up after Varakorn reads them.</p>
     <div class="gb-list-wrap">
       <p class="gb-count" hidden></p>
       <ul class="gb-list"></ul>
@@ -148,19 +126,12 @@ export function mountComments(host, page, { title } = {}) {
       return;
     }
     if (user === null) {
-      if (!CLIENT_ID) {
+      if (!authConfigured) {
         el.auth.innerHTML = `<p class="gb-offline">Sign in is being set up. Check back soon.</p>`;
         return;
       }
-      el.auth.innerHTML = `<div class="gb-gsi"></div>`;
-      loadGis()
-        .then(() => {
-          const slot = el.auth.querySelector('.gb-gsi');
-          if (slot) window.google.accounts.id.renderButton(slot, { theme: 'outline', size: 'large' });
-        })
-        .catch(() => {
-          el.auth.innerHTML = `<p class="gb-offline">Sign in could not load. Try again later.</p>`;
-        });
+      el.auth.innerHTML = `<button class="btn gb-signin" type="button">Sign in to comment</button>`;
+      el.auth.querySelector('.gb-signin').addEventListener('click', () => openAuthDialog());
       return;
     }
     el.auth.innerHTML = `
@@ -199,8 +170,8 @@ export function mountComments(host, page, { title } = {}) {
       say(form, 'Thank you. It shows up here once Varakorn approves it.', 'ok');
     } catch (e) {
       if (e.status === 401) {
-        user = null;
-        renderAuth();
+        say(form, 'Your session expired. Sign in again.', 'err');
+        openAuthDialog();
       } else {
         say(
           form,
@@ -268,10 +239,7 @@ export function mountComments(host, page, { title } = {}) {
     }
 
     if (e.target.closest('.gb-signout')) {
-      await api('/api/auth', { method: 'DELETE' }).catch(() => {});
-      user = null;
-      renderAuth();
-      refresh();
+      await signOut(); // the auth subscription below repaints everything
     }
   });
 
@@ -283,35 +251,18 @@ export function mountComments(host, page, { title } = {}) {
     submit(form, parentNote ? Number(parentNote.dataset.note) : undefined);
   });
 
-  /* ---------- boot ---------- */
+  /* ---------- boot: the shared session drives everything ---------- */
 
-  onCredential = async (credential) => {
-    try {
-      const out = await post('/api/auth', { credential });
-      user = out.user;
-      renderAuth();
-      refresh();
-    } catch {
-      el.auth.insertAdjacentHTML(
-        'beforeend',
-        `<p class="gb-offline">Sign in did not work. Try again.</p>`
-      );
-    }
-  };
-
-  refresh().then(async (open) => {
+  refresh().then((open) => {
     if (!open) return;
-    try {
-      const out = await api('/api/auth');
-      if (out.offline) {
-        el.auth.innerHTML = `<p class="gb-offline">Sign in is being set up. Check back soon.</p>`;
-        return;
-      }
-      user = out.user;
-    } catch {
-      user = null;
-    }
-    renderAuth();
-    if (user) renderList(); // enable reply buttons + like states
+    onAuth((session) => {
+      const next = userOf(session);
+      const was = user;
+      user = next;
+      renderAuth();
+      // like states are per viewer, so a sign in or out reloads the list
+      if (was !== undefined || next) refresh();
+      else renderList();
+    });
   });
 }

@@ -1,13 +1,15 @@
-// Guestbook database CLI. Reads DATABASE_URL from .env (or the environment).
+// Guestbook + testimonials moderation CLI, on Supabase Postgres.
+// Reads DATABASE_URL (and SUPABASE_DB_DIRECT_URL for setup) from .env.
 //
-//   node scripts/comments-db.mjs setup           apply db/schema.sql (idempotent)
-//   node scripts/comments-db.mjs pending         list notes waiting for approval
-//   node scripts/comments-db.mjs approve <id..>  publish notes
-//   node scripts/comments-db.mjs delete <id..>   remove notes
+//   node scripts/comments-db.mjs setup                 apply db/schema.sql (idempotent)
+//   node scripts/comments-db.mjs pending               list everything waiting for approval
+//   node scripts/comments-db.mjs approve <id..>        publish comments
+//   node scripts/comments-db.mjs delete <id..>         remove comments
+//   node scripts/comments-db.mjs approve-t <id..>      publish testimonials
+//   node scripts/comments-db.mjs delete-t <id..>       remove testimonials
 import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { neon } from '@neondatabase/serverless';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -25,39 +27,51 @@ if (!process.env.DATABASE_URL) {
 }
 
 const [cmd, ...args] = process.argv.slice(2);
-const { listPending, approveComment, deleteComment } = await import(
-  '../api/_lib/guestbook.js'
-);
+const { listPending, moderate, ensureSchema } = await import('../api/_lib/store.js');
+
+const bar = (s) => s.replace(/\n/g, '\n  ');
 
 if (cmd === 'setup') {
-  const db = neon(process.env.DATABASE_URL);
-  const schema = readFileSync(resolve(root, 'db/schema.sql'), 'utf8');
-  for (const stmt of schema.split(';').map((s) => s.trim()).filter(Boolean)) {
-    await db.query(stmt);
-  }
+  // DDL goes over the direct/session connection; the transaction pooler
+  // dislikes multi statement setup work.
+  const { default: postgres } = await import('postgres');
+  const url = process.env.SUPABASE_DB_DIRECT_URL || process.env.DATABASE_URL;
+  const sql = postgres(url, { prepare: false, max: 1, ssl: 'require' });
+  await ensureSchema(sql);
+  await sql.end();
   console.log('schema applied');
 } else if (cmd === 'pending') {
-  const rows = await listPending();
-  if (!rows.length) {
+  const { comments, testimonials } = await listPending();
+  if (!comments.length && !testimonials.length) {
     console.log('nothing pending');
   } else {
-    for (const r of rows) {
+    for (const r of comments) {
       const kind = r.parent_id ? `reply to #${r.parent_id}` : 'comment';
       console.log(`#${r.id}  ${kind}  ${r.page}  ${new Date(r.created_at).toLocaleString()}`);
-      console.log(`  ${r.name}${r.email ? ` <${r.email}>` : ''}: ${r.body.replace(/\n/g, '\n  ')}\n`);
+      console.log(`  ${r.name}: ${bar(r.body)}\n`);
     }
-    console.log(`${rows.length} pending. Approve with: node scripts/comments-db.mjs approve <id>`);
+    for (const r of testimonials) {
+      console.log(`T#${r.id}  testimonial  ${r.page}  ${new Date(r.created_at).toLocaleString()}`);
+      console.log(`  ${r.name} (${r.relation}): ${bar(r.body)}\n`);
+    }
+    console.log(
+      `${comments.length} comments, ${testimonials.length} testimonials pending.\n` +
+        'approve <id> / delete <id> for comments, approve-t <id> / delete-t <id> for testimonials'
+    );
   }
-} else if (cmd === 'approve' || cmd === 'delete') {
+} else if (['approve', 'delete', 'approve-t', 'delete-t'].includes(cmd)) {
   if (!args.length) {
     console.error(`usage: node scripts/comments-db.mjs ${cmd} <id> [id...]`);
     process.exit(1);
   }
-  const act = cmd === 'approve' ? approveComment : deleteComment;
+  const kind = cmd.endsWith('-t') ? 'testimonial' : 'comment';
+  const action = cmd.startsWith('approve') ? 'approve' : 'delete';
   for (const id of args) {
-    const ok = await act(Number(id));
-    console.log(`#${id} ${ok ? cmd + 'd' : 'not found'}`);
+    const ok = await moderate(kind, action, Number(id));
+    console.log(`${kind === 'testimonial' ? 'T#' : '#'}${id} ${ok ? action + 'd' : 'not found'}`);
   }
 } else {
-  console.log('commands: setup | pending | approve <id..> | delete <id..>');
+  console.log('commands: setup | pending | approve <id..> | delete <id..> | approve-t <id..> | delete-t <id..>');
 }
+
+process.exit(0);

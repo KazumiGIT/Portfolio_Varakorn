@@ -15,6 +15,7 @@ const PAGES = [
   'contact',
   'privacy',
   'terms',
+  'account',
   'experience/ai-specialist-p10x-media',
   'experience/orion-automation-founder',
   'experience/gamuda-ai-academy',
@@ -48,54 +49,28 @@ function cleanUrls() {
   };
 }
 
-/** Dev twin of the Vercel function api/chat.js so the desk terminal AI works
-    on localhost. Reads GEMINI_API_KEY from .env via loadEnv. */
-function aiChatDev(env) {
-  const handle = (req, res) => {
-    if (req.method !== 'POST') {
-      res.statusCode = 405;
-      res.setHeader('content-type', 'application/json');
-      res.end('{"error":"POST only"}');
-      return;
-    }
-    let raw = '';
-    req.on('data', (c) => (raw += c));
-    req.on('end', async () => {
-      res.setHeader('content-type', 'application/json');
-      try {
-        const { askVarakornAI } = await import(fromRoot('api/_lib/gemini.js'));
-        const body = raw ? JSON.parse(raw) : {};
-        const out = await askVarakornAI(body.messages, { ...process.env, ...env });
-        res.end(JSON.stringify(out.offline ? { reply: null, offline: true } : { reply: out.reply }));
-      } catch (e) {
-        res.statusCode = e.status || 500;
-        res.end(JSON.stringify({ error: e.message || 'error' }));
-      }
-    });
-  };
-  return {
-    name: 'ai-chat-dev',
-    configureServer(server) {
-      server.middlewares.use('/api/chat', handle);
-    },
-    configurePreviewServer(server) {
-      server.middlewares.use('/api/chat', handle);
-    },
-  };
-}
-
 /** Dev twins of the guestbook Vercel functions (api/auth.js, api/comments.js,
     api/like.js). The handlers are written to run both on Vercel and as plain
     connect middleware, so they mount directly. Env comes from .env. */
 function guestbookDev(env) {
   const mount = (server) => {
-    for (const k of ['DATABASE_URL', 'GOOGLE_CLIENT_ID', 'SESSION_SECRET']) {
+    const KEYS = [
+      'DATABASE_URL',
+      'SUPABASE_URL',
+      'SUPABASE_PUBLISHABLE_KEY',
+      'SUPABASE_SECRET_KEY',
+      'GEMINI_API_KEY',
+      'GEMINI_MODEL',
+    ];
+    for (const k of KEYS) {
       if (env[k] && !process.env[k]) process.env[k] = env[k];
     }
     for (const [route, mod] of [
-      ['/api/auth', 'api/auth.js'],
       ['/api/comments', 'api/comments.js'],
       ['/api/like', 'api/like.js'],
+      ['/api/testimonials', 'api/testimonials.js'],
+      ['/api/me', 'api/me.js'],
+      ['/api/chat', 'api/chat.js'],
     ]) {
       server.middlewares.use(route, (req, res) =>
         import(fromRoot(mod))
@@ -414,10 +389,11 @@ function prerenderForCrawlers() {
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   return {
-    plugins: [cleanUrls(), prerenderForCrawlers(), aiChatDev(env), guestbookDev(env)],
+    plugins: [cleanUrls(), prerenderForCrawlers(), guestbookDev(env)],
     /* the Google client id is public by design; baked in at build time */
     define: {
-      __GOOGLE_CLIENT_ID__: JSON.stringify(env.GOOGLE_CLIENT_ID || ''),
+      __SUPABASE_URL__: JSON.stringify(env.SUPABASE_URL || ''),
+      __SUPABASE_PUBLISHABLE_KEY__: JSON.stringify(env.SUPABASE_PUBLISHABLE_KEY || ''),
     },
     build: {
       rollupOptions: {
@@ -429,6 +405,7 @@ export default defineConfig(({ mode }) => {
           contact: resolve(__dirname, 'contact.html'),
           privacy: resolve(__dirname, 'privacy.html'),
           terms: resolve(__dirname, 'terms.html'),
+          account: resolve(__dirname, 'account.html'),
           expP10x: resolve(__dirname, 'experience/ai-specialist-p10x-media.html'),
           expOrion: resolve(__dirname, 'experience/orion-automation-founder.html'),
           expGamuda: resolve(__dirname, 'experience/gamuda-ai-academy.html'),

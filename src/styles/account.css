@@ -1,0 +1,332 @@
+/* ---------------------------------------------------------------------------
+   The account page: profile head, hanko passport, reading ring, own posts.
+   Rides the paper/ink tokens from main.css.
+   --------------------------------------------------------------------------- */
+
+.acct {
+  max-width: 46rem;
+  margin-inline: auto;
+}
+
+.acct-head {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  flex-wrap: wrap;
+  margin: 1.8rem 0 0.4rem;
+  padding: 1.3rem 1.4rem;
+  border: 2px solid var(--ink);
+  border-radius: 14px;
+  background: var(--paper-2);
+  box-shadow: var(--shadow-press);
+}
+
+.acct-head-ava {
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  border: 2px solid var(--ink);
+  object-fit: cover;
+  display: grid;
+  place-items: center;
+  flex: none;
+}
+
+.acct-head-ava.is-letter {
+  background: var(--red);
+  color: #fff6e6;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.6rem;
+}
+
+.acct-head h2 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.acct-head .mail {
+  font-size: 0.85rem;
+  color: var(--ink-2);
+}
+
+.acct-head .gap {
+  margin-left: auto;
+}
+
+.acct-signout {
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.45rem 0.9rem;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.acct-signout:hover {
+  color: var(--red);
+  border-color: var(--red);
+}
+
+.acct h3.acct-h {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 2.6rem 0 0.3rem;
+}
+
+.acct .acct-sub {
+  font-size: 0.88rem;
+  color: var(--ink-2);
+  margin: 0 0 1.1rem;
+}
+
+/* ---------- passport ---------- */
+
+.passport {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  gap: 0.8rem;
+}
+
+.pp-stamp {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: center;
+  padding: 1rem 0.7rem 0.9rem;
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  color: inherit;
+}
+
+.pp-seal {
+  width: 3rem;
+  height: 3rem;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  border: 2px solid var(--line);
+  color: var(--ink-3);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.25rem;
+  transform: rotate(-4deg);
+}
+
+.pp-stamp span.pp-name {
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--ink-2);
+}
+
+.pp-stamp.is-got {
+  border-style: solid;
+  border-color: var(--ink);
+  background: var(--paper-2);
+}
+
+.pp-stamp.is-got .pp-seal {
+  background: var(--red);
+  border-color: var(--red-deep);
+  color: #fff6e6;
+  box-shadow: 2px 2px 0 rgba(50, 42, 32, 0.25);
+}
+
+.pp-stamp.is-got .pp-name {
+  color: var(--ink);
+}
+
+.pp-hint {
+  font-size: 0.8rem;
+  color: var(--ink-3);
+  margin-top: 0.8rem;
+}
+
+/* ---------- reading ring ---------- */
+
+.readring {
+  display: flex;
+  align-items: center;
+  gap: 1.4rem;
+  flex-wrap: wrap;
+}
+
+.rr-svg {
+  width: 108px;
+  height: 108px;
+  flex: none;
+}
+
+.rr-track {
+  stroke: var(--line);
+}
+
+.rr-bar {
+  stroke: var(--red);
+  transition: stroke-dashoffset 0.8s var(--ease-out);
+}
+
+.rr-num {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  fill: var(--ink);
+}
+
+.rr-copy p {
+  margin: 0 0 0.4rem;
+}
+
+/* ---------- own posts ---------- */
+
+.mine-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.mine-item {
+  display: flex;
+  gap: 0.9rem;
+  align-items: baseline;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--line-soft);
+  border-radius: 10px;
+  background: var(--paper-2);
+}
+
+.mine-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.mine-body p {
+  margin: 0.15rem 0 0;
+  font-size: 0.9rem;
+  color: var(--ink-2);
+  overflow-wrap: anywhere;
+}
+
+.mine-page {
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.mine-state {
+  flex: none;
+  font-size: 0.64rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--ink-2);
+}
+
+.mine-state.is-live {
+  color: var(--green);
+  border-color: var(--green);
+}
+
+.mine-del {
+  flex: none;
+  background: none;
+  border: none;
+  color: var(--ink-3);
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 0.2rem;
+}
+
+.mine-del:hover {
+  color: var(--red);
+}
+
+/* ---------- password + danger ---------- */
+
+.acct-pass,
+.acct-danger {
+  margin-top: 2.6rem;
+  padding: 1.2rem 1.3rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.acct-danger {
+  border-color: color-mix(in srgb, var(--red) 45%, var(--line));
+}
+
+.acct-pass form {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-top: 0.6rem;
+}
+
+.acct-input {
+  flex: 1;
+  min-width: 12rem;
+  padding: 0.55rem 0.75rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--ink);
+  background: var(--paper-2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.acct-status {
+  width: 100%;
+  min-height: 1.1em;
+  margin: 0.2rem 0 0;
+  font-size: 0.84rem;
+  color: var(--ink-2);
+}
+
+.acct-status[data-tone='err'] { color: var(--red); }
+.acct-status[data-tone='ok'] { color: var(--green); }
+
+.acct-delete {
+  background: none;
+  border: 1px solid var(--red);
+  color: var(--red);
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-family: var(--font-body);
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.6rem;
+}
+
+.acct-delete:hover {
+  background: var(--red);
+  color: #fff6e6;
+}
+
+/* signed out */
+
+.acct-gate {
+  margin-top: 2rem;
+  padding: 1.6rem 1.5rem;
+  border: 2px solid var(--ink);
+  border-radius: 14px;
+  background: var(--paper-2);
+  box-shadow: var(--shadow-press);
+  max-width: 30rem;
+}
+
+.acct-gate p {
+  margin: 0 0 1rem;
+}
