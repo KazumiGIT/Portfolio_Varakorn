@@ -368,3 +368,16 @@
 .sk-ava { width: 62px; height: 62px; border-radius: 50%; flex: none; }
 .sk-line { height: 1.1em; }
 .sk-ring { width: 108px; height: 108px; border-radius: 50%; flex: none; }
+
+/* the sign in dialog's eye button, reused on the password change field */
+.acct-pass-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 12rem;
+}
+
+.acct-pass-wrap .acct-input {
+  padding-right: 2.9rem;
+}

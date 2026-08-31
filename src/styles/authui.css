@@ -303,3 +303,96 @@
 .ad-switch button.is-on {
   color: var(--red);
 }
+
+/* ---------- password reveal ---------- */
+
+.ad-pass-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.ad-pass-wrap .ad-input {
+  padding-right: 2.9rem;
+}
+
+.ad-eye {
+  position: absolute;
+  right: 0.35rem;
+  width: 2.2rem;
+  height: 2.2rem;
+  display: grid;
+  place-items: center;
+  background: none;
+  border: none;
+  border-radius: 7px;
+  color: var(--ink-3);
+  cursor: pointer;
+  transition: color 0.18s;
+}
+
+.ad-eye:hover,
+.ad-eye.is-shown {
+  color: var(--red);
+}
+
+.ad-eye:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 1px;
+}
+
+/* the slash is the "hidden" state; revealing the password removes it */
+.ad-eye .ad-eye-slash {
+  transition: opacity 0.18s;
+}
+
+.ad-eye.is-shown .ad-eye-slash {
+  opacity: 0;
+}
+
+/* ---------- keep me signed in ---------- */
+
+.ad-remember {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-top: 0.7rem;
+  font-size: 0.84rem;
+  color: var(--ink-2);
+  cursor: pointer;
+  user-select: none;
+}
+
+.ad-remember input {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: none;
+  width: 1.15rem;
+  height: 1.15rem;
+  margin: 0;
+  border: 2px solid var(--line);
+  border-radius: 5px;
+  background: var(--paper-2);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background 0.16s, border-color 0.16s;
+}
+
+.ad-remember input:checked {
+  background: var(--red);
+  border-color: var(--red);
+}
+
+.ad-remember input:checked::after {
+  content: '\2713';
+  color: #fff6e6;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.ad-remember input:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 2px;
+}

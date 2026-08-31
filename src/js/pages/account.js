@@ -163,8 +163,18 @@ function render(me, user) {
       <h3 class="acct-h" style="margin-top:0">Password</h3>
       <p class="acct-sub" style="margin-bottom:0">${cameFromRecovery ? 'Set your new password below.' : 'Signed up with email? You can change your password here.'}</p>
       <form data-pass novalidate>
-        <input class="acct-input" name="password" type="password" minlength="8"
-               autocomplete="new-password" placeholder="New password, 8 characters or more" required />
+        <span class="acct-pass-wrap">
+          <input class="acct-input" name="password" type="password" minlength="8"
+                 autocomplete="new-password" placeholder="New password, 8 characters or more" required />
+          <button class="ad-eye" type="button" data-eye aria-pressed="false" aria-label="Show password">
+            <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor"
+                 stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z" />
+              <circle cx="12" cy="12" r="2.6" />
+              <path class="ad-eye-slash" d="M4 20 20 4" />
+            </svg>
+          </button>
+        </span>
         <button class="btn" type="submit">Update</button>
         <p class="acct-status" role="status" aria-live="polite"></p>
       </form>
@@ -203,6 +213,16 @@ async function load(user) {
 /* ---------- events ---------- */
 
 root.addEventListener('click', async (e) => {
+  const eye = e.target.closest('[data-eye]');
+  if (eye) {
+    const input = eye.closest('.acct-pass-wrap').querySelector('[name="password"]');
+    const show = input.type === 'password';
+    input.type = show ? 'text' : 'password';
+    eye.setAttribute('aria-pressed', String(show));
+    eye.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+    eye.classList.toggle('is-shown', show);
+    return;
+  }
   if (e.target.closest('[data-open-auth]')) return openAuthDialog();
   if (e.target.closest('.acct-signout')) {
     await signOut();

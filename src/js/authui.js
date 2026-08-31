@@ -4,7 +4,7 @@
 // and password (sign in, create account, reset). Styling in authui.css.
 // ---------------------------------------------------------------------------
 import '../styles/authui.css';
-import { supa, authConfigured, userOf, onAuth } from './supa.js';
+import { supa, authConfigured, userOf, onAuth, setRemember, remembering } from './supa.js';
 
 const ENT = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ENT[c]);
@@ -35,6 +35,10 @@ function renderMode() {
   title.textContent =
     mode === 'signup' ? 'Create your account' : mode === 'reset' ? 'Reset your password' : 'Sign in';
   pass.hidden = mode === 'reset';
+  const rem = dlg.querySelector('[data-remember-row]');
+  if (rem) rem.hidden = mode === 'reset';
+  const pw = dlg.querySelector('[name="password"]');
+  if (pw) pw.autocomplete = mode === 'signup' ? 'new-password' : 'current-password';
   main.textContent =
     mode === 'signup' ? 'Create account' : mode === 'reset' ? 'Send reset link' : 'Sign in';
   dlg.querySelectorAll('[data-mode]').forEach((b) => {
@@ -64,9 +68,24 @@ function buildDialog() {
         <input class="ad-input" id="ad-email" name="email" type="email" autocomplete="email" required />
         <div class="ad-pass-row">
           <label class="ad-label" for="ad-pass">Password</label>
-          <input class="ad-input" id="ad-pass" name="password" type="password"
-                 autocomplete="current-password" minlength="8" required />
+          <div class="ad-pass-wrap">
+            <input class="ad-input" id="ad-pass" name="password" type="password"
+                   autocomplete="current-password" minlength="8" required />
+            <button class="ad-eye" type="button" data-eye aria-pressed="false"
+                    aria-label="Show password" title="Show password">
+              <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor"
+                   stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z" />
+                <circle cx="12" cy="12" r="2.6" />
+                <path class="ad-eye-slash" d="M4 20 20 4" />
+              </svg>
+            </button>
+          </div>
         </div>
+        <label class="ad-remember" data-remember-row>
+          <input type="checkbox" name="remember" checked />
+          <span>Keep me signed in on this device</span>
+        </label>
         <button class="btn ad-submit" type="submit">Sign in</button>
         <p class="ad-status" role="status" aria-live="polite"></p>
       </form>
@@ -87,7 +106,24 @@ function buildDialog() {
     }
   });
 
+  const eye = dlg.querySelector('[data-eye]');
+  eye.addEventListener('click', () => {
+    const input = dlg.querySelector('[name="password"]');
+    const show = input.type === 'password';
+    input.type = show ? 'text' : 'password';
+    eye.setAttribute('aria-pressed', String(show));
+    eye.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+    eye.title = show ? 'Hide password' : 'Show password';
+    eye.classList.toggle('is-shown', show);
+    input.focus({ preventScroll: true });
+  });
+
+  const rememberBox = dlg.querySelector('[name="remember"]');
+  rememberBox.checked = remembering();
+  rememberBox.addEventListener('change', () => setRemember(rememberBox.checked));
+
   dlg.querySelector('.ad-google').addEventListener('click', async () => {
+    setRemember(rememberBox.checked); // applies to the Google round trip too
     say('Heading to Google…');
     const { error } = await supa.auth.signInWithOAuth({
       provider: 'google',
@@ -104,6 +140,7 @@ function buildDialog() {
 
     const btn = dlg.querySelector('.ad-submit');
     btn.disabled = true;
+    setRemember(rememberBox.checked);
     try {
       if (mode === 'reset') {
         say('Sending…');
@@ -154,6 +191,15 @@ export function openAuthDialog(startMode = 'signin') {
   if (!authConfigured) return;
   mode = startMode;
   buildDialog();
+  // never reopen with a previously revealed password still on screen
+  const pw = dlg.querySelector('[name="password"]');
+  const eyeBtn = dlg.querySelector('[data-eye]');
+  pw.type = 'password';
+  pw.value = '';
+  eyeBtn.setAttribute('aria-pressed', 'false');
+  eyeBtn.setAttribute('aria-label', 'Show password');
+  eyeBtn.classList.remove('is-shown');
+  dlg.querySelector('[name="remember"]').checked = remembering();
   renderMode();
   dlg.classList.add('is-open');
   document.body.classList.add('menu-locked');

@@ -11,17 +11,66 @@ const KEY = typeof __SUPABASE_PUBLISHABLE_KEY__ !== 'undefined' ? __SUPABASE_PUB
 
 export const authConfigured = Boolean(URL && KEY);
 
-/* Sessions must survive everything short of a deliberate sign out: the tab
-   closing, the browser restarting, a week away. persistSession keeps the
-   refresh token in localStorage, autoRefreshToken renews the hourly access
-   token, and Supabase refresh tokens themselves do not expire. These are the
-   defaults, pinned here so nobody "cleans them up" later. */
+/* "Remember me", meant literally. Checked (the default) puts the session in
+   localStorage, so it survives the browser closing and the refresh token
+   never expires. Unchecked puts it in sessionStorage instead, which the
+   browser throws away when the tab closes: the right behaviour on a shared
+   or borrowed computer. The flag itself lives in localStorage because the
+   choice has to outlive the session it describes. */
+const REMEMBER_KEY = 'vk-remember';
+
+export function setRemember(on) {
+  try {
+    localStorage.setItem(REMEMBER_KEY, on ? '1' : '0');
+  } catch {}
+}
+
+export function remembering() {
+  try {
+    return localStorage.getItem(REMEMBER_KEY) !== '0';
+  } catch {
+    return true;
+  }
+}
+
+/* Storage can throw outright in private modes and embedded webviews, so every
+   touch is guarded and a failure degrades to "signed out", never to a crash. */
+const dualStorage = {
+  getItem(key) {
+    try {
+      return localStorage.getItem(key) ?? sessionStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  },
+  setItem(key, value) {
+    try {
+      if (remembering()) {
+        sessionStorage.removeItem(key);
+        localStorage.setItem(key, value);
+      } else {
+        localStorage.removeItem(key);
+        sessionStorage.setItem(key, value);
+      }
+    } catch {}
+  },
+  removeItem(key) {
+    try {
+      localStorage.removeItem(key);
+      sessionStorage.removeItem(key);
+    } catch {}
+  },
+};
+
+/* persistSession + autoRefreshToken are pinned so nobody "cleans them up"
+   later; the storage adapter above decides how long persist means. */
 export const supa = authConfigured
   ? createClient(URL, KEY, {
       auth: {
         persistSession: true,
         autoRefreshToken: true,
         detectSessionInUrl: true,
+        storage: dualStorage,
       },
     })
   : null;
