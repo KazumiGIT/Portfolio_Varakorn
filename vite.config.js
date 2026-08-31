@@ -71,6 +71,7 @@ function guestbookDev(env) {
       ['/api/testimonials', 'api/testimonials.js'],
       ['/api/me', 'api/me.js'],
       ['/api/chat', 'api/chat.js'],
+      ['/api/wall', 'api/wall.js'],
     ]) {
       server.middlewares.use(route, (req, res) =>
         import(fromRoot(mod))

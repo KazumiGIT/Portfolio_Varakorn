@@ -3531,3 +3531,167 @@ body {
     display: none;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   GUESTBOOK WALL — approved vouches and comments drifting on the home page
+   like washi notes pinned above the desk. Cards float on their own clocks;
+   when there are more notes than slots they trade places with a soft fade.
+   --------------------------------------------------------------------------- */
+
+.wall-sub {
+  max-width: 46rem;
+  margin-bottom: 2.2rem;
+}
+
+.wall {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: 1.3rem;
+  align-items: start;
+}
+
+.wcard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding: 1.15rem 1.2rem 1rem;
+  background: var(--paper-2);
+  border: 1.5px solid var(--ink);
+  border-radius: 3px 14px 14px 14px;
+  box-shadow: 4px 5px 0 rgba(50, 42, 32, 0.16);
+  transform: rotate(var(--rot, 0deg));
+  animation: wcard-drift var(--dur, 7s) ease-in-out var(--delay, 0s) infinite;
+  transition: opacity 0.45s var(--ease-out), scale 0.45s var(--ease-out);
+}
+
+/* the pin */
+.wcard::before {
+  content: '';
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--red);
+  border: 2px solid var(--red-deep);
+  box-shadow: 0 2px 0 rgba(50, 42, 32, 0.3);
+}
+
+@keyframes wcard-drift {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -7px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wcard {
+    animation: none;
+  }
+}
+
+.wcard.is-swapping {
+  opacity: 0;
+  scale: 0.97;
+}
+
+.wcard-kind {
+  position: absolute;
+  top: 0.7rem;
+  right: 0.9rem;
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.wcard-kind--vouch {
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.wcard-body {
+  margin: 0.2rem 0 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.wcard-body::before {
+  content: '\201C';
+  color: var(--red);
+  font-family: var(--font-display);
+  font-weight: 700;
+  margin-right: 0.1rem;
+}
+
+.wcard-foot {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  border-top: 1px dashed var(--line-soft);
+  padding-top: 0.75rem;
+}
+
+.wcard .gb-name--btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  text-align: left;
+}
+
+.wcard .gb-ava {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1.5px solid var(--ink);
+  object-fit: cover;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+}
+
+.wcard .gb-ava--letter {
+  background: var(--red);
+  color: #fff6e6;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.wcard-who {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.wcard-who strong {
+  font-size: 0.86rem;
+}
+
+.wcard-title {
+  font-size: 0.72rem;
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.wcard-where {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--ink-2);
+  border-bottom: 1px dashed var(--ink-3);
+}
+
+.wcard-where:hover {
+  color: var(--red);
+  border-color: var(--red);
+}
+
+@media (max-width: 700px) {
+  .wall {
+    grid-template-columns: 1fr;
+    gap: 1.1rem;
+  }
+}

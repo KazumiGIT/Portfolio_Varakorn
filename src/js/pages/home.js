@@ -1,6 +1,8 @@
 import '../../styles/main.css';
 import '../../styles/expnav.css';
 import { initSite, prefersReducedMotion } from '../ui.js';
+import '../../styles/comments.css';
+import { mountWall } from '../wall.js';
 import { renderSocials, tagList } from '../render.js';
 import { valueCategories, projects, services, timeline } from '../data.js';
 
@@ -77,6 +79,9 @@ if (chEl) {
     )
     .join('');
 }
+
+/* the guestbook wall drifts in whenever there are approved words to show */
+mountWall(document.querySelector('[data-wall-section]'));
 
 /* chrome behaviors — must run after the dynamic sections are in the DOM,
    so the reveal/counter observers actually see them */

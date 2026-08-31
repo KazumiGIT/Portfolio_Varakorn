@@ -364,6 +364,35 @@ export async function appendChat(user, userText, modelText, env = process.env) {
   });
 }
 
+/* ---------- the wall: recent approved words, site wide ---------- */
+
+/** Newest approved vouches and top level comments across every page, with
+    the profile card fields, for the floating wall on the home page. */
+export async function wallItems(env = process.env) {
+  const sql = db(env);
+  if (!sql) return { items: [] };
+  return withSchema(sql, async () => {
+    const [vouches, comments] = await Promise.all([
+      sql`select t.body, t.page, t.relation, t.created_at,
+                 p.name, p.picture, p.title, p.bio, p.links
+          from testimonials t join profiles p on p.id = t.user_id
+          where t.approved order by t.created_at desc limit 12`,
+      sql`select c.body, c.page, c.created_at,
+                 p.name, p.picture, p.title, p.bio, p.links
+          from comments c join profiles p on p.id = c.user_id
+          where c.approved and c.parent_id is null
+          order by c.created_at desc limit 12`,
+    ]);
+    const items = [
+      ...vouches.map((v) => ({ kind: 'vouch', ...v })),
+      ...comments.map((c) => ({ kind: 'comment', ...c })),
+    ]
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+      .slice(0, 24);
+    return { items };
+  });
+}
+
 /* ---------- moderation (CLI only, never exposed over HTTP) ---------- */
 
 export async function listPending(env = process.env) {
