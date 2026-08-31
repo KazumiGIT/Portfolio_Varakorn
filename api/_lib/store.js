@@ -15,7 +15,6 @@ const RELATION_MAX = 80;
 const RATE_WINDOW = '10 minutes';
 const RATE_MAX = 5; // comments per user per window
 const CHAT_KEEP = 60; // stored turns per user
-const FREE_CHAT_TURNS = 3; // anonymous desk terminal messages before sign in
 
 /* Only pages that actually mount the guestbook. */
 const PAGE_RE = /^\/(experience\/[a-z0-9-]{1,64}|blog#[a-z0-9-]{1,64})$/;
@@ -324,7 +323,6 @@ export async function deleteOwn(kind, id, user, env = process.env) {
 
 /* ---------- desk terminal history + gate ---------- */
 
-export { FREE_CHAT_TURNS };
 
 export async function chatHistory(user, env = process.env) {
   const sql = db(env);

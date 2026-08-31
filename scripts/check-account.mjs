@@ -107,20 +107,13 @@ check((await p.locator('.mine-item').count()) >= 2, 'own comment and vouch are l
 check((await p.locator('.mine-state:not(.is-live)').count()) >= 2, 'both marked waiting for approval');
 await p.screenshot({ path: '.shots/account/account-page.png', fullPage: true });
 
-/* 7. terminal gate for anonymous visitors (fresh context, API level) */
+/* 7. the terminal is account only: an anonymous request gates immediately */
 const gate = await p.evaluate(async () => {
-  const msgs = [];
-  let gated = null;
-  for (let i = 1; i <= 4; i++) {
-    msgs.push({ role: 'user', text: 'hello ' + i });
-    const r = await fetch('/api/chat', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ messages: msgs }) });
-    const j = await r.json();
-    msgs.push({ role: 'model', text: j.reply || '' });
-    gated = Boolean(j.gate);
-  }
-  return gated;
+  const r = await fetch('/api/chat', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ messages: [{ role: 'user', text: 'hello' }] }) });
+  return await r.json();
 });
-check(gate === true, 'anonymous chat gates after 3 free questions');
+check(gate.gate === true && !gate.error, 'anonymous chat gates on the very first question');
+check(/sign in/i.test(gate.reply || ''), 'the gate message points at the Sign in button');
 
 /* 8. signed in chat stores history */
 const hist = await p.evaluate(async () => {

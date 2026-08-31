@@ -102,12 +102,22 @@ export function createTerminal() {
     if (state.lines.length > 60) state.lines.splice(0, state.lines.length - 60);
   }
 
-  /* signed in? the terminal remembers the last conversation */
+  /* signed in? the terminal remembers the last conversation. Signed out?
+     say so up front, the owner wants this account only. */
   async function loadHistory() {
     state.historyLoaded = true;
     onAuth(async (session) => {
       const user = userOf(session);
-      if (!user || state.historyPrinted) return;
+      state.signedIn = Boolean(user);
+      if (!user) {
+        if (!state.hintPrinted) {
+          state.hintPrinted = true;
+          push('I only chat with signed in guests. The Sign in button is at the top of the page.', AMBER);
+          draw();
+        }
+        return;
+      }
+      if (state.historyPrinted) return;
       try {
         const r = await authedFetch('/api/chat');
         if (!r.ok) return;
@@ -130,6 +140,16 @@ export function createTerminal() {
     state.input = '';
     field.value = '';
     push('> ' + q, AMBER);
+    if (!state.signedIn) {
+      // the server refuses anonymous chat anyway; answer instantly instead
+      state.reveal = {
+        text: 'Sign in first, the button is at the top of the page. Then I am all yours, and I remember everything.',
+        color: AMBER,
+        shown: 0,
+      };
+      draw();
+      return;
+    }
     state.history.push({ role: 'user', text: q });
     if (state.history.length > 10) state.history.splice(0, state.history.length - 10);
     state.busy = true;
