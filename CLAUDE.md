@@ -12,9 +12,11 @@ Standing rules from the owner (Varakorn). These outlive any chat session; follow
 ## Copy
 
 - **No hyphens or em dashes in visible copy** — the owner wants dash-free text ("avoids AI feels"). Rewrite around them.
-- Display name is **"Varakorn" only** in all visible text. The legal full name (Varakorn Meunukdomn) may appear in schema/JSON-LD metadata but never on the page.
+- Display name is **"Varakorn" only** in all visible text. The legal full name (Varakorn Meunukdomn) may appear in schema/JSON-LD metadata but never on the page. **One owner approved exception (31 Aug 2026):** the legal name appears once on `/privacy` ("Who runs this site") and once on `/terms` ("What this site is"), because a legal document names its operator. Nowhere else.
 - The AI video editing system built at P10X Media (with Claude) is **private and confidential** — mention it exists, never publish how it works.
 - Facts only: never guess dates, titles, locations, or counts. If a fact is unknown, ask the owner instead of inventing it.
+
+- **No trackers.** The Google Ads tag (AW-18380931193) was removed 31 Aug 2026 at the owner's decision; the site has no analytics and no advertising cookies, and `/privacy` promises exactly that. Adding any tracker back means updating `/privacy` in the same change.
 
 ## Known facts that pages must not contradict
 

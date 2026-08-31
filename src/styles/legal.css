@@ -1,0 +1,127 @@
+/* ---------------------------------------------------------------------------
+   The two legal pages. Plain reading documents, so they get one narrow column
+   and nothing clever. Tokens come from main.css, which loads first.
+   --------------------------------------------------------------------------- */
+
+.doc {
+  max-width: 44rem;
+  margin-inline: auto;
+}
+
+.doc-head {
+  padding-bottom: 1.4rem;
+  margin-bottom: 2.4rem;
+  border-bottom: 2px solid var(--ink);
+}
+
+.doc-head .updated {
+  display: inline-block;
+  margin-top: 0.9rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.doc-lede {
+  font-size: 1.06rem;
+  color: var(--ink-2);
+  margin: 0.6rem 0 0;
+}
+
+.doc h2 {
+  font-family: var(--font-display);
+  font-size: 1.32rem;
+  font-weight: 700;
+  margin: 2.8rem 0 0.8rem;
+  scroll-margin-top: calc(var(--nav-h) + 1rem);
+}
+
+.doc h3 {
+  font-size: 1.02rem;
+  font-weight: 600;
+  margin: 1.6rem 0 0.5rem;
+}
+
+.doc p {
+  margin: 0 0 1rem;
+  line-height: 1.7;
+}
+
+.doc ul {
+  margin: 0 0 1.2rem;
+  padding-left: 1.2rem;
+}
+
+.doc li {
+  margin-bottom: 0.55rem;
+  line-height: 1.65;
+}
+
+.doc a {
+  color: var(--red-deep);
+}
+
+/* the plain summary that opens each document, so nobody has to read the rest */
+.doc-tldr {
+  margin: 0 0 2.4rem;
+  padding: 1.2rem 1.4rem;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--red);
+  border-radius: 4px 11px 11px 4px;
+  background: var(--paper-2);
+}
+
+.doc-tldr h2 {
+  margin: 0 0 0.6rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  font-weight: 600;
+}
+
+.doc-tldr p:last-child,
+.doc-tldr ul:last-child {
+  margin-bottom: 0;
+}
+
+/* a small table for "what is stored and why" */
+.doc-table-wrap {
+  overflow-x: auto;
+  margin: 0 0 1.4rem;
+}
+
+.doc table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 30rem;
+  font-size: 0.92rem;
+}
+
+.doc th,
+.doc td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.65rem 0.8rem;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.doc th {
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+
+.doc-foot-nav {
+  margin-top: 3.4rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.6rem;
+  font-size: 0.9rem;
+}

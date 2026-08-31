@@ -50,4 +50,14 @@
     <lastmod>2026-08-31</lastmod>
     <priority>0.7</priority>
   </url>
+  <url>
+    <loc>https://www.varakorn.me/privacy</loc>
+    <lastmod>2026-08-31</lastmod>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://www.varakorn.me/terms</loc>
+    <lastmod>2026-08-31</lastmod>
+    <priority>0.3</priority>
+  </url>
 </urlset>
