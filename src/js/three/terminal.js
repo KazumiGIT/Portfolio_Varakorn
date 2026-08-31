@@ -18,6 +18,7 @@ const PAD = 46;
 const INK = '#f0e6d0';
 const AMBER = '#d9a441';
 const GREEN = '#9fbf72';
+const RED = '#e2694c'; // the no-account voice, tuned for the dark screen
 const DIM = '#8a7c5e';
 const BG = '#1d2014';
 
@@ -125,7 +126,7 @@ export function createTerminal() {
       if (!user) {
         if (!state.hintPrinted) {
           state.hintPrinted = true;
-          push('I only chat with signed in guests. The Sign in button is at the top of the page.', GREEN);
+          push('I only chat with signed in guests. The Sign in button is at the top of the page.', RED);
           draw();
         }
         return;
@@ -157,7 +158,7 @@ export function createTerminal() {
       // the server refuses anonymous chat anyway; answer instantly instead
       state.reveal = {
         text: 'Sign in first, the button is at the top of the page. Then I am all yours, and I remember everything.',
-        color: GREEN,
+        color: RED,
         shown: 0,
       };
       draw();
@@ -183,7 +184,7 @@ export function createTerminal() {
         reply = data.reply;
       }
       state.history.push({ role: 'model', text: reply });
-      state.reveal = { text: reply, color: GREEN, shown: 0 };
+      state.reveal = { text: reply, color: data.gate ? RED : GREEN, shown: 0 };
       if (data.gate) {
         // the free questions ran out: point at the Sign in button up top
         state.gated = true;
